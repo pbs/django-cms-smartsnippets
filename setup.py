@@ -1,10 +1,10 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='smartsnippets',
+    name='django-cms-smartsnippets',
     version='0.1',
     description='Parametrizable Django CMS snippets.',
     author='Sever Banesiu',
     author_email='banesiu.sever@gmail.com',
-    packages=['smartsnippets'],
+    packages=find_packages(),
 )
