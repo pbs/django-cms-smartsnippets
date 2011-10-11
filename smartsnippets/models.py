@@ -1,12 +1,18 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, VariableNode
+from django.contrib.sites.models import Site
+
 from cms.models import CMSPlugin
 
 
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
     template_code = models.TextField()
+    sites = models.ManyToManyField(Site, null=False, blank=True,
+        help_text='Select on which sites the snippet will be available.',
+        verbose_name='sites')
+
 
     class Meta:
         ordering = ['name']
@@ -53,4 +59,3 @@ class Variable(models.Model):
 
     class Meta:
         unique_together = (('name', 'snippet'))
-
