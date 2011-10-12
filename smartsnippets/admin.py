@@ -1,9 +1,26 @@
 from django.contrib import admin
 from django.db.models import Q
 from django.contrib.sites.models import Site
+from django.forms import ModelForm
+from django.core.exceptions import ValidationError
+
 
 from .models import SmartSnippet
 from .settings import shared_sites, include_orphan, restrict_user
+
+
+class SnippetForm(ModelForm):
+    include_orphan = include_orphan
+
+    class Meta:
+        model = SmartSnippet
+
+    def clean_sites(self):
+        if not self.include_orphan:
+            if not self.cleaned_data.get('sites', []):
+                raise ValidationError('This field is required.')
+        return self.cleaned_data.get('sites', [])
+
 
 
 class SnippetAdmin(admin.ModelAdmin):
@@ -14,6 +31,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     list_filter = ('sites__name', )
     list_display = ('name', 'site_list')
+    form = SnippetForm
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
@@ -45,5 +63,8 @@ class SnippetAdmin(admin.ModelAdmin):
                 f |= Q(sites__isnull=True)
 
         return q.filter(f).distinct()
+
+    def clean_sites(self, *args, **kwargs):
+        print 'hello'
 
 admin.site.register(SmartSnippet, SnippetAdmin)
