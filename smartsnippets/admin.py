@@ -5,8 +5,8 @@ from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 
 
-from .models import SmartSnippet
-from .settings import shared_sites, include_orphan, restrict_user
+from models import SmartSnippet
+from settings import shared_sites, include_orphan, restrict_user
 
 
 class SnippetForm(ModelForm):
@@ -32,10 +32,21 @@ class SnippetAdmin(admin.ModelAdmin):
     list_filter = ('sites__name', )
     list_display = ('name', 'site_list')
     form = SnippetForm
+    change_form_template = 'smartsnippets/change_form.html'
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
     site_list.short_description = 'sites'
+
+    def get_readonly_fields(self, request, obj=None):
+        ro = ['name', 'template_code', 'sites']
+        if request.user.is_superuser:
+            return []
+        if self.restrict_user and self.shared_sites:
+            if obj.sites.filter(name__in=self.shared_sites):
+                return ro
+        return []
+
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "sites":
@@ -63,8 +74,5 @@ class SnippetAdmin(admin.ModelAdmin):
                 f |= Q(sites__isnull=True)
 
         return q.filter(f).distinct()
-
-    def clean_sites(self, *args, **kwargs):
-        print 'hello'
 
 admin.site.register(SmartSnippet, SnippetAdmin)

@@ -13,7 +13,7 @@ class SmartSnippetPlugin(CMSPluginBase):
     include_orphan = include_orphan
     restrict_user = restrict_user
 
-    change_form_template = 'smartsnippets/change_form.html'
+    change_form_template = 'smartsnippets/snippet_change_form.html'
 
     model = SmartSnippetPointer
     name = 'Smart Snippet'

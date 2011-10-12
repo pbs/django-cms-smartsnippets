@@ -1,0 +1,34 @@
+{% extends "admin/cms/page/plugin_change_form.html" %}
+
+{% block top %}
+<div style="padding:10px; margin-bottom: 10px; border:1px solid #ccc">
+<h3>Preview:</h3>
+<hr/><br/>
+{{ block.super }}
+</div>
+{% endblock %}
+
+{% block after_related_objects %}
+{{ block.super }}
+{% if variables %}
+    <fieldset class="module">
+        <h2>Smart Snippet Variables</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for var, val in variables %}
+                <tr>
+                    <td><label for='var{{forloop.counter}}'>{{var}}</label></td>
+                    <td><input id='var{{forloop.counter}}' type='text' name='{{var}}' value='{{val}}'/></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </fieldset>
+{% endif %}
+{% endblock %}
