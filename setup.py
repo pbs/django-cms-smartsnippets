@@ -7,4 +7,5 @@ setup(
     author='Sever Banesiu',
     author_email='banesiu.sever@gmail.com',
     packages=find_packages(),
+    include_package_data=True,
 )
