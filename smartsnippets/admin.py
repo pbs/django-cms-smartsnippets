@@ -12,6 +12,13 @@ class SnippetAdmin(admin.ModelAdmin):
     include_orphan = include_orphan
     restrict_user = restrict_user
 
+    list_filter = ('sites__name', )
+    list_display = ('name', 'site_list')
+
+    def site_list(self, template):
+        return ", ".join([site.name for site in template.sites.all()])
+    site_list.short_description = 'sites'
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "sites":
             f = Q()
