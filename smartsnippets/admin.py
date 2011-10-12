@@ -47,6 +47,12 @@ class SnippetAdmin(admin.ModelAdmin):
                 return ro
         return []
 
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_superuser or obj is None:
+            return True
+        if self.restrict_user and self.shared_sites:
+            return not bool(obj.sites.filter(name__in=self.shared_sites))
+        return True
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "sites":
