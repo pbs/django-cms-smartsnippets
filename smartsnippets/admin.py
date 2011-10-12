@@ -40,7 +40,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         ro = ['name', 'template_code', 'sites']
-        if request.user.is_superuser:
+        if request.user.is_superuser or obj is None:
             return []
         if self.restrict_user and self.shared_sites:
             if obj.sites.filter(name__in=self.shared_sites):
