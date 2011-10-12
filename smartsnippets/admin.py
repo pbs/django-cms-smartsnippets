@@ -55,8 +55,6 @@ class SnippetAdmin(admin.ModelAdmin):
                 if self.restrict_user:
                     f |= Q(globalpagepermission__user=request.user)
                     f |= Q(globalpagepermission__group__user=request.user)
-                if self.shared_sites:
-                    f |= Q(name__in=self.shared_sites)
             kwargs["queryset"] = Site.objects.filter(f).distinct()
         return (super(SnippetAdmin, self)
                     .formfield_for_manytomany(db_field, request, **kwargs))
