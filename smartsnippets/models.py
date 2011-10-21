@@ -25,7 +25,7 @@ class SmartSnippet(models.Model):
     def get_variables_list(self):
         t = self.get_template()
         variable_nodes = t.nodelist.get_nodes_by_type(VariableNode)
-        return [node.filter_expression.token for node in variable_nodes]
+        return set(node.filter_expression.token for node in variable_nodes)
 
     def clean_template_code(self):
         try:
