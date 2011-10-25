@@ -44,6 +44,7 @@
                 new_textarea.width(500);
                 new_textarea.focus();
                 new_textarea.val(initial_value);
+                parent.setiframeheight($('body').height()+20, 1);
             }
         });
         $('textarea').live('keyup', function() {
@@ -57,6 +58,7 @@
                 e.replaceWith(new_input);
                 new_input.focus();
                 new_input.val(initial_value);
+                parent.setiframeheight($('body').height()+20, 1);
             }
         });
     </script>
