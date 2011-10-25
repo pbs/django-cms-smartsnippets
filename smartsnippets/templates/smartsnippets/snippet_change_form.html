@@ -31,7 +31,7 @@
         </table>
     </fieldset>
     <script type="text/javascript">
-        $('input[type=text]').live('keyup', function() {
+        function input2text() {
             var e = $(this),
                 initial_value = e.val(),
                 new_textarea;
@@ -44,9 +44,11 @@
                 new_textarea.width(500);
                 new_textarea.focus();
                 new_textarea.val(initial_value);
-                parent.setiframeheight($('body').height()+20, 1);
+                parent.setiframeheight($('body').height()+20, {{object_id}});
             }
-        });
+        }
+        $(function() { $('input[type=text]').each(input2text); });
+        $('input[type=text]').live('keyup', input2text);
         $('textarea').live('keyup', function() {
             var e = $(this),
                 initial_value = e.val(),
@@ -58,7 +60,7 @@
                 e.replaceWith(new_input);
                 new_input.focus();
                 new_input.val(initial_value);
-                parent.setiframeheight($('body').height()+20, 1);
+                parent.setiframeheight($('body').height()+20, {{object_id}});
             }
         });
     </script>
