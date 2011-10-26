@@ -31,37 +31,40 @@
         </table>
     </fieldset>
     <script type="text/javascript">
-        function input2text() {
-            var e = $(this),
-                initial_value = e.val(),
-                new_textarea;
+        $(document).ready(function(){
+            function input2text() {
+                var e = $(this),
+                    initial_value = e.val(),
+                    new_textarea;
 
-            if (e.val().length > 12) {
-                new_textarea = $('<textarea>');
-                new_textarea.attr('name', e.attr('name'));
-                e.replaceWith(new_textarea);
-                new_textarea.height(200);
-                new_textarea.width(500);
-                new_textarea.focus();
-                new_textarea.val(initial_value);
-                parent.setiframeheight($('body').height()+20, {{object_id}});
+                if (e.val().length > 12) {
+                    new_textarea = $('<textarea>');
+                    new_textarea.attr('name', e.attr('name'));
+                    e.replaceWith(new_textarea);
+                    new_textarea.height(200);
+                    new_textarea.width(500);
+                    new_textarea.focus();
+                    new_textarea.val(initial_value);
+                    parent.setiframeheight($('body').height()+20, {{object_id}});
+                }
             }
-        }
-        $(function() { $('input[type=text]').each(input2text); });
-        $('input[type=text]').live('keyup', input2text);
-        $('textarea').live('keyup', function() {
-            var e = $(this),
-                initial_value = e.val(),
-                new_input;
+            $(function() { $('input[type=text]').each(input2text); });
+            $('input[type=text]').live('keyup', input2text);
+            $('textarea').live('keyup', function() {
+                var e = $(this),
+                    initial_value = e.val(),
+                    new_input;
 
-            if (e.val().length <= 12) {
-                new_input = $('<input type=text>');
-                new_input.attr('name', e.attr('name'));
-                e.replaceWith(new_input);
-                new_input.focus();
-                new_input.val(initial_value);
-                parent.setiframeheight($('body').height()+20, {{object_id}});
-            }
+                if (e.val().length <= 12) {
+                    new_input = $('<input type=text>');
+                    new_input.attr('name', e.attr('name'));
+                    e.replaceWith(new_input);
+                    new_input.focus();
+                    new_input.val(initial_value);
+                    parent.setiframeheight($('body').height()+20, {{object_id}});
+                }
+            });
+            $('input[name=_cancel]').hide();
         });
     </script>
 
