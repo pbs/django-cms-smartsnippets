@@ -44,7 +44,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         vars = obj.snippet.get_variables_list()
         for var in vars:
             v, _ = Variable.objects.get_or_create(snippet=obj, name=var)
-            v.value = request.REQUEST.get(var, '')
+            v.value = request.REQUEST.get('_'+var+'_', '')
             v.save()
 
 
