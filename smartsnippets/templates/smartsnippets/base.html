@@ -1,15 +1,15 @@
-{% load url from future sekizai_tags %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load sekizai_tags %}{% load url from future %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE|default:"en-us" }}" xml:lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
 <title>{% block title %}{% endblock %}</title>
 <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% load adminmedia %}{% admin_media_prefix %}css/base.css{% endblock %}" />
 {% block extrastyle %}{% endblock %}
-{% render_block "css" %}
 <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% load adminmedia %}{% admin_media_prefix %}css/ie.css{% endblock %}" /><![endif]-->
 {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% admin_media_prefix %}css/rtl.css{% endblock %}" />{% endif %}
 <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+{% render_block "css" %}
 </head>
 {% load i18n %}
 
