@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.contrib.sites.models import Site
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
+from django.template import Template, TemplateSyntaxError
 
 
 from models import SmartSnippet
@@ -21,6 +22,15 @@ class SnippetForm(ModelForm):
                 raise ValidationError('This field is required.')
         return self.cleaned_data.get('sites', [])
 
+    def clean_template_code(self):
+        code = self.cleaned_data.get('template_code', None)
+        if not code:
+            raise ValidationError('No code provided.')
+        try:
+            Template(code)
+        except TemplateSyntaxError, e:
+            raise ValidationError(e)
+        return code
 
 
 class SnippetAdmin(admin.ModelAdmin):
