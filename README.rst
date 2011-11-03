@@ -70,8 +70,7 @@ There are three configuration variables available:
   pages permission system. This can be useful in a shared environment.
   By default a user can access all the smartsnippets in the system.
 
-.. warning::
-
+.. WARNING::
   This plugin is a potential security hazard, since it allows admins to place
   custom JavaScript on pages. This may allow administrators with the right to
   add snippets to elevate their privileges to superusers. This plugin should
