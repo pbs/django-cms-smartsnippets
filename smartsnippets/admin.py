@@ -3,7 +3,8 @@ from django.db.models import Q
 from django.contrib.sites.models import Site
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
-from django.template import Template, TemplateSyntaxError
+from django.template import Template, TemplateSyntaxError, \
+                            TemplateDoesNotExist, loader
 
 
 from models import SmartSnippet
@@ -25,12 +26,22 @@ class SnippetForm(ModelForm):
     def clean_template_code(self):
         code = self.cleaned_data.get('template_code', None)
         if not code:
-            raise ValidationError('No code provided.')
+            return code
         try:
             Template(code)
         except TemplateSyntaxError, e:
             raise ValidationError(e)
         return code
+    
+    def clean_template_path(self):
+        path = self.cleaned_data.get('template_path', None)
+        if not path:
+            return path
+        try:
+            loader.get_template(path)
+        except TemplateDoesNotExist, e:
+            raise ValidationError(e)
+        return path
 
 
 class SnippetAdmin(admin.ModelAdmin):
@@ -49,7 +60,7 @@ class SnippetAdmin(admin.ModelAdmin):
     site_list.short_description = 'sites'
 
     def get_readonly_fields(self, request, obj=None):
-        ro = ['name', 'template_code', 'sites']
+        ro = ['name', 'template_code', 'template_path', 'sites']
         if request.user.is_superuser or obj is None:
             return []
         if self.restrict_user and self.shared_sites:
