@@ -3,17 +3,18 @@ from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, VariableNode, loader
 from django.contrib.sites.models import Site
+from django.utils.translation import ugettext_lazy as _
 
 from cms.models import CMSPlugin
 
 
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
-    template_code = models.TextField("template code", blank=True)
-    template_path = models.CharField("template path", max_length=50, blank=True, \
-        help_text='Enter a template (i.e. "snippets/plugin_xy.html") which will be rendered.')
+    template_code = models.TextField(_("Template code"), blank=True)
+    template_path = models.CharField(_("Template path"), max_length=50, blank=True, \
+        help_text=_('Enter a template (i.e. "snippets/plugin_xy.html") which will be rendered.'))
     sites = models.ManyToManyField(Site, null=False, blank=True,
-        help_text='Select on which sites the snippet will be available.',
+        help_text=_('Select on which sites the snippet will be available.'),
         verbose_name='sites')
     
     
