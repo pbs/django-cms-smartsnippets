@@ -1,26 +1,33 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.template import Template, TemplateSyntaxError, VariableNode
+from django.template import Template, TemplateSyntaxError, \
+                            TemplateDoesNotExist, VariableNode, loader
 from django.contrib.sites.models import Site
+from django.utils.translation import ugettext_lazy as _
 
 from cms.models import CMSPlugin
 
 
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
-    template_code = models.TextField()
+    template_code = models.TextField(_("Template code"), blank=True)
+    template_path = models.CharField(_("Template path"), max_length=100, blank=True, \
+        help_text=_('Enter a template (i.e. "snippets/plugin_xy.html") which will be rendered.'))
     sites = models.ManyToManyField(Site, null=False, blank=True,
-        help_text='Select on which sites the snippet will be available.',
+        help_text=_('Select on which sites the snippet will be available.'),
         verbose_name='sites')
-
-
+    
+    
     class Meta:
         ordering = ['name']
         verbose_name = 'Smart Snippet'
         verbose_name_plural = 'Smart Snippets'
 
     def get_template(self):
-        return Template(self.template_code)
+        if self.template_path:
+            return loader.get_template(self.template_path)
+        else:
+            return Template(self.template_code)
 
     def get_variables_list(self):
         t = self.get_template()
@@ -34,7 +41,7 @@ class SmartSnippet(models.Model):
     def clean_template_code(self):
         try:
             self.get_template()
-        except TemplateSyntaxError, e:
+        except (TemplateSyntaxError, TemplateDoesNotExist), e:
             raise ValidationError(str(e))
 
     def render(self, context):
