@@ -6,12 +6,12 @@ README_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 setup(
     name='django-cms-smartsnippets',
-    version='0.1.2',
+    version='0.1.3',
     description='Parametrizable Django CMS snippets.',
     long_description = open(README_PATH, 'r').read(),
     author='Sever Banesiu',
     author_email='banesiu.sever@gmail.com',
     packages=find_packages(),
     include_package_data=True,
-    license='MIT License',
+    license='BSD License',
 )
