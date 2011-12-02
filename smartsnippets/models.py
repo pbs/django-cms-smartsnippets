@@ -34,7 +34,7 @@ class SmartSnippet(models.Model):
         result = set()
         for node in t.nodelist.get_nodes_by_type(VariableNode):
             v =  getattr(node.filter_expression.var, 'var', None)
-            if v:
+            if v and not v.endswith('_'):
                 result.add(v)
         return result
 
