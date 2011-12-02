@@ -8,6 +8,11 @@ the user can provide values for all detected used variables. This is much
 more flexible than the standard ``snippet`` if you want to parametrize
 and reuse your static snippets.
 
+.. NOTE::
+  All variables enclosed in curly-braces are automatically detected. In some
+  cases you may need to artificially create such a construct for a variable to
+  be detected. If a variable name ends with ``_`` it won't be detected.
+
 Example
 =======
 
