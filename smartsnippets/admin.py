@@ -52,6 +52,7 @@ class SnippetAdmin(admin.ModelAdmin):
 
     list_filter = ('sites__name', )
     list_display = ('name', 'site_list')
+    search_fields = ['name']
     form = SnippetForm
     change_form_template = 'smartsnippets/change_form.html'
 
