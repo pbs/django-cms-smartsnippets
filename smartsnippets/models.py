@@ -51,6 +51,22 @@ class SmartSnippet(models.Model):
         return self.name
 
 
+class SmartSnippetVariable(models.Model):
+    VARIABLE_TYPES = (
+        ('text', 'Input'),
+        ('textarea', 'Text Area'),
+    )
+    name = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, choices=VARIABLE_TYPES)
+    choices = models.CharField(max_length=255)
+    snippet = models.ForeignKey(SmartSnippet)
+    
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Smart Snippet Variable'
+        verbose_name_plural = 'Smart Snippet Variables'
+        
+        
 class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 

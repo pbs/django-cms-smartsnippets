@@ -7,7 +7,7 @@ from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
 
 
-from models import SmartSnippet
+from models import SmartSnippet, SmartSnippetVariable
 from settings import shared_sites, include_orphan, restrict_user
 
 
@@ -43,9 +43,13 @@ class SnippetForm(ModelForm):
             raise ValidationError(e)
         return path
 
+class SnippetVariablesAdmin(admin.StackedInline):
+    model = SmartSnippetVariable
+    extra = 1
 
+    
 class SnippetAdmin(admin.ModelAdmin):
-
+    inlines = [SnippetVariablesAdmin, ]
     shared_sites = shared_sites
     include_orphan = include_orphan
     restrict_user = restrict_user
@@ -102,3 +106,4 @@ class SnippetAdmin(admin.ModelAdmin):
         return q.filter(f).distinct()
 
 admin.site.register(SmartSnippet, SnippetAdmin)
+admin.site.register(SmartSnippetVariable)
