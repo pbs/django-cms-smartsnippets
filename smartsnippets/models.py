@@ -58,7 +58,7 @@ class SmartSnippetVariable(models.Model):
     )
     name = models.CharField(max_length=50)
     type = models.CharField(max_length=50, choices=VARIABLE_TYPES)
-    choices = models.CharField(max_length=255)
+    choices = models.CharField(max_length=512, blank=True, null=True)
     snippet = models.ForeignKey(SmartSnippet)
     
     class Meta:
@@ -81,7 +81,7 @@ class SmartSnippetPointer(CMSPlugin):
 
 class Variable(models.Model):
     name = models.CharField(max_length=255)
-    value = models.CharField(max_length=255)
+    value = models.CharField(max_length=1024)
     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
 
     class Meta:
