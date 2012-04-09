@@ -6,7 +6,7 @@ from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
 from cms.models import CMSPlugin
-
+from smartsnippets.widgets_pool import widget_pool
 
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
@@ -53,7 +53,8 @@ class SmartSnippet(models.Model):
 
 class SmartSnippetVariable(models.Model):
     name = models.CharField(max_length=50)
-    widget = models.CharField(max_length=50)
+    widget = models.CharField(max_length=50,
+                              choices = tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
     choices = models.CharField(max_length=512, blank=True, null=True)
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
     
