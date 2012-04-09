@@ -26,9 +26,9 @@ class SmartSnippetPlugin(CMSPluginBase):
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
         variables = pointer.snippet.get_variables_list()
         existing_values = Variable.objects.filter(
-            snippet=pointer, name__in=variables
+            snippet=pointer, snippet_variable__name__in=variables
         )
-        existing_dict = dict((v.name, v.value) for v in existing_values)
+        existing_dict = dict((v.snippet_variable.name, v.value) for v in existing_values)
         extra_context.update({'variables':
             [(var, existing_dict.get(var, '')) for var in variables]
         })
@@ -43,7 +43,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         super(SmartSnippetPlugin, self).save_model(request, obj, form, change)
         vars = obj.snippet.get_variables_list()
         for var in vars:
-            v, _ = Variable.objects.get_or_create(snippet=obj, name=var)
+            v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable__name=var)
             v.value = request.REQUEST.get('_'+var+'_', '')
             v.save()
 
