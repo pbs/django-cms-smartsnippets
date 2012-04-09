@@ -76,9 +76,10 @@ class SmartSnippetPointer(CMSPlugin):
 
 
 class Variable(models.Model):
+    snippet_variable = models.ForeignKey(SmartSnippetVariable, related_name='variables', null=True)
     name = models.CharField(max_length=255)
     value = models.CharField(max_length=1024)
     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
 
-    class Meta:
-        unique_together = (('name', 'snippet'))
+    #class Meta:
+    #    unique_together = (('variable', 'snippet'))
