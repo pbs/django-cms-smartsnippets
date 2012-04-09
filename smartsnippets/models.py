@@ -52,14 +52,10 @@ class SmartSnippet(models.Model):
 
 
 class SmartSnippetVariable(models.Model):
-    VARIABLE_TYPES = (
-        ('text', 'Input'),
-        ('textarea', 'Text Area'),
-    )
     name = models.CharField(max_length=50)
-    type = models.CharField(max_length=50, choices=VARIABLE_TYPES)
+    widget = models.CharField(max_length=50)
     choices = models.CharField(max_length=512, blank=True, null=True)
-    snippet = models.ForeignKey(SmartSnippet)
+    snippet = models.ForeignKey(SmartSnippet, related_name="variables")
     
     class Meta:
         ordering = ['name']
