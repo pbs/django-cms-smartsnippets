@@ -58,6 +58,7 @@ class SmartSnippetVariable(models.Model):
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
     
     class Meta:
+        unique_together = (('snippet', 'name'))
         ordering = ['name']
         verbose_name = 'Smart Snippet Variable'
         verbose_name_plural = 'Smart Snippet Variables'
@@ -79,3 +80,6 @@ class Variable(models.Model):
     snippet_variable = models.ForeignKey(SmartSnippetVariable, related_name='variables', null=True)
     value = models.CharField(max_length=1024)
     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
+
+    class Meta:
+        unique_together = (('snippet_variable', 'snippet'))
