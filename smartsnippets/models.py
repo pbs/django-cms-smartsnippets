@@ -30,6 +30,9 @@ class SmartSnippet(models.Model):
             return Template(self.template_code)
 
     def get_variables_list(self):
+        return set([var.name for var in self.variables.all()])
+        
+    def detect_variables_list(self):
         t = self.get_template()
         result = set()
         for node in t.nodelist.get_nodes_by_type(VariableNode):
@@ -59,6 +62,7 @@ class SmartSnippetVariable(models.Model):
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
     
     class Meta:
+        unique_together = (('snippet', 'name'))
         ordering = ['name']
         verbose_name = 'Smart Snippet Variable'
         verbose_name_plural = 'Smart Snippet Variables'
@@ -68,7 +72,7 @@ class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 
     def render(self, context):
-        vars = dict((v.name, v.value) for v in self.variables.all())
+        vars = dict((var.snippet_variable.name, var.value) for var in self.variables.all())
         context.update(vars)
         return self.snippet.render(context)
 
@@ -77,9 +81,9 @@ class SmartSnippetPointer(CMSPlugin):
 
 
 class Variable(models.Model):
-    name = models.CharField(max_length=255)
+    snippet_variable = models.ForeignKey(SmartSnippetVariable, related_name='variables', null=True)
     value = models.CharField(max_length=1024)
     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
 
     class Meta:
-        unique_together = (('name', 'snippet'))
+        unique_together = (('snippet_variable', 'snippet'))
