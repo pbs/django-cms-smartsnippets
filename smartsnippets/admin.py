@@ -106,4 +106,3 @@ class SnippetAdmin(admin.ModelAdmin):
         return q.filter(f).distinct()
 
 admin.site.register(SmartSnippet, SnippetAdmin)
-admin.site.register(SmartSnippetVariable)

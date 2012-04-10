@@ -29,18 +29,6 @@ class SmartSnippet(models.Model):
         else:
             return Template(self.template_code)
 
-    def get_variables_list(self):
-        return set([var.name for var in self.variables.all()])
-        
-    def detect_variables_list(self):
-        t = self.get_template()
-        result = set()
-        for node in t.nodelist.get_nodes_by_type(VariableNode):
-            v =  getattr(node.filter_expression.var, 'var', None)
-            if v and not v.endswith('_'):
-                result.add(v)
-        return result
-
     def clean_template_code(self):
         try:
             self.get_template()

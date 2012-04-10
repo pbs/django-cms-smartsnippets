@@ -24,13 +24,10 @@ class SmartSnippetPlugin(CMSPluginBase):
         if extra_context is None:
             extra_context = {}
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
-        variables = pointer.snippet.get_variables_list()
-        existing_values = Variable.objects.filter(
-            snippet=pointer, snippet_variable__name__in=variables
-        )
-        existing_dict = dict((v.snippet_variable.name, v.value) for v in existing_values)
+        variables = pointer.variables.all()
+        existing_dict = dict((v.snippet_variable.name, v.value) for v in variables)
         extra_context.update({'variables':
-            [(var, existing_dict.get(var, '')) for var in variables]
+            [(var.snippet_variable.name, existing_dict.get(var.snippet_variable.name, '')) for var in variables]
         })
         return (super(SmartSnippetPlugin, self)
             .change_view(request, object_id, extra_context))
@@ -41,10 +38,10 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     def save_model(self, request, obj, form, change):
         super(SmartSnippetPlugin, self).save_model(request, obj, form, change)
-        vars = obj.snippet.get_variables_list()
+        vars = obj.snippet.variables.all()
         for var in vars:
-            v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable__name=var)
-            v.value = request.REQUEST.get('_'+var+'_', '')
+            v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable=var)
+            v.value = request.REQUEST.get('_'+var.name+'_', '')
             v.save()
 
 
