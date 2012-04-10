@@ -6,5 +6,6 @@ restrict_user = getattr(settings, 'SMARTSNIPPETS_RESTRICT_USER', False)
 installed_widgets = getattr(settings, 'SMARTSNIPPETS_INSTALLED_WIDGETS',
                                 [
                                     'smartsnippets.widgets.textfield',
+                                    'smartsnippets.widgets.textareafield'
                                 ]
                             )
