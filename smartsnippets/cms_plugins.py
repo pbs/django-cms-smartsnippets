@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
+from smartsnippets.widgets_pool import widget_pool
 
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import shared_sites, include_orphan, restrict_user
@@ -25,9 +26,8 @@ class SmartSnippetPlugin(CMSPluginBase):
             extra_context = {}
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
         variables = pointer.variables.all()
-        existing_dict = dict((v.snippet_variable.name, v.value) for v in variables)
         extra_context.update({'variables':
-            [(var.snippet_variable.name, existing_dict.get(var.snippet_variable.name, '')) for var in variables]
+            [var.get_widget() for var in variables]
         })
         return (super(SmartSnippetPlugin, self)
             .change_view(request, object_id, extra_context))

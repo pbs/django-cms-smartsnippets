@@ -75,3 +75,10 @@ class Variable(models.Model):
 
     class Meta:
         unique_together = (('snippet_variable', 'snippet'))
+    
+    @property
+    def name(self):
+        return self.snippet_variable.name
+    
+    def get_widget(self):
+        return widget_pool.get_widget(self.snippet_variable.widget)(self.name, self.value)
