@@ -1,0 +1,9 @@
+<td><label for="var_{{ field.label|lower }}">{{ field.label }}</label></td>
+<td>
+    <select id="var_{{ field.label }}" name="_{{ field.label }}_">
+        <option value="">---------</option>
+        {% for value in field.choices %}
+            <option {% if value == field.value %} selected="selected" {% endif %} value="{{ value }}" >{{ value }}</option>
+        {% endfor %}
+    </select>
+</td>

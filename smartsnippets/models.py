@@ -87,5 +87,10 @@ class Variable(models.Model):
     def name(self):
         return self.snippet_variable.name
     
+    @property
+    def choices(self):
+        return ([choice.strip() for choice in self.snippet_variable.choices.split(',') if choice.strip()]
+                if self.snippet_variable.choices else [])
+    
     def get_widget(self):
-        return widget_pool.get_widget(self.snippet_variable.widget)(self.name, self.value)
+        return widget_pool.get_widget(self.snippet_variable.widget)(self.name, self.value, choices=self.choices)
