@@ -54,6 +54,13 @@ class SmartSnippetVariable(models.Model):
         ordering = ['name']
         verbose_name = 'Smart Snippet Variable'
         verbose_name_plural = 'Smart Snippet Variables'
+
+    def save(self, *args, **kwargs):
+        super(SmartSnippetVariable, self).save(*args, **kwargs)
+        smartsnippet_pointers = self.snippet.smartsnippetpointer_set.all()
+        for spointer in smartsnippet_pointers:
+            v, _ = Variable.objects.get_or_create(snippet=spointer, snippet_variable=self)
+            v.save()
         
         
 class SmartSnippetPointer(CMSPlugin):
