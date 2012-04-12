@@ -13,7 +13,6 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('widget', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('choices', self.gf('django.db.models.fields.CharField')(max_length=512, null=True, blank=True)),
             ('snippet', self.gf('django.db.models.fields.related.ForeignKey')(related_name='variables', to=orm['smartsnippets.SmartSnippet'])),
         ))
         db.send_create_signal('smartsnippets', ['SmartSnippetVariable'])
@@ -70,7 +69,6 @@ class Migration(SchemaMigration):
         },
         'smartsnippets.smartsnippetvariable': {
             'Meta': {'ordering': "['name']", 'object_name': 'SmartSnippetVariable'},
-            'choices': ('django.db.models.fields.CharField', [], {'max_length': '512', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'snippet': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'variables'", 'to': "orm['smartsnippets.SmartSnippet']"}),

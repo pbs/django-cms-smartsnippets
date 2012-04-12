@@ -27,7 +27,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
         variables = pointer.variables.all()
         extra_context.update({'variables':
-            [var.get_widget() for var in variables]
+            [widget_pool.get_widget(var.widget)(var) for var in variables]
         })
         return (super(SmartSnippetPlugin, self)
             .change_view(request, object_id, extra_context))

@@ -1,8 +1,8 @@
 from django.core.exceptions import ImproperlyConfigured
-from utils.widgets_load import load
+from cms.utils.django_load import load
 from smartsnippets.exceptions import WidgetAlreadyRegistered, WidgetNotRegistered
 from smartsnippets.widgets_base import SmartSnippetWidgetBase
-
+from models import SmartSnippetVariable
 
 class WidgetPool(object):
     def __init__(self):
@@ -43,9 +43,9 @@ class WidgetPool(object):
         self.discover_widgets()
         return self.widgets[name]
     
-    def get_all_widgets(self, snippet=None):
+    def get_all_widgets(self, has_model=False, snippet=None):
         self.discover_widgets()
-        widgets = self.widgets.values()
+        widgets = [x for x in self.widgets.values() if x.model==SmartSnippetVariable]
         widgets.sort(key=lambda obj: unicode(obj.name))
         return widgets
 

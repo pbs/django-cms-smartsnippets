@@ -1,8 +1,8 @@
-<td><label for="var_{{ field.label|lower }}">{{ field.label }}</label></td>
+<td><label for="var_{{ field.name|lower }}">{{ field.name }}</label></td>
 <td>
-    <select id="var_{{ field.label }}" name="_{{ field.label }}_">
+    <select id="var_{{ field.name }}" name="_{{ field.name }}_">
         <option value="">---------</option>
-        {% for value in field.choices %}
+        {% for value in field.snippet_variable.dropdownvariable.choices_list %}
             <option {% if value == field.value %} selected="selected" {% endif %} value="{{ value }}" >{{ value }}</option>
         {% endfor %}
     </select>

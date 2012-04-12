@@ -6,7 +6,6 @@ from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
 from cms.models import CMSPlugin
-from smartsnippets.widgets_pool import widget_pool
 
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
@@ -44,9 +43,7 @@ class SmartSnippet(models.Model):
 
 class SmartSnippetVariable(models.Model):
     name = models.CharField(max_length=50)
-    widget = models.CharField(max_length=50,
-                              choices = tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
-    choices = models.CharField(max_length=512, blank=True, null=True)
+    widget = models.CharField(max_length=50)
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
     
     class Meta:
@@ -76,7 +73,7 @@ class SmartSnippetPointer(CMSPlugin):
 
 
 class Variable(models.Model):
-    snippet_variable = models.ForeignKey(SmartSnippetVariable, related_name='variables', null=True)
+    snippet_variable = models.ForeignKey(SmartSnippetVariable, related_name='variables')
     value = models.CharField(max_length=1024)
     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
 
@@ -88,9 +85,18 @@ class Variable(models.Model):
         return self.snippet_variable.name
     
     @property
-    def choices(self):
-        return ([choice.strip() for choice in self.snippet_variable.choices.split(',') if choice.strip()]
-                if self.snippet_variable.choices else [])
+    def widget(self):
+        return self.snippet_variable.widget
     
-    def get_widget(self):
-        return widget_pool.get_widget(self.snippet_variable.widget)(self.name, self.value, choices=self.choices)
+    
+
+class DropDownVariable(SmartSnippetVariable):
+    choices = models.CharField(max_length=512)
+
+    @property
+    def choices_list(self):
+        return [choice.strip() for choice in self.choices.split(',')]
+        
+    def save(self, *args, **kwargs):
+        self.widget = 'DropDownField'
+        super(DropDownVariable, self).save(*args, **kwargs)
