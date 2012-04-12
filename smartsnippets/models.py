@@ -96,7 +96,8 @@ class DropDownVariable(SmartSnippetVariable):
     
     @property
     def choices_list(self):
-         return [choice.strip() for choice in self.choices.split(',')]
+         return ([choice.strip() for choice in self.choices.split(',') if choice.strip()]
+                if self.choices else [])
         
     def save(self, *args, **kwargs):
         self.widget = 'DropDownField'
