@@ -42,15 +42,15 @@ class SmartSnippet(models.Model):
 
 
 class SmartSnippetVariable(models.Model):
-    name = models.CharField(max_length=50)
-    widget = models.CharField(max_length=50)
+    name = models.CharField(max_length=50,
+            help_text=_('Enter the name of the variable defined in the smart snippet template.'))
+    widget = models.CharField(max_length=50,
+            help_text=_('Select the type of the variable defined in the smart snippet template.'))
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
     
     class Meta:
         unique_together = (('snippet', 'name'))
         ordering = ['name']
-        verbose_name = 'Smart Snippet Variable'
-        verbose_name_plural = 'Smart Snippet Variables'
 
     def save(self, *args, **kwargs):
         super(SmartSnippetVariable, self).save(*args, **kwargs)
@@ -91,11 +91,12 @@ class Variable(models.Model):
     
 
 class DropDownVariable(SmartSnippetVariable):
-    choices = models.CharField(max_length=512)
-
+    choices = models.CharField(max_length=512,
+            help_text=_('Enter a comma separated list of choices that will be available in the dropdown variable when adding and configuring the smart snippet on a page.'))
+    
     @property
     def choices_list(self):
-        return [choice.strip() for choice in self.choices.split(',')]
+         return [choice.strip() for choice in self.choices.split(',')]
         
     def save(self, *args, **kwargs):
         self.widget = 'DropDownField'
