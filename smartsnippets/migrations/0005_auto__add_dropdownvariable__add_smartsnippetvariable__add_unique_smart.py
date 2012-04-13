@@ -8,14 +8,54 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Deleting field 'Variable.name'
-        db.delete_column('smartsnippets_variable', 'name')
+        # Removing unique constraint on 'Variable', fields ['snippet', 'name']
+        db.delete_unique('smartsnippets_variable', ['snippet_id', 'name'])
+
+        # Adding model 'DropDownVariable'
+        db.create_table('smartsnippets_dropdownvariable', (
+            ('smartsnippetvariable_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['smartsnippets.SmartSnippetVariable'], unique=True, primary_key=True)),
+            ('choices', self.gf('django.db.models.fields.CharField')(max_length=512)),
+        ))
+        db.send_create_signal('smartsnippets', ['DropDownVariable'])
+
+        # Adding model 'SmartSnippetVariable'
+        db.create_table('smartsnippets_smartsnippetvariable', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('widget', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('snippet', self.gf('django.db.models.fields.related.ForeignKey')(related_name='variables', to=orm['smartsnippets.SmartSnippet'])),
+        ))
+        db.send_create_signal('smartsnippets', ['SmartSnippetVariable'])
+
+        # Adding unique constraint on 'SmartSnippetVariable', fields ['snippet', 'name']
+        db.create_unique('smartsnippets_smartsnippetvariable', ['snippet_id', 'name'])
+
+        # Adding field 'Variable.snippet_variable'
+        db.add_column('smartsnippets_variable', 'snippet_variable', self.gf('django.db.models.fields.related.ForeignKey')(related_name='variables', null=True, to=orm['smartsnippets.SmartSnippetVariable']), keep_default=False)
+
+        # Changing field 'Variable.value'
+        db.alter_column('smartsnippets_variable', 'value', self.gf('django.db.models.fields.CharField')(max_length=1024))
 
 
     def backwards(self, orm):
         
-        # Adding field 'Variable.name'
-        db.add_column('smartsnippets_variable', 'name', self.gf('django.db.models.fields.CharField')(default='', max_length=255), keep_default=False)
+        # Removing unique constraint on 'SmartSnippetVariable', fields ['snippet', 'name']
+        db.delete_unique('smartsnippets_smartsnippetvariable', ['snippet_id', 'name'])
+
+        # Deleting model 'DropDownVariable'
+        db.delete_table('smartsnippets_dropdownvariable')
+
+        # Deleting model 'SmartSnippetVariable'
+        db.delete_table('smartsnippets_smartsnippetvariable')
+
+        # Deleting field 'Variable.snippet_variable'
+        db.delete_column('smartsnippets_variable', 'snippet_variable_id')
+
+        # Changing field 'Variable.value'
+        db.alter_column('smartsnippets_variable', 'value', self.gf('django.db.models.fields.CharField')(max_length=255))
+
+        # Adding unique constraint on 'Variable', fields ['snippet', 'name']
+        db.create_unique('smartsnippets_variable', ['snippet_id', 'name'])
 
 
     models = {
@@ -45,6 +85,11 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
+        'smartsnippets.dropdownvariable': {
+            'Meta': {'ordering': "['name']", 'object_name': 'DropDownVariable', '_ormbases': ['smartsnippets.SmartSnippetVariable']},
+            'choices': ('django.db.models.fields.CharField', [], {'max_length': '512'}),
+            'smartsnippetvariable_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['smartsnippets.SmartSnippetVariable']", 'unique': 'True', 'primary_key': 'True'})
+        },
         'smartsnippets.smartsnippet': {
             'Meta': {'ordering': "['name']", 'object_name': 'SmartSnippet'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -59,7 +104,7 @@ class Migration(SchemaMigration):
             'snippet': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['smartsnippets.SmartSnippet']"})
         },
         'smartsnippets.smartsnippetvariable': {
-            'Meta': {'ordering': "['name']", 'object_name': 'SmartSnippetVariable'},
+            'Meta': {'ordering': "['name']", 'unique_together': "(('snippet', 'name'),)", 'object_name': 'SmartSnippetVariable'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'snippet': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'variables'", 'to': "orm['smartsnippets.SmartSnippet']"}),
@@ -68,6 +113,7 @@ class Migration(SchemaMigration):
         'smartsnippets.variable': {
             'Meta': {'object_name': 'Variable'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'snippet': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'variables'", 'to': "orm['smartsnippets.SmartSnippetPointer']"}),
             'snippet_variable': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'variables'", 'null': 'True', 'to': "orm['smartsnippets.SmartSnippetVariable']"}),
             'value': ('django.db.models.fields.CharField', [], {'max_length': '1024'})

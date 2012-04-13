@@ -57,7 +57,9 @@ class SnippetVariablesFormSet(BaseInlineFormSet):
 class SnippetVariablesAdmin(admin.StackedInline):
     model = SmartSnippetVariable
     extra = 0
-    
+    verbose_name = 'Smart Snippet Simple Variable'
+    verbose_name_plural = 'Smart Snippet Simple Variables'
+    SmartSnippetVariable.__unicode__ = lambda x: ''
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'widget':
             kwargs['widget'] = Select(choices=tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
@@ -66,7 +68,8 @@ class SnippetVariablesAdmin(admin.StackedInline):
 
 class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
-    
+
+
 class SnippetAdmin(admin.ModelAdmin):
     inlines = [RegularSnippetVariablesAdmin,]
     shared_sites = shared_sites
@@ -134,11 +137,13 @@ We will include the DropDownVariableAdmin in SnippetAdmin and register once.
 class DropDownVariableAdmin(SnippetVariablesAdmin):
     model = DropDownVariable
     exclude = ('widget',)
-        
-        
+    verbose_name = 'Smart Snippet Dropdown Variable'
+    verbose_name_plural = 'Smart Snippet Dropdown Variables'
+    DropDownVariable.__unicode__ = lambda x: ''
+
+
 class ExtendedSnippetAdmin(SnippetAdmin):
     inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
-    
     
 admin.site.register(SmartSnippet, SnippetAdmin)
 admin.site.unregister(SmartSnippet)
