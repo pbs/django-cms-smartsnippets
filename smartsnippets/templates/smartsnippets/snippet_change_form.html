@@ -22,9 +22,7 @@
             </thead>
             <tbody>
             {% for variable in variables %}
-                <tr>
-                    {{ variable.render }}
-                </tr>
+                {{ variable.render }}
             {% endfor %}
             </tbody>
         </table>
