@@ -2,14 +2,15 @@ from django.contrib import admin
 from django.db.models import Q
 from django.contrib.sites.models import Site
 from django.forms import ModelForm
+from django.forms.models import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
+from django.forms.widgets import Select
 
-
-from models import SmartSnippet
+from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
 from settings import shared_sites, include_orphan, restrict_user
-
+from widgets_pool import widget_pool
 
 class SnippetForm(ModelForm):
     include_orphan = include_orphan
@@ -44,8 +45,30 @@ class SnippetForm(ModelForm):
         return path
 
 
-class SnippetAdmin(admin.ModelAdmin):
+class SnippetVariablesFormSet(BaseInlineFormSet):
+    def get_queryset(self):
+        if not hasattr(self, '_queryset'):
+            available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
+            qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets)
+            self._queryset = qs
+        return self._queryset
+    
 
+class SnippetVariablesAdmin(admin.StackedInline):
+    model = SmartSnippetVariable
+    extra = 0
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'widget':
+            kwargs['widget'] = Select(choices=tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
+        return super(SnippetVariablesAdmin,self).formfield_for_dbfield(db_field, **kwargs)
+
+
+class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
+    formset = SnippetVariablesFormSet
+
+
+class SnippetAdmin(admin.ModelAdmin):
+    inlines = [RegularSnippetVariablesAdmin,]
     shared_sites = shared_sites
     include_orphan = include_orphan
     restrict_user = restrict_user
@@ -101,4 +124,15 @@ class SnippetAdmin(admin.ModelAdmin):
 
         return q.filter(f).distinct()
 
+
+class DropDownVariableAdmin(SnippetVariablesAdmin):
+    model = DropDownVariable
+    exclude = ('widget',)
+
+
+class ExtendedSnippetAdmin(SnippetAdmin):
+    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
+    
 admin.site.register(SmartSnippet, SnippetAdmin)
+admin.site.unregister(SmartSnippet)
+admin.site.register(SmartSnippet, ExtendedSnippetAdmin)
