@@ -3,6 +3,7 @@ from django.contrib.sites.models import Site
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
+from smartsnippets.widgets_pool import widget_pool
 
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import shared_sites, include_orphan, restrict_user
@@ -24,13 +25,9 @@ class SmartSnippetPlugin(CMSPluginBase):
         if extra_context is None:
             extra_context = {}
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
-        variables = pointer.snippet.get_variables_list()
-        existing_values = Variable.objects.filter(
-            snippet=pointer, name__in=variables
-        )
-        existing_dict = dict((v.name, v.value) for v in existing_values)
+        variables = pointer.variables.all()
         extra_context.update({'variables':
-            [(var, existing_dict.get(var, '')) for var in variables]
+            [widget_pool.get_widget(var.widget)(var) for var in variables]
         })
         return (super(SmartSnippetPlugin, self)
             .change_view(request, object_id, extra_context))
@@ -41,10 +38,10 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     def save_model(self, request, obj, form, change):
         super(SmartSnippetPlugin, self).save_model(request, obj, form, change)
-        vars = obj.snippet.get_variables_list()
+        vars = obj.snippet.variables.all()
         for var in vars:
-            v, _ = Variable.objects.get_or_create(snippet=obj, name=var)
-            v.value = request.REQUEST.get('_'+var+'_', '')
+            v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable=var)
+            v.value = request.REQUEST.get('_'+var.name+'_', '')
             v.save()
 
 
