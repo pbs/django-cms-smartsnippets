@@ -124,7 +124,13 @@ class SnippetAdmin(admin.ModelAdmin):
 
         return q.filter(f).distinct()
 
+"""
+Showing how people can extend ModelAdmin and Inlines for use with their custom,
+model specific variables. Note there's a registration, unregistration workflow
+for demonstration purposes that should be removed when everything is documented.
 
+We will include the DropDownVariableAdmin in SnippetAdmin and register once.
+"""
 class DropDownVariableAdmin(SnippetVariablesAdmin):
     model = DropDownVariable
     exclude = ('widget',)
