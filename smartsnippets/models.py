@@ -51,6 +51,7 @@ class SmartSnippetVariable(models.Model):
     class Meta:
         unique_together = (('snippet', 'name'))
         ordering = ['name']
+        verbose_name = "Standard variable"
 
     def save(self, *args, **kwargs):
         super(SmartSnippetVariable, self).save(*args, **kwargs)
@@ -58,6 +59,9 @@ class SmartSnippetVariable(models.Model):
         for spointer in smartsnippet_pointers:
             v, _ = Variable.objects.get_or_create(snippet=spointer, snippet_variable=self)
             v.save()
+    
+    def __unicode__(self):
+        return self.name
         
         
 class SmartSnippetPointer(CMSPlugin):
