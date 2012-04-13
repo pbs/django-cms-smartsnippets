@@ -8,16 +8,21 @@ the user can provide values for all detected used variables. This is much
 more flexible than the standard ``snippet`` if you want to parametrize
 and reuse your static snippets.
 
-.. NOTE::
-  All variables enclosed in curly-braces are automatically detected. In some
-  cases you may need to artificially create such a construct for a variable to
-  be detected. If a variable name ends with ``_`` it won't be detected.
+An important feature of smartsnippets is manual specification of
+variables and variable types when adding an html snippet.
+
+Smart snippet ships a set of basic variable Field types with the app:
+  TextField, TextAreaField, DropDownField.
+  
+This module also provides a registration manager for field types
+  so third party apps can hook in with custom editing fields and user admin behavior.
 
 Example
 =======
 
-A simple smartsnippet using the `Twitter profile example`_::
+Create a simple smartsnippet using the `Twitter profile example`_::
 
+    1. Add the template code(of the path to the template file):
     <script src="http://widgets.twimg.com/j/2/widget.js"></script>
     <script>
     new TWTR.Widget({
@@ -33,7 +38,7 @@ A simple smartsnippet using the `Twitter profile example`_::
           color: '#ffffff'
         },
         tweets: {
-          background: '#000000',
+          background: '{{ background }}',
           color: '#ffffff',
           links: '#4aed05'
         }
@@ -44,12 +49,21 @@ A simple smartsnippet using the `Twitter profile example`_::
         live: false,
         behavior: 'all'
       }
-    }).render().setUser('{{twitter_username}}').start();
+    }).render().setUser('{{ twitter_username }}').start();
     </script>
 
-Note the ``{{twitter_username}}`` variable used as a standard Django
-variable. When adding the smartsnippet in a page, the form will
-provide an input field where you can set a value of that variable.
+    Note the ``{{ background }}`` and ``{{ twitter_username }}`` variable used as standard Django variables.
+
+    2. Configure background and twitter_username variables:
+        a. Variable name: twitter_username
+           Variable widget: TextField(because the twitter username is a simple and relatively short text)
+        b. Variable name: background
+           Variable widget: DropDownField
+           Variable choices: #000000, #eeeeee, #cecece
+    3. When adding the smartsnippet in a page, the form will provide:
+        a. an input text field where you can set a value of twitter_username
+        b. a select html tag having as options the list of choices (#000000, #eeeeee, #cecece)
+           added when the background variable was configured.
 
 
 Settings
