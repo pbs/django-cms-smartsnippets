@@ -3,9 +3,10 @@ django-cms-smartsnippets
 
 ``smartsnippets`` is a `django-cms`_ plugin similar to the builtin `snippet`_
 plugin but instead of allowing only plain HTML you can use any valid
-Django template syntax inside. When a smartsnippet is added in a page
-the user can provide values for all detected used variables. This is much
-more flexible than the standard ``snippet`` if you want to parametrize
+Django template syntax inside and also
+you can configure certain variables in template snippet to be filled
+once the smartsnippet is added to a placeholder on a page.
+This is much more flexible than the standard ``snippet`` if you want to parametrize
 and reuse your static snippets.
 
 An important feature of smartsnippets is manual specification of
@@ -15,7 +16,7 @@ Smart snippet ships a set of basic variable Field types with the app:
   TextField, TextAreaField, DropDownField.
   
 This module also provides a registration manager for field types
-  so third party apps can hook in with custom editing fields and user admin behavior.
+  so that third party apps can hook in with custom editing fields and user admin behavior.
 
 Example
 =======
