@@ -7,8 +7,9 @@ class SmartSnippetWidgetBase(object):
     def __init__(self, variable, **kwargs):
         self.variable = variable
     
-    def format_value(self, value):
-        return value
+    @property
+    def formatted_value(self):
+        return self.variable.value
     
     def render(self, context):
         raise NotImplementedError("render needs to be implemented")

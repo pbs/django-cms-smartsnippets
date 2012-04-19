@@ -87,8 +87,8 @@ class Variable(models.Model):
     @property
     def formatted_value(self):
         from widgets_pool import widget_pool
-        widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self.value)
-        return widget_instance.format_value(self.value)
+        widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self)
+        return widget_instance.formatted_value
     
     @property
     def name(self):

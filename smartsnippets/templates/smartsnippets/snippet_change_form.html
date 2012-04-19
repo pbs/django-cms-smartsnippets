@@ -1,5 +1,5 @@
 {% extends "smartsnippets/plugin_change_form.html" %}
-
+{% load smartsnippets_tags %}
 {% block top %}
 <div style="padding:10px; margin-bottom: 10px; border:1px solid #ccc">
 <h3>Preview:</h3>
@@ -22,7 +22,7 @@
             </thead>
             <tbody>
             {% for variable in variables %}
-                {{ variable.render }}
+                {% render_variable variable %}
             {% endfor %}
             </tbody>
         </table>
