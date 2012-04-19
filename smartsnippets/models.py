@@ -68,7 +68,7 @@ class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 
     def render(self, context):
-        vars = dict((var.snippet_variable.name, var.value) for var in self.variables.all())
+        vars = dict((var.snippet_variable.name, var.formatted_value) for var in self.variables.all())
         context.update(vars)
         return self.snippet.render(context)
 
@@ -83,6 +83,12 @@ class Variable(models.Model):
 
     class Meta:
         unique_together = (('snippet_variable', 'snippet'))
+    
+    @property
+    def formatted_value(self):
+        from widgets_pool import widget_pool
+        widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self.value)
+        return widget_instance.format_value(self.value)
     
     @property
     def name(self):
