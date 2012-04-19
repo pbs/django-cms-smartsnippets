@@ -37,13 +37,16 @@ class Migration(DataMigration):
 
     def get_template(self, snippet):
         if snippet.template_path:
-            return loader.get_template(snippet.template_path)
+            return None
         else:
             return Template(snippet.template_code)
 
     def get_variables_list(self, snippet):
         t = self.get_template(snippet)
         result = set()
+        if t is None:
+            return result
+
         for node in t.nodelist.get_nodes_by_type(VariableNode):
             v =  getattr(node.filter_expression.var, 'var', None)
             if v and not v.endswith('_'):
