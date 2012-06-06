@@ -31,11 +31,11 @@ class SmartSnippet(models.Model):
 
     def get_variables_list(self):
         t = self.get_template()
-        result = set()
+        result = list()
         for node in t.nodelist.get_nodes_by_type(VariableNode):
             v =  getattr(node.filter_expression.var, 'var', None)
-            if v and not v.endswith('_'):
-                result.add(v)
+            if v and not v.endswith('_') and v not in result:
+                result.append(v)
         return result
 
     def clean_template_code(self):
