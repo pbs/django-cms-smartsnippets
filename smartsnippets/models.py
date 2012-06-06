@@ -55,7 +55,7 @@ class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 
     def render(self, context):
-        vars = dict((v.name, v.value) for v in self.variables.all())
+        vars = dict((v.name, v.value) for v in self.variables.all() if v.is_active)
         context.update(vars)
         return self.snippet.render(context)
 
@@ -67,6 +67,7 @@ class Variable(models.Model):
     name = models.CharField(max_length=255)
     value = models.CharField(max_length=255)
     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         unique_together = (('name', 'snippet'))

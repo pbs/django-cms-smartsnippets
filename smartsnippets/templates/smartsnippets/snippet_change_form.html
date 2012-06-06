@@ -18,13 +18,15 @@
                 <tr>
                     <th>Name</th>
                     <th>Value</th>
+					<th>Is Active</th>
                 </tr>
             </thead>
             <tbody>
-            {% for var, val in variables %}
+            {% for var, val, is_active in variables %}
                 <tr>
                     <td><label for='var{{forloop.counter}}'>{{var}}</label></td>
                     <td><input id='var{{forloop.counter}}' type='text' name='_{{var}}_' value='{{val}}'/></td>
+					<td><input id='is_active{{forloop.counter}}' type='checkbox' name='_{{var}}_is_active_' {% if is_active %}checked{% endif %}/></td>
                 </tr>
             {% endfor %}
             </tbody>
