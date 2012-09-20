@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db.models import Q
+from django.contrib.admin.sites import NotRegistered
 from django.contrib.sites.models import Site
 from django.forms import ModelForm
 from django.forms.models import BaseInlineFormSet
@@ -132,7 +133,33 @@ class DropDownVariableAdmin(SnippetVariablesAdmin):
 
 class ExtendedSnippetAdmin(SnippetAdmin):
     inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
-    
+
+
+def _get_registered_modeladmin(model):
+    """ This is a huge hack to get the registered modeladmin for the model.
+        We need this functionality in case someone else already registered
+        a different modeladmin for this model. """
+    return type(admin.site._registry[model])
+
+
+class SmartSnippetAdminInline(admin.TabularInline):
+    model = SmartSnippet.sites.through
+    extra = 1
+
+    def __init__(self, *args, **kwargs):
+        super(SmartSnippetAdminInline, self).__init__(*args, **kwargs)
+
+
+RegisteredSiteAdmin = _get_registered_modeladmin(Site)
+RegisteredSiteAdmin.inlines += [SmartSnippetAdminInline]
+
+
 admin.site.register(SmartSnippet, SnippetAdmin)
 admin.site.unregister(SmartSnippet)
 admin.site.register(SmartSnippet, ExtendedSnippetAdmin)
+
+try:
+    admin.site.unregister(Site)
+except NotRegistered:
+    pass
+admin.site.register(Site, RegisteredSiteAdmin)
