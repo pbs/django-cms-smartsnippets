@@ -151,7 +151,10 @@ class SmartSnippetAdminInline(admin.TabularInline):
 
 
 RegisteredSiteAdmin = _get_registered_modeladmin(Site)
-RegisteredSiteAdmin.inlines += [SmartSnippetAdminInline]
+
+
+class ExtendedSiteAdmin(RegisteredSiteAdmin):
+    inlines = RegisteredSiteAdmin.inlines + [SmartSnippetAdminInline]
 
 
 admin.site.register(SmartSnippet, SnippetAdmin)
@@ -162,4 +165,4 @@ try:
     admin.site.unregister(Site)
 except NotRegistered:
     pass
-admin.site.register(Site, RegisteredSiteAdmin)
+admin.site.register(Site, ExtendedSiteAdmin)
