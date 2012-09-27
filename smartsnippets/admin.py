@@ -2,9 +2,9 @@ from django.contrib import admin
 from django.db.models import Q
 from django.contrib.admin.sites import NotRegistered
 from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.forms.models import BaseInlineFormSet
-from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
 from django.forms.widgets import Select
@@ -171,13 +171,39 @@ class ExtendedSiteAdminForm(SiteAdminForm):
 
     def __init__(self, *args, **kwargs):
         super(ExtendedSiteAdminForm, self).__init__(*args, **kwargs)
-        self.fields['snippets'].initial = self.instance.smartsnippet_set.all()
+        if self.instance.pk is not None:
+            self.fields['snippets'].initial = self.instance.smartsnippet_set.all()
+
+    def clean_snippets(self):
+        assigned_snippets = self.cleaned_data['snippets']
+        if self.instance.pk is None:
+            return assigned_snippets
+        pks = [s.pk for s in assigned_snippets]
+        # snippets that were previously assigned to this site, but got unassigned
+        unassigned_snippets = self.instance.smartsnippet_set.exclude(pk__in=pks)
+        snippets_with_no_sites = []
+        for snippet in unassigned_snippets:
+            if snippet.sites.count() == 1:
+                snippets_with_no_sites.append(snippet)
+        if snippets_with_no_sites:
+            raise ValidationError(
+                "Following snippets will remain with no sites assigned: %s" %
+                ", ".join(s.name for s in snippets_with_no_sites))
+        return assigned_snippets
 
     def save(self, commit=True):
         instance =  super(ExtendedSiteAdminForm, self).save(commit=False)
+        # If the object is new, we need to force save it, whether commit
+        # is True or False, otherwise setting the smartsnippet_set would fail
+        # This would cause the object to be saved twice if used in an
+        # InlineFormSet
+        force_save = self.instance.pk is None
+        if force_save:
+            instance.save()
         instance.smartsnippet_set = self.cleaned_data['snippets']
         if commit:
-            instance.save()
+            if not force_save:
+                instance.save()
             self.save_m2m()
         return instance
 
