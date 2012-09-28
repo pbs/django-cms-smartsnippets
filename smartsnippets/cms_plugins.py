@@ -25,7 +25,8 @@ class SmartSnippetPlugin(CMSPluginBase):
         if extra_context is None:
             extra_context = {}
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
-        variables = pointer.variables.all().order_by('snippet_variable__name')
+        snippet_vars = pointer.snippet.variables.all()
+        variables = pointer.variables.filter(snippet_variable__in=snippet_vars).order_by('snippet_variable__name')
         extra_context.update({'variables':
             [widget_pool.get_widget(var.widget)(var) for var in variables]
         })
