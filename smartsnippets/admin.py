@@ -79,6 +79,7 @@ class SnippetAdmin(admin.ModelAdmin):
     search_fields = ['name']
     form = SnippetForm
     change_form_template = 'smartsnippets/change_form.html'
+    filter_horizontal = ('sites', )
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])

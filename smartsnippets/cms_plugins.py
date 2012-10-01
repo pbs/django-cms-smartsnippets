@@ -20,7 +20,6 @@ class SmartSnippetPlugin(CMSPluginBase):
     name = 'Smart Snippet'
     render_template = 'smartsnippets/plugin.html'
 
-
     def change_view(self, request, object_id, extra_context=None):
         if extra_context is None:
             extra_context = {}
