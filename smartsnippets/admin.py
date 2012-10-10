@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.db.models import Q
 from django.contrib.admin.sites import NotRegistered
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
-from django.forms import ModelForm
+from django.forms import ModelForm, ModelMultipleChoiceField
 from django.forms.models import BaseInlineFormSet
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
@@ -143,16 +144,6 @@ def _get_registered_modeladmin(model):
     return type(admin.site._registry[model])
 
 
-class SmartSnippetAdminInline(admin.TabularInline):
-    model = SmartSnippet.sites.through
-    extra = 1
-
-    def __init__(self, *args, **kwargs):
-        super(SmartSnippetAdminInline, self).__init__(*args, **kwargs)
-
-
-from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 
 
 RegisteredSiteAdmin = _get_registered_modeladmin(Site)
@@ -161,7 +152,7 @@ SiteAdminForm = RegisteredSiteAdmin.form
 
 class ExtendedSiteAdminForm(SiteAdminForm):
 
-    snippets = forms.ModelMultipleChoiceField(
+    snippets = ModelMultipleChoiceField(
         queryset=SmartSnippet.objects.all(),
         required=False,
         widget=FilteredSelectMultiple(
