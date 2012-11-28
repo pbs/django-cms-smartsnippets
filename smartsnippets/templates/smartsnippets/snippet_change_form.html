@@ -10,14 +10,12 @@
             }
             .plugin-help-tooltip{
                 float: left;
-                margin-right: 10px;
-                font-size: 16px;
-                font-weight: bold;
-                border-radius: 50%;
-                border: 1px solid #5B80B2;
-                padding: 2px 7px;
-                margin-top: -4px;
-                color: #5B80B2;
+                margin-right: 5px;
+            }
+            .plugin-help-tooltip img{
+                border: 0;
+                width: 20px;
+                height: 20px;
             }
         </style>
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/tipTip.css" />
@@ -36,9 +34,9 @@
 
 {% block content_title %}
 {% if original.snippet.documentation_link %}
-    <a class="plugin-help-tooltip" href='{{original.snippet.documentation_link}}' target='_blank' title='{% if original.snippet.description %}{{original.snippet.description}}<br/><br/>{% endif %}Follow link to see documentation'>?</a>
+    <a class="plugin-help-tooltip" href='{{original.snippet.documentation_link}}' target='_blank' title='{% if original.snippet.description %}{{original.snippet.description}}<br/><br/>{% endif %}Follow link to see documentation'><img src="{{STATIC_URL}}images/help.png"></a>
 {% elif original.snippet.description %}
-    <span class="plugin-help-tooltip" title='{{original.snippet.description}}'>?</span>
+    <span class="plugin-help-tooltip" title='{{original.snippet.description}}'><img src="{{STATIC_URL}}images/help.png"></span>
 {% endif %}
 {{ block.super }}
 {% endblock%}
