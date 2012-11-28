@@ -27,13 +27,18 @@
             var cx = null;
             $('.inline-group').each(function (i, item) {
                 if (variablesHolderType == 'standard') {
-                    if ($(item).children('h2')[0].innerText.toLowerCase() == 'standard variables') {
+
+                    var header = $(item).children('h2').get(0);
+                    if ($(header).text().toLowerCase() == 'standard variables') {
                         cx = $(item);
                         return;
                     }
 
                 } else if (variablesHolderType == 'select') {
-                    if ($(item).children('h2')[0].innerText.toLowerCase() == 'drop down variables') {
+
+                    var header = $(item).children('h2').get(0);
+
+                    if ($(header).text().toLowerCase() == 'drop down variables') {
                         cx = $(item);
                         return;
                     }
@@ -50,10 +55,23 @@
          * @return {*|jQuery}
          */
         clickAddNewFieldStd:function (container) {
+
+            //count the number of already inserted vars here
+            //subtract 1 for the empty one present by default
+            var presentFieldsCount = container.children('.inline-related').length - 1;
+
             var addNewFieldBtn = $(container).children('div.add-row').find('a');
             addNewFieldBtn.trigger('click');
 
             var addedField = $(container).children('.inline-related').last().prev();
+
+            var textField = addedField.find('input.vTextField');
+            $(textField).attr('id', 'id_variables-' + presentFieldsCount + '-name');
+            $(textField).attr('name', 'variables-' + presentFieldsCount +'-name');
+
+            var select = addedField.find('div.field-widget').find('select');
+            $(select).attr('id', 'id_variables-' + presentFieldsCount + '-widget');
+            $(select).attr('name', 'variables-' + presentFieldsCount + '-widget');
 
             return addedField;
         },
@@ -70,6 +88,15 @@
             addNewFieldBtn.trigger('click');
 
             var addedField = $(container).children('.inline-related').last().prev();
+            var inputFields = addedField.children('.vTextField');
+
+            var presentFieldsCount = container.children('.inline-related').length;
+
+            $(inputFields[0]).attr('id', 'id_variables-2-' + presentFieldsCount +'-name');
+            $(inputFields[0]).attr('name', 'variables-2-' + presentFieldsCount + '-name');
+
+            $(inputFields[1]).attr('id', 'id_variables-2-' + presentFieldsCount + '-choices');
+            $(inputFields[1]).attr('name', 'variables-2-' + presentFieldsCount + '-choices');
 
             return addedField;
         },
@@ -145,7 +172,7 @@
          *
          * @param varNamesArr
          */
-        populate: function(varNamesArr) {
+        populate:function (varNamesArr) {
             var self = this;
             if (varNamesArr.length > 0) { //don't do any mumbo jumbo if we have no varnames
 
@@ -169,15 +196,19 @@
 
 
     $(document).ready(function () {
+        var textArea = $('#id_template_code');
 
-        $('#id_template_code').bind('paste', function (e) {
+        textArea.bind('paste', function (e) {
             var el = $(this);
-            //use a setTimeout to capture the paste event otherwise it will not trigger in the browser
-            setTimeout(function () {
-                var text = $(el).val();
-                var varNames = LayoutParser.extractVarnames(text);
-                LayoutParser.populate(varNames);
-            }, 100);
+
+            if ($.trim($(el).val()).length == 0) {//only when the area is empty
+                //use a setTimeout to capture pasted text
+                setTimeout(function () {
+                    var text = $(el).val();
+                    var varNames = LayoutParser.extractVarnames(text);
+                    LayoutParser.populate(varNames);
+                }, 100);
+            }
         });
     });
 
