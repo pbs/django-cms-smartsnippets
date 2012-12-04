@@ -65,13 +65,21 @@
 
             var addedField = $(container).children('.inline-related').last().prev();
 
+            addedField.attr('id', 'variables-' + presentFieldsCount);
+
             var textField = addedField.find('input.vTextField');
             $(textField).attr('id', 'id_variables-' + presentFieldsCount + '-name');
-            $(textField).attr('name', 'variables-' + presentFieldsCount +'-name');
+            $(textField).attr('name', 'variables-' + presentFieldsCount + '-name');
+
+            var textLabel = addedField.find('div.field-name').find('label');
+            $(textLabel).attr('for', 'id_variables-' + presentFieldsCount + '-name');
 
             var select = addedField.find('div.field-widget').find('select');
             $(select).attr('id', 'id_variables-' + presentFieldsCount + '-widget');
             $(select).attr('name', 'variables-' + presentFieldsCount + '-widget');
+
+            var selectLabel = addedField.find('div.field-widget').find('label');
+            $(selectLabel).attr('for', 'id_variables-' + presentFieldsCount + '-widget')
 
             return addedField;
         },
@@ -92,7 +100,7 @@
 
             var presentFieldsCount = container.children('.inline-related').length;
 
-            $(inputFields[0]).attr('id', 'id_variables-2-' + presentFieldsCount +'-name');
+            $(inputFields[0]).attr('id', 'id_variables-2-' + presentFieldsCount + '-name');
             $(inputFields[0]).attr('name', 'variables-2-' + presentFieldsCount + '-name');
 
             $(inputFields[1]).attr('id', 'id_variables-2-' + presentFieldsCount + '-choices');
@@ -109,8 +117,8 @@
          */
         addStdVar:function (varNameObj, container) {
             var fieldCx = this.clickAddNewFieldStd(container);
-            $(fieldCx).find('input.vTextField')[0].value = varNameObj.varname;
-            $(fieldCx).find('select')[0].value = varNameObj.type;
+            $(fieldCx).find('input.vTextField').val(varNameObj.varname);
+            $(fieldCx).find('select').val(varNameObj.type);
         },
 
         /**
@@ -122,8 +130,8 @@
 
         addSelectVar:function (varNameObj, container) {
             var fieldCx = this.clickAddNewFieldSelect(container);
-            $(fieldCx).find('div.field-name').find('input.vTextField')[0].value = varNameObj.varname;
-            $(fieldCx).find('div.field-choices').find('input.vTextField')[0].value = varNameObj.values;
+            $(fieldCx).find('div.field-name').find('input.vTextField').val(varNameObj.varname);
+            $(fieldCx).find('div.field-choices').find('input.vTextField').val(varNameObj.values);
         },
 
         /**
@@ -166,6 +174,14 @@
             return varNames;
         },
 
+        filterExistingVars:function (varsArray) {
+            var containers = $('div.inline-group');
+            containers.each(function (i, cx) {
+                var varHolders = cx.children('div.inline-related');
+
+            });
+        },
+
         /**
          * Given an array of objects with the following structure {varname: 'name', type: 'type', values: 'value1,
          * value2,value3'} or varNameObj = {varname: 'name', type: 'type'} this function fill parse the array.
@@ -205,6 +221,8 @@
                 //use a setTimeout to capture pasted text
                 setTimeout(function () {
                     var text = $(el).val();
+                    $('#id_variables-TOTAL_FORMS').val(0);
+                    $('#id_variables-INITIAL_FORMS').val(0);
                     var varNames = LayoutParser.extractVarnames(text);
                     LayoutParser.populate(varNames);
                 }, 100);
