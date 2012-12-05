@@ -20,7 +20,6 @@ class SmartSnippetPlugin(CMSPluginBase):
     name = 'Smart Snippet'
     render_template = 'smartsnippets/plugin.html'
 
-
     def change_view(self, request, object_id, extra_context=None):
         if extra_context is None:
             extra_context = {}
@@ -44,7 +43,6 @@ class SmartSnippetPlugin(CMSPluginBase):
             v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable=var)
             v.value = request.REQUEST.get('_'+var.name+'_', '')
             v.save()
-
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "snippet":

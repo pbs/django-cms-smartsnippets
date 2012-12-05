@@ -14,6 +14,7 @@ from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
 from settings import shared_sites, include_orphan, restrict_user
 from widgets_pool import widget_pool
 
+
 class SnippetForm(ModelForm):
     include_orphan = include_orphan
 
@@ -35,7 +36,7 @@ class SnippetForm(ModelForm):
         except TemplateSyntaxError, e:
             raise ValidationError(e)
         return code
-    
+
     def clean_template_path(self):
         path = self.cleaned_data.get('template_path', None)
         if not path:
@@ -54,7 +55,7 @@ class SnippetVariablesFormSet(BaseInlineFormSet):
             qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets)
             self._queryset = qs
         return self._queryset
-    
+
 
 class SnippetVariablesAdmin(admin.StackedInline):
     model = SmartSnippetVariable
@@ -142,8 +143,6 @@ def _get_registered_modeladmin(model):
         We need this functionality in case someone else already registered
         a different modeladmin for this model. """
     return type(admin.site._registry[model])
-
-
 
 
 RegisteredSiteAdmin = _get_registered_modeladmin(Site)

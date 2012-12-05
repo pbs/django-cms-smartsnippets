@@ -90,6 +90,13 @@ There are three configuration variables available:
   pages permission system. This can be useful in a shared environment.
   By default a user can access all the smartsnippets in the system.
 
+* ``SMARTSNIPPETS_CACHING_TIME`` is the number of seconds that
+  rendered smart snippets will be cached. Defaults to 3600. This can be used to
+  greatly improve performance by removing the need for querying the database
+  for variable values and skiping the template rendering logic. The cache is
+  invalidated when any object involved in rendering a snippet changes. To
+  disable the caching set this to 0.
+
 .. WARNING::
   This plugin is a potential security hazard, since it allows admins to place
   custom JavaScript on pages. This may allow administrators with the right to
