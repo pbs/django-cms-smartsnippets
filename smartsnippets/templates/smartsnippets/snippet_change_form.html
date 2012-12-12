@@ -1,5 +1,46 @@
 {% extends "smartsnippets/plugin_change_form.html" %}
 {% load smartsnippets_tags %}
+
+{% if original.snippet.description or original.snippet.documentation_link%}
+    {% block extrahead %}
+        {{ block.super }}
+        <style>
+            span.plugin-help-tooltip{
+                cursor: help;
+            }
+            .plugin-help-tooltip{
+                float: left;
+                margin-right: 5px;
+            }
+            .plugin-help-tooltip img{
+                border: 0;
+                width: 20px;
+                height: 20px;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/tipTip.css" />
+        <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.tipTip.minified.js"></script>
+        <script type="text/javascript">
+        //<![CDATA[
+        (function($) {
+            $(document).ready(function(){
+                $(".plugin-help-tooltip").tipTip({maxWidth: "250px", delay: 100});
+            });
+        })(jQuery);
+        //]]>
+        </script>
+    {% endblock %}
+{% endif %}
+
+{% block content_title %}
+{% if original.snippet.documentation_link %}
+    <a class="plugin-help-tooltip" href='{{original.snippet.documentation_link}}' target='_blank' title='{% if original.snippet.description %}{{original.snippet.description}}<br/><br/>{% endif %}Follow link to see documentation'><img src="{{STATIC_URL}}images/help.png"></a>
+{% elif original.snippet.description %}
+    <span class="plugin-help-tooltip" title='{{original.snippet.description}}'><img src="{{STATIC_URL}}images/help.png"></span>
+{% endif %}
+{{ block.super }}
+{% endblock%}
+
 {% block top %}
 <div style="padding:10px; margin-bottom: 10px; border:1px solid #ccc">
 <h3>Preview:</h3>

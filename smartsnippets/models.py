@@ -15,8 +15,10 @@ class SmartSnippet(models.Model):
     sites = models.ManyToManyField(Site, null=False, blank=True,
         help_text=_('Select on which sites the snippet will be available.'),
         verbose_name='sites')
-    
-    
+    description = models.TextField(_("Description"), blank=True)
+    documentation_link = models.CharField(_("Documentation link"), max_length=100, blank=True, \
+        help_text=_('Enter URL (i.e. "http://snippets/docs/plugin_xy.html") to the extended documentation.'))
+
     class Meta:
         ordering = ['name']
         verbose_name = 'Smart Snippet'
@@ -47,7 +49,7 @@ class SmartSnippetVariable(models.Model):
     widget = models.CharField(max_length=50,
             help_text=_('Select the type of the variable defined in the smart snippet template.'))
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
-    
+
     class Meta:
         unique_together = (('snippet', 'name'))
         ordering = ['name']
@@ -59,11 +61,11 @@ class SmartSnippetVariable(models.Model):
         for spointer in smartsnippet_pointers:
             v, _ = Variable.objects.get_or_create(snippet=spointer, snippet_variable=self)
             v.save()
-    
+
     def __unicode__(self):
         return self.name
-        
-        
+
+
 class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 
@@ -83,32 +85,32 @@ class Variable(models.Model):
 
     class Meta:
         unique_together = (('snippet_variable', 'snippet'))
-    
+
     @property
     def formatted_value(self):
         from widgets_pool import widget_pool
         widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self)
         return widget_instance.formatted_value
-    
+
     @property
     def name(self):
         return self.snippet_variable.name
-    
+
     @property
     def widget(self):
         return self.snippet_variable.widget
-    
-    
+
+
 
 class DropDownVariable(SmartSnippetVariable):
     choices = models.CharField(max_length=512,
             help_text=_('Enter a comma separated list of choices that will be available in the dropdown variable when adding and configuring the smart snippet on a page.'))
-    
+
     @property
     def choices_list(self):
          return ([choice.strip() for choice in self.choices.split(',') if choice.strip()]
                 if self.choices else [])
-        
+
     def save(self, *args, **kwargs):
         self.widget = 'DropDownField'
         super(DropDownVariable, self).save(*args, **kwargs)
