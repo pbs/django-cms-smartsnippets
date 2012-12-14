@@ -48,6 +48,126 @@
             return cx;
         },
 
+        getExistingStandardVariables:function (container) {
+            var fieldRows = container.children('.dynamic-variables');
+            var existingVars = new Array();
+
+            fieldRows.each(function (i, row) {
+                var textField = $(row).find('.vTextField');
+                var typeField = $(row).find('select');
+                var name = textField.val();
+                var type = typeField.val();
+
+                var typeDocId = typeField.attr('id');
+                var obj = {name:name, type:type, typeDocId:typeDocId};
+                existingVars.push(obj);
+            });
+
+            return existingVars;
+        },
+
+        getExistingSelectVariables:function (container) {
+            var fieldRows = container.children('.dynamic-variables-2');
+            var existingVars = new Array();
+
+            fieldRows.each(function (i, row) {
+                var name = $(row).find('.field-name').find('.vTextField').val();
+                var nameDocId = $(row).find('.field-name').find('.vTextField').attr('id');
+
+                var values = $(row).find('.field-choices').find('.vTextField').val();
+                var valuesDocId = $(row).find('.field-choices').find('.vTextField').attr('id');
+
+                var obj = {name:name, values:values, valuesDocId:valuesDocId};
+
+                existingVars.push(obj);
+            });
+
+            return existingVars;
+        },
+
+
+        groupExistingVars:function (existingVars, newVars, variablesType) {
+            var similarVars = [];
+            var updateVars = [];
+            var toBeDeletedVars = [];
+
+            var similarFieldToCheck = (variablesType && variablesType.toLowerCase() == 'select' ? 'values' : 'type');
+
+            for (var i = 0; i < existingVars.length; i++) {
+                var toBeUpdated = false;
+                var updatedFieldValue = undefined;
+                var isSimilar = false;
+                for (var j = 0; j < newVars.length; j++) {
+                    if (existingVars[i].name == newVars[j].varname && existingVars[i][similarFieldToCheck] == newVars[j][similarFieldToCheck]) {
+                        isSimilar = true;
+                        break;
+                    } else if (existingVars[i].name == newVars[j].varname && existingVars[i][similarFieldToCheck] != newVars[j][similarFieldToCheck]) {
+                        toBeUpdated = true;
+                        updatedFieldValue = newVars[j][similarFieldToCheck];
+                        break;
+                    }
+                }
+
+                if (toBeUpdated) {
+                    existingVars[i].updateWithValue = updatedFieldValue;
+                    updateVars.push(existingVars[i]);
+                } else if (isSimilar) {
+                    similarVars.push(existingVars[i]);
+                } else if (!toBeUpdated && !isSimilar) {
+                    toBeDeletedVars.push(existingVars[i]);
+                }
+            }
+
+            return {
+                similarVars:similarVars,
+                toUpdateVars:updateVars,
+                deleteVars:toBeDeletedVars
+            };
+        },
+
+        findByVarName:function (arr, vName) {
+            var found = false;
+            $.each(arr, function (i, item) {
+                if (item.name == vName) {
+                    found = item;
+                    return;
+                }
+            });
+
+            return found;
+        },
+
+        markForDeletion:function (container, deletedVars) {
+            var rows = container.children('.inline-related');
+
+            var self = this;
+            $.each(rows, function (i, row) {
+                var varName = $(row).find('.field-name').find('.vTextField').val();
+                var isFoundVar = self.findByVarName(deletedVars, varName);
+
+                if (isFoundVar) {
+                    var deleteCheckbox = $(row).find('.delete').find('input[type=checkbox]');
+                    deleteCheckbox.attr('checked', 'checked');
+                }
+            });
+        },
+
+        updateVars:function (container, updatedVars, varsType) {
+            var rows = container.children('.inline-related');
+
+            var objFieldToUpdate = (varsType.toLowerCase() == 'select' ? 'valuesDocId' : 'typeDocId');
+
+            var self = this;
+            $.each(rows, function (i, row) {
+                var varName = $(row).find('.field-name').find('.vTextField').val();
+                var isFoundVar = self.findByVarName(updatedVars, varName);
+
+                if (isFoundVar) {
+                    $('#'+ isFoundVar[objFieldToUpdate]).val(isFoundVar.updateWithValue)
+                }
+            });
+        },
+
         /**
          * Find the "Add another Standard Variable" button and trigger a click event on it. Returns the div container
          * holding form fields
@@ -174,14 +294,47 @@
             return varNames;
         },
 
-        filterExistingVars:function (varsArray) {
-            var containers = $('div.inline-group');
-            containers.each(function (i, cx) {
-                var varHolders = cx.children('div.inline-related');
+        groupNewVars:function (varsArr) {
+            var returnObj = {};
+            returnObj.standard = new Array();
+            returnObj.select = new Array();
 
+            $.each(varsArr, function (i, variable) {
+                if (variable.type.toLowerCase() == 'select') {
+                    returnObj.select.push(variable);
+                } else {
+                    returnObj.standard.push(variable);
+                }
             });
+
+            return returnObj;
         },
 
+        getOnlyToAddVars: function(groupedVars, newVars) {
+            var onlyToAdd = new Array();
+            for (var i = 0; i < newVars.length; i++) {
+                var notInUpdates = true;
+                var notInSimilar = true;
+
+                for(var j = 0; j < groupedVars.similarVars.length; j++) {
+                    if(newVars[i].varname == groupedVars.similarVars[j].name) {
+                        notInSimilar = false;
+                    }
+                }
+
+                for(var k = 0; k < groupedVars.toUpdateVars.length; k++) {
+                    if(newVars[i].varname == groupedVars.toUpdateVars[k].name) {
+                        notInUpdates = false;
+                    }
+                }
+
+                if(notInSimilar && notInUpdates) {
+                    onlyToAdd.push(newVars[i]);
+                }
+            }
+
+            return onlyToAdd;
+        },
         /**
          * Given an array of objects with the following structure {varname: 'name', type: 'type', values: 'value1,
          * value2,value3'} or varNameObj = {varname: 'name', type: 'type'} this function fill parse the array.
@@ -192,19 +345,38 @@
             var self = this;
             if (varNamesArr.length > 0) { //don't do any mumbo jumbo if we have no varnames
 
+                var groupedNewVars = self.groupNewVars(varNamesArr);
+
                 var stdContainer = self.getContainer('standard');
                 var selectContainer = self.getContainer('select');
 
-                self.emptyContainer(stdContainer);
-                self.emptyContainer(selectContainer);
+                var existingStdVars = self.getExistingStandardVariables(stdContainer);
+                var existingSelectVars = self.getExistingSelectVariables(selectContainer);
 
-                $.each(varNamesArr, function (i, vObj) {
+                var groupedExistingStdVars = self.groupExistingVars(existingStdVars, groupedNewVars.standard, 'standard');
 
-                    if (vObj.type.toLowerCase() != 'select') {
-                        self.addStdVar(vObj, stdContainer);
-                    } else {
-                        self.addSelectVar(vObj, selectContainer);
-                    }
+                if (existingStdVars.length > 0) {
+                    self.markForDeletion(stdContainer, groupedExistingStdVars.deleteVars);
+                    self.updateVars(stdContainer, groupedExistingStdVars.toUpdateVars, 'standard');
+                }
+
+                var groupedExistingSelectVars = self.groupExistingVars(existingSelectVars, groupedNewVars.select, 'select');
+                if(existingSelectVars.length > 0) {
+
+                    self.markForDeletion(selectContainer, groupedExistingSelectVars.deleteVars);
+                    self.updateVars(selectContainer, groupedExistingSelectVars.toUpdateVars, 'select');
+                }
+
+                var onlyToAddStdVars = self.getOnlyToAddVars(groupedExistingStdVars, groupedNewVars.standard);
+                var onlyToAddSelectVars = self.getOnlyToAddVars(groupedExistingSelectVars, groupedNewVars.select);
+
+
+                $.each(onlyToAddStdVars, function(i, vObj) {
+                    self.addStdVar(vObj, stdContainer);
+                });
+
+                $.each(onlyToAddSelectVars, function(i, vObj) {
+                    self.addSelectVar(vObj, selectContainer);
                 });
             }
         }
@@ -221,8 +393,6 @@
                 //use a setTimeout to capture pasted text
                 setTimeout(function () {
                     var text = $(el).val();
-                    $('#id_variables-TOTAL_FORMS').val(0);
-                    $('#id_variables-INITIAL_FORMS').val(0);
                     var varNames = LayoutParser.extractVarnames(text);
                     LayoutParser.populate(varNames);
                 }, 100);
