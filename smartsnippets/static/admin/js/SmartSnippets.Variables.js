@@ -146,8 +146,14 @@
                 var isFoundVar = self.findByVarName(deletedVars, varName);
 
                 if (isFoundVar) {
-                    var deleteCheckbox = $(row).find('.delete').find('input[type=checkbox]');
-                    deleteCheckbox.attr('checked', 'checked');
+                    var deleteBtn = $(row).find('a.inline-deletelink');
+                    if(deleteBtn.get(0)) {
+                        //most likely variable was added from a previous paste or by the user so trigger the deletion here
+                        deleteBtn.trigger('click');
+                    } else {
+                        var deleteCheckbox = $(row).find('.delete').find('input[type=checkbox]');
+                        deleteCheckbox.attr('checked', 'checked');
+                    }
                 }
             });
         },
@@ -392,6 +398,12 @@
             if ($.trim($(el).val()).length == 0) {//only when the area is empty
                 //use a setTimeout to capture pasted text
                 setTimeout(function () {
+
+                    var checkboxes = $('input[type=checkbox]');
+                    $.each(checkboxes, function(i, box) {
+                        $(this).attr('checked', false);
+                    });
+
                     var text = $(el).val();
                     var varNames = LayoutParser.extractVarnames(text);
                     LayoutParser.populate(varNames);
