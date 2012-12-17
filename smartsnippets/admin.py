@@ -136,6 +136,9 @@ class DropDownVariableAdmin(SnippetVariablesAdmin):
 class ExtendedSnippetAdmin(SnippetAdmin):
     inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
 
+    class Media:
+        js = ("admin/js/SmartSnippets.Variables.js",)
+
 
 def _get_registered_modeladmin(model):
     """ This is a huge hack to get the registered modeladmin for the model.
