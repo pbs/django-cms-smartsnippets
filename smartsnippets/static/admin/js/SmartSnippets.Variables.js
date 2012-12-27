@@ -395,7 +395,7 @@
         textArea.bind('paste', function (e) {
             var el = $(this);
 
-            if ($.trim($(el).val()).length == 0) {//only when the area is empty
+//            if ($.trim($(el).val()).length == 0) {//only when the area is empty
                 //use a setTimeout to capture pasted text
                 setTimeout(function () {
 
@@ -408,7 +408,7 @@
                     var varNames = LayoutParser.extractVarnames(text);
                     LayoutParser.populate(varNames);
                 }, 100);
-            }
+//            }
         });
     });
 
