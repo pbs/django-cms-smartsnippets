@@ -108,7 +108,7 @@ class SmartSnippetPointer(CMSPlugin):
             # this is usefull for speeding up the cache invalidation
             # by not running the same query for each SmartSnippetVariable
             # that changed
-            cache.set(self.snippet.get_cache_key(), '1')
+            cache.set(self.snippet.get_cache_key(), '1', snippet_caching_time)
         return rendered_snippet
 
     def __unicode__(self):
