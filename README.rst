@@ -70,12 +70,46 @@ Create a simple smartsnippet using the `Twitter profile example`_::
 Settings
 ========
 
+Terms:
+
+SS = Smart Snippet
+Chosen Snippets List = Can be seen by accessing http://localhost:8000/admin/sites/site/40/, 
+                       where 40 is the id of a particular site, can be any valid id
+		       It represents the list with selected SS for the current site 
+		       (the right one).
+SS List = Can be seen by following: http://localhost:8000/admin/smartsnippets/smartsnippet/
+SS Plugin drop down = This is the drop down from SS plugin which allows SSs to 
+                      be selected for the current page.
+
+
 There are three configuration variables available:
 
 * ``SMARTSNIPPETS_SHARED_SITES`` a list of site names defaulting
   to an empty list. All the sites listed here will share their
   smartsnippets with all the other sites as read-only. This can be
-  Useful in a shared environment to enable code sharing.
+  useful in a shared environment to enable code sharing. Normally 
+  these sites should not have any pages.
+
+  For example let's say that S1, S2 and S3 are three SSs which are 
+  designated to be used (shared) within all sites, without selecting 
+  them manually in the site's Chosen Snippets List. 
+  By setting SMARTSNIPPETS_SHARED_SITES = ['PBS'], the site with name 'PBS' 
+  (and domain='pbs.org') will have the role of a shared site.
+  Therefore, by selecting S1, S2 and S3 in the Chosen Snippets List of 
+  pbs.org site, will accomplish the goal to make these three 
+  snippets available by default for all the other sites.
+
+  From now on, all the sites can make use of (include in their pages) S1, S2 and S3 
+  without explicitly select them in the site's Chosen Snippets List.
+  If user Us1 have editor rights on site1.pbs.org, he will notice that S1, S2 and S3 
+  are available in SS List.
+  Also, if Us1 wants to create/edit a page for site1.pbs.org, he will notice that 
+  S1, S2 and S3 are available in SS Plugin drop down (even though they are not 
+  items in site1's Chosen Snippets List).
+
+  By settings SMARTSNIPPETS_RESTRICT_USER = False, the current user 
+  will be able to modify SSs defined for 'PBS' shared site 
+  (they won't be readonly anymore).
 
 * ``SMARTSNIPPETS_INCLUDE_ORPHAN`` a boolean flag that defaults to
   ``True``. If this option is enabled, selecting a site in the
@@ -84,11 +118,32 @@ There are three configuration variables available:
   in all sites. If set to ``False`` the user will be forced to link
   the smartsnipptes that he creates to at least one site.
 
+  A SS can become orphan if all its sites have been deleted. This 
+  setting controls if orphan SSs can be displayed in SS List 
+  or to be available for SS Plugin drop down.
+
 * ``SMARTSNIPPETS_RESTRICT_USER`` a boolean flag that defaults to
   ``False``. This flag, if set, will limit the smartsnippets that
   a user can access based on his relation to sites trough the global
   pages permission system. This can be useful in a shared environment.
   By default a user can access all the smartsnippets in the system.
+  
+  If this setting is True the current user will only have access 
+  to smart snippets which are assigned to sites on which he as 
+  global page permissions. Otherwise the user will have acess to 
+  all smart snippets.
+
+  For example, if the current user has global page permissions for 
+  Site1, Site2 and Site3, he will be allowed to edit smart snippets 
+  which belong to these three sites.
+
+* ``SMARTSNIPPETS_CACHING_TIME`` is the number of seconds that rendered 
+  smart snippets will be cached. Defaults to 3600. This can be used to 
+  greatly improve performance by removing the need for querying the database
+  for variable values and skiping the template rendering logic. The cache 
+  is invalidated when any object involved in rendering a snippet changes. 
+  To disable the caching set this to 0.
+
 
 * ``SMARTSNIPPETS_CACHING_TIME`` is the number of seconds that
   rendered smart snippets will be cached. Defaults to 3600. This can be used to
