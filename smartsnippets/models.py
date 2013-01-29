@@ -1,6 +1,5 @@
 from django.core.cache import cache
 from django.db import models
-from django.db.models import signals
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
     TemplateDoesNotExist, loader
@@ -52,7 +51,7 @@ class SmartSnippet(models.Model):
     def get_cache_key(self):
         return 'smartsnippet-%s' % self.pk
 
-    def render(self, context, cache_snippet=False):
+    def render(self, context):
         return self.get_template().render(context)
 
     def __unicode__(self):
@@ -95,20 +94,15 @@ class SmartSnippetPointer(CMSPlugin):
 
     def render(self, context):
         cache_key = self.get_cache_key()
-        if caching_enabled and cache.has_key(cache_key):
+        user = context['request'].user
+        if not user.is_staff and caching_enabled and cache.has_key(cache_key):
             return cache.get(cache_key)
         vars = dict((var.snippet_variable.name, var.formatted_value)
                     for var in self.variables.all())
         context.update(vars)
         rendered_snippet = self.snippet.render(context)
-        if caching_enabled:
+        if not user.is_staff and caching_enabled:
             cache.set(cache_key, rendered_snippet, snippet_caching_time)
-            # also cache a 'marker' which states that at least one pointer (self)
-            # of a smart snippet type (self.snippet) has been cached
-            # this is usefull for speeding up the cache invalidation
-            # by not running the same query for each SmartSnippetVariable
-            # that changed
-            cache.set(self.snippet.get_cache_key(), '1', snippet_caching_time)
         return rendered_snippet
 
     def __unicode__(self):
@@ -155,41 +149,3 @@ class DropDownVariable(SmartSnippetVariable):
     def save(self, *args, **kwargs):
         self.widget = 'DropDownField'
         super(DropDownVariable, self).save(*args, **kwargs)
-
-if caching_enabled:
-
-    def clear_all_pointers(snippet):
-        if cache.has_key(snippet.get_cache_key()):
-            for snippet_pointer in snippet.smartsnippetpointer_set.all():
-                cache.delete(snippet_pointer.get_cache_key())
-            cache.delete(snippet.get_cache_key())
-
-    def clear_cache_on_snippet_change(instance, **kwargs):
-        clear_all_pointers(instance)
-
-    def clear_cache_on_snippet_pointer_change(instance, **kwargs):
-        cache.delete(instance.get_cache_key())
-
-    def clear_cache_on_snippet_variable_change(instance, **kwargs):
-        clear_all_pointers(instance.snippet)
-
-    def clear_cache_on_variable_value_change(instance, **kwargs):
-        cache.delete(instance.snippet.get_cache_key())
-
-    signals.post_save.connect(clear_cache_on_snippet_change,
-                              sender=SmartSnippet)
-    signals.post_save.connect(clear_cache_on_snippet_pointer_change,
-                              sender=SmartSnippetPointer)
-
-    signals.post_save.connect(clear_cache_on_variable_value_change,
-                              sender=Variable)
-
-    def get_entire_hierarchy(_class):
-        subclasses = []
-        for subclass in _class.__subclasses__():
-            subclasses += get_entire_hierarchy(subclass)
-        return [_class] + subclasses
-
-    for _cls in get_entire_hierarchy(SmartSnippetVariable):
-        signals.post_save.connect(clear_cache_on_snippet_variable_change,
-                                  sender=_cls)
