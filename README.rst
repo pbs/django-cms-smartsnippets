@@ -94,8 +94,8 @@ There are three configuration variables available:
   rendered smart snippets will be cached. Defaults to 300. This can be used to
   greatly improve performance by removing the need for querying the database
   for variable values and skiping the template rendering logic. To
-  disable the caching set this to 0. Caching is not used when the logged in
-  as staff user.
+  disable the caching set this to 0. No caching is being done if logged
+  in as a staff user.
 
 .. WARNING::
   This plugin is a potential security hazard, since it allows admins to place
