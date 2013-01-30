@@ -137,14 +137,6 @@ There are three configuration variables available:
   Site1, Site2 and Site3, he will be allowed to edit smart snippets 
   which belong to these three sites.
 
-* ``SMARTSNIPPETS_CACHING_TIME`` is the number of seconds that rendered 
-  smart snippets will be cached. Defaults to 3600. This can be used to 
-  greatly improve performance by removing the need for querying the database
-  for variable values and skiping the template rendering logic. The cache 
-  is invalidated when any object involved in rendering a snippet changes. 
-  To disable the caching set this to 0.
-
-
 * ``SMARTSNIPPETS_CACHING_TIME`` is the number of seconds that
   rendered smart snippets will be cached. Defaults to 300. This can be used to
   greatly improve performance by removing the need for querying the database
