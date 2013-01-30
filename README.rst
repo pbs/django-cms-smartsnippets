@@ -146,11 +146,11 @@ There are three configuration variables available:
 
 
 * ``SMARTSNIPPETS_CACHING_TIME`` is the number of seconds that
-  rendered smart snippets will be cached. Defaults to 3600. This can be used to
+  rendered smart snippets will be cached. Defaults to 300. This can be used to
   greatly improve performance by removing the need for querying the database
-  for variable values and skiping the template rendering logic. The cache is
-  invalidated when any object involved in rendering a snippet changes. To
-  disable the caching set this to 0.
+  for variable values and skiping the template rendering logic. To
+  disable the caching set this to 0. No caching is being done if logged
+  in as a staff user.
 
 .. WARNING::
   This plugin is a potential security hazard, since it allows admins to place
