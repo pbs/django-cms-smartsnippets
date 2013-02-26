@@ -14,5 +14,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
-    setup_requires = ['s3sourceuploader',],
+    setup_requires = ['s3sourceuploader', ],
+    install_requires= ['django-cms==2.3.3', ],
+    tests_require = ['django-nose', ],
+    test_suite = 'runtests.runtests',
 )
