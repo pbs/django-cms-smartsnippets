@@ -88,7 +88,7 @@ class SnippetAdmin(admin.ModelAdmin):
     site_list.short_description = 'sites'
 
     def get_readonly_fields(self, request, obj=None):
-        ro = ['name', 'template_code', 'template_path', 'sites']
+        ro = self.form.base_fields.keys()
         if request.user.is_superuser or obj is None:
             return []
         if self.restrict_user and self.shared_sites:
