@@ -48,12 +48,19 @@ class SnippetForm(ModelForm):
             raise ValidationError(e)
         return path
 
+    def _find_var_nodes(self, nodelist, all_var_nodes):
+        for node in nodelist:
+            if hasattr(node, 'nodelist'):
+                self._find_var_nodes(node.nodelist, all_var_nodes)
+            elif isinstance(node, VariableNode):
+                name_no_fields = node.filter_expression.var.var.split('.')[0]
+                all_var_nodes.append(name_no_fields)
+
     def _get_required_vars(self):
         compiled_templ = Template(self.data['template_code'])
-        nodes = compiled_templ.nodelist
-        var_nodes = filter(lambda node: isinstance(node, VariableNode), nodes)
-        return [var_node.filter_expression.var.var
-                for var_node in set(var_nodes)]
+        var_nodes = []
+        self._find_var_nodes(compiled_templ.nodelist, var_nodes)
+        return list(set(var_nodes))
 
     def _get_vars_prefixes(self):
         prefixes = {}
