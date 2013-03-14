@@ -7,13 +7,12 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm, ModelMultipleChoiceField
 from django.forms.models import BaseInlineFormSet
 from django.template import Template, TemplateSyntaxError, \
-                            TemplateDoesNotExist, loader, VariableNode
+                            TemplateDoesNotExist, loader
 from django.forms.widgets import Select
 
 from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
 from settings import shared_sites, include_orphan, restrict_user
 from widgets_pool import widget_pool
-import re
 
 
 class SnippetForm(ModelForm):
@@ -31,7 +30,7 @@ class SnippetForm(ModelForm):
     def clean_template_code(self):
         code = self.cleaned_data.get('template_code', None)
         if not code:
-            raise ValidationError('This field is required.')
+            return code
         try:
             Template(code)
         except TemplateSyntaxError, e:
@@ -47,50 +46,6 @@ class SnippetForm(ModelForm):
         except TemplateDoesNotExist, e:
             raise ValidationError(e)
         return path
-
-    def _get_required_vars(self):
-        compiled_templ = Template(self.data['template_code'])
-        nodes = compiled_templ.nodelist
-        var_nodes = filter(lambda node: isinstance(node, VariableNode), nodes)
-        return [var_node.filter_expression.var.var
-                for var_node in set(var_nodes)]
-
-    def _get_vars_prefixes(self):
-        prefixes = {}
-        for k, v in self.data.iteritems():
-            match_var = re.match('variables-((\d-)+)name', k)
-            if match_var:
-                prefixes[match_var.groups()[0]] = v
-        return prefixes
-
-    def clean(self):
-        cleaned_data = super(SnippetForm, self).clean()
-
-        if not cleaned_data.get('template_code', None):
-            return cleaned_data
-
-        prefixes = self._get_vars_prefixes()
-        defined_var_names = prefixes.values()
-
-        if len(defined_var_names) != len(set(defined_var_names)):
-            raise ValidationError("Duplicate variable names.")
-
-        required_variables = self._get_required_vars()
-
-        var_not_found = set(required_variables) - set(defined_var_names)
-        if var_not_found:
-            raise ValidationError("Undefined variables: %s" %
-                                  ", ".join(var_not_found))
-
-        prefixes = dict(zip(prefixes.values(), prefixes.keys()))
-        required_but_deleting = [var_name for var_name in required_variables
-                                 if 'variables-%sDELETE' % prefixes[var_name]
-                                 in self.data]
-        if required_but_deleting:
-            raise ValidationError("Needed variables marked for deletion: %s" %
-                                  ", ".join(required_but_deleting))
-
-        return cleaned_data
 
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
