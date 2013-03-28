@@ -5,6 +5,8 @@ from south.v2 import SchemaMigration
 from django.db import models
 from smartsnippets.models import SmartSnippet
 from django.db import router
+from smartsnippets.utils import regex_replace
+
 
 class Migration(SchemaMigration):
 
@@ -14,8 +16,8 @@ class Migration(SchemaMigration):
         smart_snippets = orm.models.get("smartsnippets.smartsnippet").objects\
                         .db_manager(router.db_for_write(SmartSnippet)).all()
         for ss in smart_snippets:
-            new_template_code = ss.template_code.replace(old, new)
-            ss.template_code = new_template_code
+            image_fields = [field.name for field in ss.variables.all() if field.widget in ["ImageField", "OptionalImageField" ]]
+            ss.template_code = regex_replace(ss.template_code, old, new, image_fields)
             ss.save()
 
     def forwards(self, orm):
