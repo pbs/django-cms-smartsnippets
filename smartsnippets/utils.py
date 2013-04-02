@@ -1,8 +1,9 @@
 import re
 
-PATTERN_LOAD = [r'(\{% load .*)', r'(.*%\})']
-PATTERN_FIND_ALL_FILTER_MATCHES = [r'\<img.+src.*=.*[",\'].*(\{\{.*\|)', r'(:"\d*[x,X]\d*[",\'].*\}\})']
-PATTERN_REPLACE_FILTER = [r'(\{\{.*\|)', r'(:"\d*[x,X]\d*".*\}\})']
+PATTERN_LOAD = [r'(\{% load .*)', r'(.*?%\})']
+PATTERN_FIND_ALL_FILTER_MATCHES = [r'\<img.+src.*?=.*?[",\'].*?(\{\{.*?\|)',
+                                   r'(:"\d*[x,X]\d*[",\'].*?\}\})']
+PATTERN_REPLACE_FILTER = [r'(\{\{.*?\|)', r'(:"\d*[x,X]\d*".*?\}\})']
 
 
 def regex_replace(content, old, new, image_fields):
@@ -26,5 +27,5 @@ def regex_replace(content, old, new, image_fields):
 
 
 def get_var_name(variable_part):
-    pattern = re.compile("{{(?P<field>.*)\|")
-    return re.match(pattern, variable_part).groupdict().get('field', '').strip()
+    pattern = re.compile("{{(.*?)\|")
+    return re.match(pattern, variable_part).groups()[0].strip()
