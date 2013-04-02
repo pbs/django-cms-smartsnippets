@@ -15,5 +15,9 @@ setup(
     include_package_data=True,
     license='BSD License',
     setup_requires = ['s3sourceuploader', ],
-    install_requires= ['django-cms==2.3.5pbs', ],
+    dependency_links = ['https://github.com/pbs/django-cms/tarball/support/2.3.x#egg=django-cms-2.3.5pbs.1', ],
+    install_requires= ['django-cms==2.3.5pbs.1', ],
+    tests_require=['django-nose'],
+    test_suite='runtests.runtests',
 )
+

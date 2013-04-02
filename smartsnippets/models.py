@@ -10,7 +10,6 @@ from cms.models import CMSPlugin
 
 from .settings import snippet_caching_time, caching_enabled
 
-
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
     template_code = models.TextField(_("Template code"), blank=True)
