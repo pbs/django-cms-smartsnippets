@@ -23,8 +23,77 @@
         <script type="text/javascript">
         //<![CDATA[
         (function($) {
+            var LayoutListener = {
+
+                init : function(){
+                    LayoutListener.bindChange()
+                    LayoutListener.bindSubmit()
+                    LayoutListener.chooseLayout()
+                },
+                
+                bindChange : function(){
+                    var self = this
+
+                    var layoutDropDown = $('#var_layout');
+                    
+                    layoutDropDown.change(function (e) {
+                        var el = $(this);
+                        console.log("dropdown changed "+el)
+
+                        self.chooseLayout()
+                    });
+                },
+
+                bindSubmit : function(){
+                    form = $('#smartsnippetpointer_form')
+
+                    form.submit(function(){
+                        LayoutListener.clearHiddenMerlinFields()
+                    })
+                },
+
+                clearHiddenMerlinFields : function(){
+
+                    var fields = $("tr[class^='section_topic']")
+                    fields.each(function(){
+                        if(!$(this).is(":visible")){
+                            $(this).find("input").each(function(){
+                                $(this).attr("value","")
+                            })
+                        }
+                    })
+                        
+                     
+                },
+
+                chooseLayout : function(){
+                    var fields = $("tr[class^='section_topic']")
+                    var selection = $('#var_layout').find(":selected").text()
+                    var range = parseInt(selection.charAt(0))
+                    console.log("chooseLayout "+selection.charAt(0)+" "+range)
+                    if(isNaN(range)){
+                        range = 0
+                    }
+
+                    for(var i=0; i < fields.length; i++){
+                        console.log("fields["+i+"] = "+fields[i]+" "+range)
+
+                        if (i<range) {
+                            fields[i].setAttribute("style","")
+                        }else{
+                            fields[i].setAttribute("style","display:none")
+                        }
+                    }
+
+
+                }
+            }
+
             $(document).ready(function(){
                 $(".plugin-help-tooltip").tipTip({maxWidth: "250px", delay: 100});
+
+                LayoutListener.init()
+                
             });
         })(jQuery);
         //]]>
