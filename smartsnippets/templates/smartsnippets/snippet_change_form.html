@@ -26,9 +26,9 @@
             var LayoutListener = {
 
                 init : function(){
-                    LayoutListener.bindChange()
-                    LayoutListener.bindSubmit()
-                    LayoutListener.chooseLayout()
+                    this.bindChange()
+                    this.bindSubmit()
+                    this.chooseLayout()
                 },
                 
                 bindChange : function(){
@@ -37,9 +37,7 @@
                     var layoutDropDown = $('#var_layout');
                     
                     layoutDropDown.change(function (e) {
-                        var el = $(this);
-                        console.log("dropdown changed "+el)
-
+                                                
                         self.chooseLayout()
                     });
                 },
@@ -70,14 +68,13 @@
                     var fields = $("tr[class^='section_topic']")
                     var selection = $('#var_layout').find(":selected").text()
                     var range = parseInt(selection.charAt(0))
-                    console.log("chooseLayout "+selection.charAt(0)+" "+range)
+                    
                     if(isNaN(range)){
                         range = 0
                     }
 
                     for(var i=0; i < fields.length; i++){
-                        console.log("fields["+i+"] = "+fields[i]+" "+range)
-
+                        
                         if (i<range) {
                             fields[i].setAttribute("style","")
                         }else{
