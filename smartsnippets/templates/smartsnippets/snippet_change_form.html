@@ -37,10 +37,8 @@
                     this.chooseLayout()
                     if($('#layout_help_button')){
                         $('#layout_help_button').click(function(){
-                            LayoutListener.creatHelpPoopup()
+                            LayoutListener.createHelpPoopup()
                         })
-                    }else{
-                        console.log("no elem")
                     }
                 },
                 
@@ -96,7 +94,7 @@
                     }
                 },
 
-                creatHelpPoopup : function(){
+                createHelpPoopup : function(){
                     newwindow = window.open("{{STATIC_URL}}images/explorer-white-promos.png",'Available layouts','height=468,width=826');
                 }
             }
