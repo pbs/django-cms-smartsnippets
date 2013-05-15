@@ -36,6 +36,13 @@ class SmartSnippet(models.Model):
         verbose_name = 'Smart Snippet'
         verbose_name_plural = 'Smart Snippets'
 
+    def __init__(self, *args, **kwargs):
+        #hack due to
+        #     https://code.djangoproject.com/ticket/16433#no1
+        for rel_obj in self._meta.get_all_related_objects():
+            rel_obj.help_text = ""
+        super(SmartSnippet, self).__init__(*args, **kwargs)
+
     def get_template(self):
         if self.template_path:
             return loader.get_template(self.template_path)
