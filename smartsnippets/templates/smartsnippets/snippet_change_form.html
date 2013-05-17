@@ -1,6 +1,7 @@
 {% extends "smartsnippets/plugin_change_form.html" %}
 {% load smartsnippets_tags %}
 
+
 {% if original.snippet.description or original.snippet.documentation_link%}
     {% block extrahead %}
         {{ block.super }}
@@ -29,80 +30,10 @@
         <script type="text/javascript">
         //<![CDATA[
         (function($) {
-            var LayoutListener = {
-
-                init : function(){
-                    this.bindChange()
-                    this.bindSubmit()
-                    this.chooseLayout()
-                    if($('#layout_help_button')){
-                        $('#layout_help_button').click(function(){
-                            LayoutListener.createHelpPoopup()
-                        })
-                    }
-                },
-                
-                bindChange : function(){
-                    var self = this
-
-                    var layoutDropDown = $('#var_layout');
-                    
-                    layoutDropDown.change(function (e) {
-                                                
-                        self.chooseLayout()
-                    });
-                },
-
-                bindSubmit : function(){
-                    form = $('#smartsnippetpointer_form')
-
-                    form.submit(function(){
-                        LayoutListener.clearHiddenMerlinFields()
-                    })
-                },
-
-                clearHiddenMerlinFields : function(){
-
-                    var fields = $("tr[class^='section_topic']")
-                    fields.each(function(){
-                        if(!$(this).is(":visible")){
-                            $(this).find("input").each(function(){
-                                $(this).attr("value","")
-                            })
-                        }
-                    })
-                        
-                     
-                },
-
-                chooseLayout : function(){
-                    var fields = $("tr[class^='section_topic']")
-                    var selection = $('#var_layout').find(":selected").text()
-                    var range = parseInt(selection.charAt(0))
-                    
-                    if(isNaN(range)){
-                        range = 0
-                    }
-
-                    for(var i=0; i < fields.length; i++){
-                        
-                        if (i<range) {
-                            fields[i].setAttribute("style","")
-                        }else{
-                            fields[i].setAttribute("style","display:none")
-                        }
-                    }
-                },
-
-                createHelpPoopup : function(){
-                    newwindow = window.open("{{STATIC_URL}}images/explorer-white-promos.png",'Available layouts','height=468,width=826');
-                }
-            }
+           
 
             $(document).ready(function(){
                 $(".plugin-help-tooltip").tipTip({maxWidth: "250px", delay: 100});
-
-                LayoutListener.init()
                 
             });
         })(jQuery);
