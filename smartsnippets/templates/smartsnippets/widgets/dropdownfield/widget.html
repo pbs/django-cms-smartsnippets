@@ -7,10 +7,5 @@
                 <option {% if value == field.value %} selected="selected" {% endif %} value="{{ value }}" >{{ value }}</option>
             {% endfor %}
         </select>
-        {% if field.name == "layout" %}
-            <a id="{{ field.name }}_help_button" class="plugin-help-tooltip" style='float:none;font-size:17px' href='javascript:void(0)' target='_blank' title='Click link to see available layouts'>
-                <img src="{{STATIC_URL}}images/help.png">
-            </a>
-        {% endif %}
     </td>
 </tr>
