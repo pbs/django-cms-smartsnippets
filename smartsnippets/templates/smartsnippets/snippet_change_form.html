@@ -1,6 +1,7 @@
 {% extends "smartsnippets/plugin_change_form.html" %}
 {% load smartsnippets_tags %}
 
+
 {% if original.snippet.description or original.snippet.documentation_link%}
     {% block extrahead %}
         {{ block.super }}
@@ -32,13 +33,16 @@
             var LayoutListener = {
 
                 init : function(){
-                    this.bindChange()
-                    this.bindSubmit()
-                    this.chooseLayout()
-                    if($('#layout_help_button')){
-                        $('#layout_help_button').click(function(){
-                            LayoutListener.createHelpPoopup()
-                        })
+                    if($('#id_snippet').find(":selected").text().match("One Promo")){
+                        this.bindChange()
+                        this.bindSubmit()
+                        this.chooseLayout()
+                        this.hideUnnecessaryFields()
+                        if($('#layout_help_button')){
+                            $('#layout_help_button').click(function(){
+                                LayoutListener.createHelpPoopup()
+                            })
+                        }
                     }
                 },
                 
@@ -70,9 +74,17 @@
                                 $(this).attr("value","")
                             })
                         }
+                    })  
+                },
+
+                hideUnnecessaryFields : function(){
+                    var labels = $('label').filter(function(index) { 
+                        return $(this).text() == "description" || $(this).text() == "published" 
                     })
-                        
-                     
+
+                    labels.each(function(elem){
+                        $(this).parent().parent().remove()
+                    })
                 },
 
                 chooseLayout : function(){
