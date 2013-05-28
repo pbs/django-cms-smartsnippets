@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from django.db import models
+from django.db import models, router
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
     TemplateDoesNotExist, loader
@@ -65,34 +65,6 @@ class SmartSnippet(models.Model):
         return self.name
 
 
-class SmartSnippetVariable(models.Model):
-    name = models.CharField(
-        max_length=50,
-        help_text=_('Enter the name of the variable defined in '
-                    'the smart snippet template.'))
-    widget = models.CharField(
-        max_length=50,
-        help_text=_('Select the type of the variable defined '
-                    'in the smart snippet template.'))
-    snippet = models.ForeignKey(SmartSnippet, related_name="variables")
-
-    class Meta:
-        unique_together = (('snippet', 'name'))
-        ordering = ['name']
-        verbose_name = "Standard variable"
-
-    def save(self, *args, **kwargs):
-        super(SmartSnippetVariable, self).save(*args, **kwargs)
-        smartsnippet_pointers = self.snippet.smartsnippetpointer_set.all()
-        for spointer in smartsnippet_pointers:
-            v, _ = Variable.objects.get_or_create(snippet=spointer,
-                                                  snippet_variable=self)
-            v.save()
-
-    def __unicode__(self):
-        return self.name
-
-
 class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 
@@ -114,6 +86,39 @@ class SmartSnippetPointer(CMSPlugin):
 
     def __unicode__(self):
         return unicode(self.snippet)
+
+
+class SmartSnippetVariable(models.Model):
+    name = models.CharField(
+        max_length=50,
+        help_text=_('Enter the name of the variable defined in '
+                    'the smart snippet template.'))
+    widget = models.CharField(
+        max_length=50,
+        help_text=_('Select the type of the variable defined '
+                    'in the smart snippet template.'))
+    snippet = models.ForeignKey(SmartSnippet, related_name="variables")
+
+    class Meta:
+        unique_together = (('snippet', 'name'))
+        ordering = ['name']
+        verbose_name = "Standard variable"
+
+    def save(self, *args, **kwargs):
+        super(SmartSnippetVariable, self).save(*args, **kwargs)
+        # workaround https://code.djangoproject.com/ticket/17520
+        master_db = router.db_for_write(SmartSnippetPointer)
+        spointer_ids = SmartSnippetPointer.objects.db_manager(
+            master_db).filter(snippet_id=self.snippet_id).values_list(
+            'id', flat=True)
+
+        for spointer_id in spointer_ids:
+            v, _ = Variable.objects.get_or_create(snippet_id=spointer_id,
+                                                  snippet_variable_id=self.id)
+            v.save()
+
+    def __unicode__(self):
+        return self.name
 
 
 class Variable(models.Model):
