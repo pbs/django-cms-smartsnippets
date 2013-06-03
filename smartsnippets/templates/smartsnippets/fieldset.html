@@ -32,7 +32,20 @@
                                 <p>{{ field.contents }}</p>
                             {% endif %}
                         {% else %}
-                            {{ field.field }}
+			    {{ field.field }}
+                            {% if field.field.name == "template_code" %}
+                                <script type="text/javascript">
+				    tpl_code = django.jQuery('#id_template_code')[0];
+                                    var editor = CodeMirror.fromTextArea(tpl_code, {
+                                            continuousScanning: 500,
+				            mode: 'htmlmixed',
+                                            height: "40.2em",
+                                            tabMode: "shift",
+                                            indentUnit: 4,
+                                            lineNumbers: true,
+                                        });
+                                </script>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                     {% if field.field.help_text and not field.is_readonly %}
