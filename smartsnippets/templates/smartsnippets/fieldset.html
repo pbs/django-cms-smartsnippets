@@ -14,19 +14,18 @@
                     {% else %}
                         {{ field.label_tag }}
                         {% if field.is_readonly %}
-                            {% if field.field.name == "content" %}
-                                <textarea id=template_preview>{{ field.contents }}</textarea>
+                            {% if field.field.name == "template_code" %}
+                                <textarea id='template_preview'>{{ field.contents }}</textarea>
                                 <script type="text/javascript">
-                                    var editor = CodeMirror.fromTextArea('template_preview', {
-                                            path: "{{STATIC_URL}}dbtemplates/js/",
-                                            parserfile: "parsedjango.js",
-                                            stylesheet: "{{STATIC_URL}}dbtemplates/css/django.css",
+				    tpl_preview = django.jQuery('#template_preview')[0];
+                                    var editor = CodeMirror.fromTextArea(tpl_preview, {
                                             continuousScanning: 500,
+				            mode: 'htmlmixed',
                                             height: "40.2em",
                                             tabMode: "shift",
                                             indentUnit: 4,
                                             lineNumbers: true,
-                                            readOnly: 'nocursor',
+                                            readOnly: true,
                                         });
                                 </script>
                             {% else %}
