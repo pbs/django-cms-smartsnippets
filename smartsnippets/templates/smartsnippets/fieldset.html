@@ -33,6 +33,8 @@
                             {% endif %}
                         {% else %}
 			    {{ field.field }}
+
+			    {% comment %}
                             {% if field.field.name == "template_code" %}
                                 <script type="text/javascript">
 				    tpl_code = django.jQuery('#id_template_code')[0];
@@ -46,6 +48,8 @@
                                         });
                                 </script>
                             {% endif %}
+                            {% endcomment %}
+
                         {% endif %}
                     {% endif %}
                     {% if field.field.help_text and not field.is_readonly %}
