@@ -25,7 +25,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             extra_context = {}
         pointer = SmartSnippetPointer.objects.get(pk=object_id)
         snippet_vars = pointer.snippet.variables.all()
-        variables = pointer.variables.filter(snippet_variable__in=snippet_vars).order_by('snippet_variable__name')
+        variables = pointer.variables.filter(id__in=snippet_vars).order_by('name')
         extra_context.update({'variables':
             [widget_pool.get_widget(var.widget)(var) for var in variables]
         })
@@ -40,9 +40,13 @@ class SmartSnippetPlugin(CMSPluginBase):
         super(SmartSnippetPlugin, self).save_model(request, obj, form, change)
         vars = obj.snippet.variables.all()
         for var in vars:
-            v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable=var)
+            v, _ = SmartSnippetVariable.objects.get_or_create(snippet=obj.snippet, snippet_plugin=obj)
             v.value = request.REQUEST.get('_'+var.name+'_', '')
             v.save()
+
+            # v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable=var)
+            # v.value = request.REQUEST.get('_'+var.name+'_', '')
+            # v.save()
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "snippet":

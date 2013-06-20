@@ -76,18 +76,40 @@ class SmartSnippetVariable(models.Model):
                     'in the smart snippet template.'))
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
 
+    value = models.CharField(max_length=2048, null=True)
+    snippet_plugin = models.ForeignKey(SmartSnippetPointer, related_name='variables', null=True)
+
+    # class Meta:
+    #     unique_together = (('snippet_variable', 'snippet'))
+
+    @property
+    def formatted_value(self):
+        from widgets_pool import widget_pool
+        widget_instance = widget_pool.get_widget(self.widget)(self)
+        return widget_instance.formatted_value
+
+    # @property
+    # def name(self):
+    #     return self.name
+
+    # @property
+    # def widget(self):
+    #     return self.snippet_variable.widget
+
     class Meta:
         unique_together = (('snippet', 'name'))
         ordering = ['name']
         verbose_name = "Standard variable"
 
-    def save(self, *args, **kwargs):
-        super(SmartSnippetVariable, self).save(*args, **kwargs)
-        smartsnippet_pointers = self.snippet.smartsnippetpointer_set.all()
-        for spointer in smartsnippet_pointers:
-            v, _ = Variable.objects.get_or_create(snippet=spointer,
-                                                  snippet_variable=self)
-            v.save()
+    # def save(self, *args, **kwargs):
+    #     super(SmartSnippetVariable, self).save(*args, **kwargs)
+    #     smartsnippet_pointers = self.snippet.smartsnippetpointer_set.all()
+    #     smartsnippet_plugins = self.snippet_pointer_set.all()
+
+    #     for plugin in smartsnippet_plugins:
+    #         v, _ = Variable.objects.get_or_create(snippet=spointer,
+    #                                               snippet_variable=self)
+    #         v.save()
 
     def __unicode__(self):
         return self.name
@@ -104,8 +126,12 @@ class SmartSnippetPointer(CMSPlugin):
         user = context['request'].user
         if not user.is_staff and caching_enabled and cache.has_key(cache_key):
             return cache.get(cache_key)
-        vars = dict((var.snippet_variable.name, var.formatted_value)
-                    for var in self.variables.all())
+
+        # vars = dict((var.snippet_variable.name, var.formatted_value)
+        #             for var in self.variables.all())
+
+        vars = dict((v.name, v.formatted_value) for v in self.variables.all())
+
         context.update(vars)
         rendered_snippet = self.snippet.render(context)
         if not user.is_staff and caching_enabled:
@@ -116,28 +142,28 @@ class SmartSnippetPointer(CMSPlugin):
         return unicode(self.snippet)
 
 
-class Variable(models.Model):
-    snippet_variable = models.ForeignKey(SmartSnippetVariable,
-                                         related_name='variables')
-    value = models.CharField(max_length=2048)
-    snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
+# class Variable(models.Model):
+#     snippet_variable = models.ForeignKey(SmartSnippetVariable,
+#                                          related_name='variables')
+#     value = models.CharField(max_length=2048)
+#     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
 
-    class Meta:
-        unique_together = (('snippet_variable', 'snippet'))
+#     class Meta:
+#         unique_together = (('snippet_variable', 'snippet'))
 
-    @property
-    def formatted_value(self):
-        from widgets_pool import widget_pool
-        widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self)
-        return widget_instance.formatted_value
+#     @property
+#     def formatted_value(self):
+#         from widgets_pool import widget_pool
+#         widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self)
+#         return widget_instance.formatted_value
 
-    @property
-    def name(self):
-        return self.snippet_variable.name
+#     @property
+#     def name(self):
+#         return self.snippet_variable.name
 
-    @property
-    def widget(self):
-        return self.snippet_variable.widget
+#     @property
+#     def widget(self):
+#         return self.snippet_variable.widget
 
 
 class DropDownVariable(SmartSnippetVariable):

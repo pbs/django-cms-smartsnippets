@@ -59,6 +59,7 @@ class SnippetVariablesFormSet(BaseInlineFormSet):
 
 class SnippetVariablesAdmin(admin.StackedInline):
     model = SmartSnippetVariable
+    exclude = ('value', 'snippet')
     extra = 0
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'widget':
