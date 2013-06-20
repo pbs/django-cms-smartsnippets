@@ -112,6 +112,12 @@ class SmartSnippetPointer(CMSPlugin):
             cache.set(cache_key, rendered_snippet, snippet_caching_time)
         return rendered_snippet
 
+    def copy_relations(self, old_instance):
+        for variable in old_instance.variables.all():
+            variable.pk = None
+            variable.snippet = self
+            variable.save()
+
     def __unicode__(self):
         return unicode(self.snippet)
 
