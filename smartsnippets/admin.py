@@ -50,16 +50,17 @@ class SnippetForm(ModelForm):
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
     def get_queryset(self):
+        import ipdb; ipdb.set_trace()
         if not hasattr(self, '_queryset'):
             available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
-            qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets)
+            qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets, snippet_plugin__isnull=True)
             self._queryset = qs
         return self._queryset
 
 
 class SnippetVariablesAdmin(admin.StackedInline):
     model = SmartSnippetVariable
-    exclude = ('value',)
+    exclude = ('value', 'snippet_plugin')
     extra = 0
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'widget':
