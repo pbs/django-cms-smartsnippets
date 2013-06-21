@@ -64,7 +64,7 @@ class SmartSnippet(models.Model):
     def __unicode__(self):
         return self.name
 
-
+from time import time
 class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
 
@@ -77,10 +77,10 @@ class SmartSnippetPointer(CMSPlugin):
         if not user.is_staff and caching_enabled and cache.has_key(cache_key):
             return cache.get(cache_key)
 
-        # vars = dict((var.snippet_variable.name, var.formatted_value)
-        #             for var in self.variables.all())
-
+        start = time()
         vars = dict((v.name, v.formatted_value) for v in self.variables.all())
+        stop = time()
+        print str(stop -start)
 
         context.update(vars)
         rendered_snippet = self.snippet.render(context)
