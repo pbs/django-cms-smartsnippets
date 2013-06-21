@@ -65,6 +65,33 @@ class SmartSnippet(models.Model):
         return self.name
 
 
+class SmartSnippetPointer(CMSPlugin):
+    snippet = models.ForeignKey(SmartSnippet)
+
+    def get_cache_key(self):
+        return 'smartsnippet-pointer-%s' % self.pk
+
+    def render(self, context):
+        cache_key = self.get_cache_key()
+        user = context['request'].user
+        if not user.is_staff and caching_enabled and cache.has_key(cache_key):
+            return cache.get(cache_key)
+
+        # vars = dict((var.snippet_variable.name, var.formatted_value)
+        #             for var in self.variables.all())
+
+        vars = dict((v.name, v.formatted_value) for v in self.variables.all())
+
+        context.update(vars)
+        rendered_snippet = self.snippet.render(context)
+        if not user.is_staff and caching_enabled:
+            cache.set(cache_key, rendered_snippet, snippet_caching_time)
+        return rendered_snippet
+
+    def __unicode__(self):
+        return unicode(self.snippet)
+
+
 class SmartSnippetVariable(models.Model):
     name = models.CharField(
         max_length=50,
@@ -97,7 +124,7 @@ class SmartSnippetVariable(models.Model):
     #     return self.snippet_variable.widget
 
     class Meta:
-        unique_together = (('snippet', 'name'))
+#        unique_together = (('snippet', 'name'))
         ordering = ['name']
         verbose_name = "Standard variable"
 
@@ -115,41 +142,13 @@ class SmartSnippetVariable(models.Model):
         return self.name
 
 
-class SmartSnippetPointer(CMSPlugin):
-    snippet = models.ForeignKey(SmartSnippet)
-
-    def get_cache_key(self):
-        return 'smartsnippet-pointer-%s' % self.pk
-
-    def render(self, context):
-        cache_key = self.get_cache_key()
-        user = context['request'].user
-        if not user.is_staff and caching_enabled and cache.has_key(cache_key):
-            return cache.get(cache_key)
-
-        # vars = dict((var.snippet_variable.name, var.formatted_value)
-        #             for var in self.variables.all())
-
-        vars = dict((v.name, v.formatted_value) for v in self.variables.all())
-
-        context.update(vars)
-        rendered_snippet = self.snippet.render(context)
-        if not user.is_staff and caching_enabled:
-            cache.set(cache_key, rendered_snippet, snippet_caching_time)
-        return rendered_snippet
-
-    def __unicode__(self):
-        return unicode(self.snippet)
-
-
 # class Variable(models.Model):
-#     snippet_variable = models.ForeignKey(SmartSnippetVariable,
-#                                          related_name='variables')
+#     snippet_variable = models.ForeignKey(SmartSnippetVariable)
 #     value = models.CharField(max_length=2048)
-#     snippet = models.ForeignKey(SmartSnippetPointer, related_name='variables')
+#     snippet = models.ForeignKey(SmartSnippetPointer)
 
-#     class Meta:
-#         unique_together = (('snippet_variable', 'snippet'))
+# #    class Meta:
+# #        unique_together = (('snippet_variable', 'snippet'))
 
 #     @property
 #     def formatted_value(self):

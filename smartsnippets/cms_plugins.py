@@ -5,7 +5,7 @@ from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from smartsnippets.widgets_pool import widget_pool
 
-from .models import SmartSnippetPointer, SmartSnippet, Variable
+from .models import SmartSnippetPointer, SmartSnippet
 from .settings import shared_sites, include_orphan, restrict_user
 
 
@@ -58,6 +58,5 @@ class SmartSnippetPlugin(CMSPluginBase):
             kwargs["queryset"] = SmartSnippet.objects.filter(f).distinct()
         return (super(SmartSnippetPlugin, self)
                     .formfield_for_foreignkey(db_field, request, **kwargs))
-
 
 plugin_pool.register_plugin(SmartSnippetPlugin)
