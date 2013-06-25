@@ -49,11 +49,11 @@ class SnippetForm(ModelForm):
 
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
+
     def get_queryset(self):
-        import ipdb; ipdb.set_trace()
         if not hasattr(self, '_queryset'):
             available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
-            qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets, snippet_plugin__isnull=True)
+            qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets, snippet_plugin__isnull=True, snippet=self.instance)
             self._queryset = qs
         return self._queryset
 
@@ -72,8 +72,18 @@ class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
 
 
+class DropDownVariableAdmin(SnippetVariablesAdmin):
+    model = DropDownVariable
+    exclude = ('widget',)
+
+
 class SnippetAdmin(admin.ModelAdmin):
-    inlines = [RegularSnippetVariablesAdmin,]
+    # inlines = [RegularSnippetVariablesAdmin,]
+
+    class Media:
+        js = ("admin/js/SmartSnippets.Variables.js",)
+
+        inlines = [RegularSnippetVariablesAdmin,] # DropDownVariableAdmin]
     shared_sites = shared_sites
     include_orphan = include_orphan
     restrict_user = restrict_user
@@ -131,13 +141,10 @@ class SnippetAdmin(admin.ModelAdmin):
         return q.filter(f).distinct()
 
 
-class DropDownVariableAdmin(SnippetVariablesAdmin):
-    model = DropDownVariable
-    exclude = ('widget',)
 
 
 class ExtendedSnippetAdmin(SnippetAdmin):
-    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
+    # inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
 
     class Media:
         js = ("admin/js/SmartSnippets.Variables.js",)
@@ -209,8 +216,8 @@ class ExtendedSiteAdmin(RegisteredSiteAdmin):
 
 
 admin.site.register(SmartSnippet, SnippetAdmin)
-admin.site.unregister(SmartSnippet)
-admin.site.register(SmartSnippet, ExtendedSnippetAdmin)
+# admin.site.unregister(SmartSnippet)
+# admin.site.register(SmartSnippet, ExtendedSnippetAdmin)
 
 try:
     admin.site.unregister(Site)
