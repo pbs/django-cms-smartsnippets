@@ -12,32 +12,31 @@
                     {% if field.is_checkbox %}
                         {{ field.field }}{{ field.label_tag }}
                     {% else %}
-                        {{ field.label_tag }}
-                        {% if field.is_readonly %}
-                            {% if field.field.name == "template_code" %}
-                                <textarea id='template_preview'>{{ field.contents }}</textarea>
-                                <script type="text/javascript">
-				    tpl_preview = django.jQuery('#template_preview')[0];
-                                    var editor = CodeMirror.fromTextArea(tpl_preview, {
-                                            continuousScanning: 500,
-				            mode: 'htmlmixed',
-                                            height: "40.2em",
-                                            tabMode: "shift",
-                                            indentUnit: 4,
-                                            lineNumbers: true,
-                                            readOnly: true,
-                                        });
-                                </script>
-                            {% else %}
-                                <p>{{ field.contents }}</p>
-                            {% endif %}
-                        {% else %}
-			    {{ field.field }}
-                        {% endif %}
-                    {% endif %}
-                    {% if field.field.help_text and not field.is_readonly %}
-                        <p class="help">{{ field.field.help_text|safe }}</p>
-                    {% endif %}
+			{{ field.label_tag }}
+			{% if field.is_readonly %}
+                    	 	{% if field.field.name == "template_code" %}
+                            		<textarea id='template_preview'>{{ field.contents }}</textarea>
+	                                <script type="text/javascript">
+        	                        	CodeMirror.fromTextArea(django.jQuery('#template_preview')[0], {
+        	                                	continuousScanning: 500,
+					            	mode: 'htmlmixed',
+        	                                   	height: "40.2em",
+        	                                    	tabMode: "shift",
+        	                                    	indentUnit: 4,
+        	                                    	lineNumbers: true,
+        	                                    	readOnly: true,
+        	                                });
+        	                        </script>
+				{% else %}
+        	                       <p>{{ field.contents }}</p>
+                        	{% endif %}
+			{% else %}
+				{{ field.field }}
+			{% endif %}
+		     {% endif %}
+       		     {% if field.field.help_text and not field.is_readonly %}
+		        <p class="help">{{ field.field.help_text|safe }}</p>
+  		     {% endif %}
                 </div>
             {% endfor %}
         </div>
