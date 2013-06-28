@@ -105,7 +105,7 @@ class SmartSnippetPointer(CMSPlugin):
         if not user.is_staff and caching_enabled and cache.has_key(cache_key):
             return cache.get(cache_key)
         vars = dict((var.snippet_variable.name, var.formatted_value)
-                    for var in self.variables.all())
+                    for var in self.variables.select_related('snippet_variable').all())
         context.update(vars)
         rendered_snippet = self.snippet.render(context)
         if not user.is_staff and caching_enabled:
