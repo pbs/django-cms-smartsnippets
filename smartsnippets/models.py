@@ -61,7 +61,7 @@ class SmartSnippet(models.Model):
         return 'smartsnippet-%s' % self.pk
 
     def render(self, context):
-        context.update({'smartsnippet_plugins': self.plugins})
+        context.update({'plugins': self.plugins})
         return self.get_template().render(context)
 
     def __unicode__(self):
