@@ -70,7 +70,8 @@ class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
 
 
-class SnippetAdmin(admin.ModelAdmin):
+from cms.admin.placeholderadmin import PlaceholderAdmin
+class SnippetAdmin(PlaceholderAdmin):
     inlines = [RegularSnippetVariablesAdmin,]
     shared_sites = shared_sites
     include_orphan = include_orphan

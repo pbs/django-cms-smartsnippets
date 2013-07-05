@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from cms.models import CMSPlugin
 
 from .settings import snippet_caching_time, caching_enabled
+from cms.models.fields import PlaceholderField
 
 
 class SmartSnippet(models.Model):
@@ -30,6 +31,7 @@ class SmartSnippet(models.Model):
         max_length=100, blank=True,
         help_text=_('Enter URL (i.e. "http://snippets/docs/plugin_xy.html")'
                     ' to the extended documentation.'))
+    plugins = PlaceholderField('smartsnippet_plugins', related_name='plugins')
 
     class Meta:
         ordering = ['name']
@@ -59,6 +61,7 @@ class SmartSnippet(models.Model):
         return 'smartsnippet-%s' % self.pk
 
     def render(self, context):
+        context.update({'smartsnippet_plugins': self.plugins})
         return self.get_template().render(context)
 
     def __unicode__(self):
