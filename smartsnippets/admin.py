@@ -15,6 +15,7 @@ from models import SmartSnippet, ExtendedSmartSnippet, \
 from settings import shared_sites, include_orphan, restrict_user
 from widgets_pool import widget_pool
 from cms.admin.placeholderadmin import PlaceholderAdmin
+import settings
 
 
 class SnippetForm(ModelForm):
@@ -225,7 +226,8 @@ class ExtendedSiteAdmin(RegisteredSiteAdmin):
 
 
 admin.site.register(SmartSnippet, SnippetAdmin)
-admin.site.register(ExtendedSmartSnippet, PluginsSnippetAdmin)
+if settings.ENABLE_EXTENDED_SMARTSNIPPETS:
+    admin.site.register(ExtendedSmartSnippet, PluginsSnippetAdmin)
 
 try:
     admin.site.unregister(Site)
