@@ -10,9 +10,12 @@ from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
 from django.forms.widgets import Select
 
-from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
+from models import SmartSnippet, ExtendedSmartSnippet, \
+    SmartSnippetVariable, DropDownVariable
 from settings import shared_sites, include_orphan, restrict_user
 from widgets_pool import widget_pool
+from cms.admin.placeholderadmin import PlaceholderAdmin
+import settings
 
 
 class SnippetForm(ModelForm):
@@ -70,7 +73,12 @@ class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
 
 
-class SnippetAdmin(admin.ModelAdmin):
+class DropDownVariableAdmin(SnippetVariablesAdmin):
+    model = DropDownVariable
+    exclude = ('widget',)
+
+
+class SnippetAdminBase(PlaceholderAdmin):
     inlines = [RegularSnippetVariablesAdmin,]
     shared_sites = shared_sites
     include_orphan = include_orphan
@@ -82,6 +90,11 @@ class SnippetAdmin(admin.ModelAdmin):
     form = SnippetForm
     change_form_template = 'smartsnippets/change_form.html'
     filter_horizontal = ('sites', )
+
+    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
+
+    class Media:
+        js = ("admin/js/SmartSnippets.Variables.js",)
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
@@ -111,11 +124,11 @@ class SnippetAdmin(admin.ModelAdmin):
                     f |= Q(globalpagepermission__user=request.user)
                     f |= Q(globalpagepermission__group__user=request.user)
             kwargs["queryset"] = Site.objects.filter(f).distinct()
-        return (super(SnippetAdmin, self)
+        return (super(SnippetAdminBase, self)
                     .formfield_for_manytomany(db_field, request, **kwargs))
 
     def queryset(self, request):
-        q = super(SnippetAdmin, self).queryset(request)
+        q = super(SnippetAdminBase, self).queryset(request)
         f = Q()
         if not request.user.is_superuser:
             if self.restrict_user:
@@ -129,16 +142,22 @@ class SnippetAdmin(admin.ModelAdmin):
         return q.filter(f).distinct()
 
 
-class DropDownVariableAdmin(SnippetVariablesAdmin):
-    model = DropDownVariable
-    exclude = ('widget',)
+class SnippetAdmin(SnippetAdminBase):
+    exclude = ('is_extended', 'plugins')
+
+    def queryset(self, request):
+        q = super(SnippetAdmin, self).queryset(request)
+        return q.filter(is_extended=False).distinct()
 
 
-class ExtendedSnippetAdmin(SnippetAdmin):
-    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
+class PluginsSnippetAdmin(SnippetAdminBase):
+    exclude = ('is_extended',)
 
-    class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
+    def queryset(self, request):
+        q = super(PluginsSnippetAdmin, self).queryset(request)
+        # By doing this filtering I protect myself against infinte recursion calls
+        # It won't be possible to add an extended SmartSnippet inside the plugins placeholder.
+        return q.filter(is_extended=True).distinct()
 
 
 def _get_registered_modeladmin(model):
@@ -207,8 +226,8 @@ class ExtendedSiteAdmin(RegisteredSiteAdmin):
 
 
 admin.site.register(SmartSnippet, SnippetAdmin)
-admin.site.unregister(SmartSnippet)
-admin.site.register(SmartSnippet, ExtendedSnippetAdmin)
+if settings.ENABLE_EXTENDED_SMARTSNIPPETS:
+    admin.site.register(ExtendedSmartSnippet, PluginsSnippetAdmin)
 
 try:
     admin.site.unregister(Site)

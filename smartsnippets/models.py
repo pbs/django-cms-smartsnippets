@@ -9,8 +9,24 @@ from django.utils.translation import ugettext_lazy as _
 from cms.models import CMSPlugin
 
 from .settings import snippet_caching_time, caching_enabled
+from cms.models.fields import PlaceholderField
 
+# The plugins placeholder allow the addition of other plugins
+# to be rendered by the SmartSnippet. In case is_extended=True,
+# a possible template code would be like below
+# If is_extended=False, the render_placeholder tag will
+# not display anyting
+#
+# {% load placeholder_tags %}
+#     <div>
+#      {{ item1 }}
 
+#     <br><br> {% render_placeholder plugins %} <br>
+
+#      {{ item2 }}
+#     </div>
+
+# {% endwith %}
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
     template_code = models.TextField(_("Template code"), blank=True)
@@ -30,6 +46,8 @@ class SmartSnippet(models.Model):
         max_length=100, blank=True,
         help_text=_('Enter URL (i.e. "http://snippets/docs/plugin_xy.html")'
                     ' to the extended documentation.'))
+    is_extended = models.BooleanField(_('is extended plugin'), default=False)
+    plugins = PlaceholderField('smartsnippet_plugins', related_name='plugins')
 
     class Meta:
         ordering = ['name']
@@ -59,10 +77,23 @@ class SmartSnippet(models.Model):
         return 'smartsnippet-%s' % self.pk
 
     def render(self, context):
+        if self.is_extended:
+            context.update({'plugins': self.plugins})
         return self.get_template().render(context)
 
     def __unicode__(self):
         return self.name
+
+
+class ExtendedSmartSnippet(SmartSnippet):
+    class Meta:
+        proxy = True
+        verbose_name = 'Extended Smart Snippet'
+        verbose_name_plural = 'Extended Smart Snippets'
+
+    def save(self, *args, **kwargs):
+        self.is_extended = True
+        super(ExtendedSmartSnippet, self).save(*args, **kwargs)
 
 
 class SmartSnippetVariable(models.Model):
