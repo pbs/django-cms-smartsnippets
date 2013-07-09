@@ -11,7 +11,22 @@ from cms.models import CMSPlugin
 from .settings import snippet_caching_time, caching_enabled
 from cms.models.fields import PlaceholderField
 
+# The plugins placeholder allow the addition of other plugins
+# to be rendered by the SmartSnippet. In case is_extended=True,
+# a possible template code would be like below
+# If is_extended=False, the render_placeholder tag will
+# not display anyting
+#
+# {% load placeholder_tags %}
+#     <div>
+#      {{ item1 }}
 
+#     <br><br> {% render_placeholder plugins %} <br>
+
+#      {{ item2 }}
+#     </div>
+
+# {% endwith %}
 class SmartSnippet(models.Model):
     name = models.CharField(unique=True, max_length=255)
     template_code = models.TextField(_("Template code"), blank=True)

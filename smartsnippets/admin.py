@@ -146,8 +146,7 @@ class SnippetAdmin(SnippetAdminBase):
 
     def queryset(self, request):
         q = super(SnippetAdmin, self).queryset(request)
-        f = Q(is_extended=False)
-        return q.filter(f).distinct()
+        return q.filter(is_extended=False).distinct()
 
 
 class PluginsSnippetAdmin(SnippetAdminBase):
@@ -155,8 +154,9 @@ class PluginsSnippetAdmin(SnippetAdminBase):
 
     def queryset(self, request):
         q = super(PluginsSnippetAdmin, self).queryset(request)
-        f = Q(is_extended=True)
-        return q.filter(f).distinct()
+        # By doing this filtering I protect myself against infinte recursion calls
+        # It won't be possible to add an extended SmartSnippet inside the plugins placeholder.
+        return q.filter(is_extended=True).distinct()
 
 
 def _get_registered_modeladmin(model):
