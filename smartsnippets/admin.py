@@ -49,14 +49,6 @@ class SnippetForm(ModelForm):
             raise ValidationError(e)
         return path
 
-    def clean_plugins(self):
-        if self.instance.is_extended:
-            plg_list = self.instance.plugins.get_plugins_list()
-            for plg in plg_list:
-                if plg.plugin_type == 'SmartSnippetPlugin':
-                    if plg.smartsnippetpointer.snippet.is_extended:
-                        raise ValidationError('Cannot add extended plugin!')
-
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
     def get_queryset(self):
