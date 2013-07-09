@@ -53,7 +53,7 @@ class SmartSnippetPlugin(CMSPluginBase):
                 f |= Q(sites__isnull=True)
             qs = SmartSnippet.objects.filter(f).distinct()
             if self.placeholder.slot == u'smartsnippet_plugins':
-                qs = qs.exclude(is_extended=True)
+                qs = qs.filter(is_extended=False)
             kwargs["queryset"] = qs
         return (super(SmartSnippetPlugin, self)
                     .formfield_for_foreignkey(db_field, request, **kwargs))

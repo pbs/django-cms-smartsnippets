@@ -79,6 +79,10 @@ class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
 
 
+class DropDownVariableAdmin(SnippetVariablesAdmin):
+    model = DropDownVariable
+    exclude = ('widget',)
+
 from cms.admin.placeholderadmin import PlaceholderAdmin
 class SnippetAdminBase(PlaceholderAdmin):
     inlines = [RegularSnippetVariablesAdmin,]
@@ -92,6 +96,11 @@ class SnippetAdminBase(PlaceholderAdmin):
     form = SnippetForm
     change_form_template = 'smartsnippets/change_form.html'
     filter_horizontal = ('sites', )
+
+    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
+
+    class Media:
+        js = ("admin/js/SmartSnippets.Variables.js",)
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
@@ -148,24 +157,8 @@ class SnippetAdmin(SnippetAdminBase):
         return q.filter(f).distinct()
 
 
-class DropDownVariableAdmin(SnippetVariablesAdmin):
-    model = DropDownVariable
-    exclude = ('widget',)
-
-
-class ExtendedSnippetAdmin(SnippetAdmin):
-    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
-
-    class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
-
-
 class PluginsSnippetAdmin(SnippetAdminBase):
     exclude = ('is_extended',)
-    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
-
-    class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
 
     def queryset(self, request):
         q = super(PluginsSnippetAdmin, self).queryset(request)
@@ -238,8 +231,6 @@ class ExtendedSiteAdmin(RegisteredSiteAdmin):
     form = ExtendedSiteAdminForm
 
 
-admin.site.register(SmartSnippet, SnippetAdmin)
-admin.site.unregister(SmartSnippet)
 admin.site.register(SmartSnippet, SnippetAdmin)
 admin.site.register(ExtendedSmartSnippet, PluginsSnippetAdmin)
 
