@@ -15,5 +15,5 @@ setup(
     include_package_data=True,
     license='BSD License',
     setup_requires = ['s3sourceuploader', ],
-    install_requires= ['django-cms==2.3.5pbs', ],
+    install_requires= ['django-cms==2.3.5pbs', 'django-admin-extend==0.0.1'],
 )

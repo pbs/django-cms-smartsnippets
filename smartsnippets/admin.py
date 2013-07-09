@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.db.models import Q
-from django.contrib.admin.sites import NotRegistered
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
@@ -9,6 +8,9 @@ from django.forms.models import BaseInlineFormSet
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
 from django.forms.widgets import Select
+
+from admin_extend.extend import registered_form, extend_registered, \
+    add_bidirectional_m2m
 
 from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
 from settings import shared_sites, include_orphan, restrict_user
@@ -70,8 +72,13 @@ class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
 
 
+class DropDownVariableAdmin(SnippetVariablesAdmin):
+    model = DropDownVariable
+    exclude = ('widget',)
+
+
 class SnippetAdmin(admin.ModelAdmin):
-    inlines = [RegularSnippetVariablesAdmin,]
+    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
     shared_sites = shared_sites
     include_orphan = include_orphan
     restrict_user = restrict_user
@@ -82,6 +89,9 @@ class SnippetAdmin(admin.ModelAdmin):
     form = SnippetForm
     change_form_template = 'smartsnippets/change_form.html'
     filter_horizontal = ('sites', )
+
+    class Media:
+        js = ("admin/js/SmartSnippets.Variables.js",)
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
@@ -129,32 +139,13 @@ class SnippetAdmin(admin.ModelAdmin):
         return q.filter(f).distinct()
 
 
-class DropDownVariableAdmin(SnippetVariablesAdmin):
-    model = DropDownVariable
-    exclude = ('widget',)
+admin.site.register(SmartSnippet, SnippetAdmin)
 
 
-class ExtendedSnippetAdmin(SnippetAdmin):
-    inlines = [RegularSnippetVariablesAdmin, DropDownVariableAdmin]
+@extend_registered
+class ExtendedSiteAdminForm(add_bidirectional_m2m(registered_form(Site))):
 
-    class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
-
-
-def _get_registered_modeladmin(model):
-    """ This is a huge hack to get the registered modeladmin for the model.
-        We need this functionality in case someone else already registered
-        a different modeladmin for this model. """
-    return type(admin.site._registry[model])
-
-
-RegisteredSiteAdmin = _get_registered_modeladmin(Site)
-SiteAdminForm = RegisteredSiteAdmin.form
-
-
-class ExtendedSiteAdminForm(SiteAdminForm):
-
-    snippets = ModelMultipleChoiceField(
+    smartsnippet = ModelMultipleChoiceField(
         queryset=SmartSnippet.objects.all(),
         required=False,
         widget=FilteredSelectMultiple(
@@ -163,10 +154,9 @@ class ExtendedSiteAdminForm(SiteAdminForm):
         )
     )
 
-    def __init__(self, *args, **kwargs):
-        super(ExtendedSiteAdminForm, self).__init__(*args, **kwargs)
-        if self.instance.pk is not None:
-            self.fields['snippets'].initial = self.instance.smartsnippet_set.all()
+    def _get_bidirectinal_m2m_fields(self):
+        return super(ExtendedSiteAdminForm, self).\
+            _get_bidirectinal_m2m_fields() + ['smartsnippet']
 
     def clean_snippets(self):
         assigned_snippets = self.cleaned_data['snippets']
@@ -184,34 +174,3 @@ class ExtendedSiteAdminForm(SiteAdminForm):
                 "Following snippets will remain with no sites assigned: %s" %
                 ", ".join(s.name for s in snippets_with_no_sites))
         return assigned_snippets
-
-    def save(self, commit=True):
-        instance =  super(ExtendedSiteAdminForm, self).save(commit=False)
-        # If the object is new, we need to force save it, whether commit
-        # is True or False, otherwise setting the smartsnippet_set would fail
-        # This would cause the object to be saved twice if used in an
-        # InlineFormSet
-        force_save = self.instance.pk is None
-        if force_save:
-            instance.save()
-        instance.smartsnippet_set = self.cleaned_data['snippets']
-        if commit:
-            if not force_save:
-                instance.save()
-            self.save_m2m()
-        return instance
-
-
-class ExtendedSiteAdmin(RegisteredSiteAdmin):
-    form = ExtendedSiteAdminForm
-
-
-admin.site.register(SmartSnippet, SnippetAdmin)
-admin.site.unregister(SmartSnippet)
-admin.site.register(SmartSnippet, ExtendedSnippetAdmin)
-
-try:
-    admin.site.unregister(Site)
-except NotRegistered:
-    pass
-admin.site.register(Site, ExtendedSiteAdmin)
