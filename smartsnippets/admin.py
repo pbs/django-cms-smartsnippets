@@ -14,6 +14,7 @@ from models import SmartSnippet, ExtendedSmartSnippet, \
     SmartSnippetVariable, DropDownVariable
 from settings import shared_sites, include_orphan, restrict_user
 from widgets_pool import widget_pool
+from cms.admin.placeholderadmin import PlaceholderAdmin
 
 
 class SnippetForm(ModelForm):
@@ -83,7 +84,7 @@ class DropDownVariableAdmin(SnippetVariablesAdmin):
     model = DropDownVariable
     exclude = ('widget',)
 
-from cms.admin.placeholderadmin import PlaceholderAdmin
+
 class SnippetAdminBase(PlaceholderAdmin):
     inlines = [RegularSnippetVariablesAdmin,]
     shared_sites = shared_sites
