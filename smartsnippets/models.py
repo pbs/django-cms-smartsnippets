@@ -31,6 +31,7 @@ class SmartSnippet(models.Model):
         max_length=100, blank=True,
         help_text=_('Enter URL (i.e. "http://snippets/docs/plugin_xy.html")'
                     ' to the extended documentation.'))
+    is_extended = models.BooleanField(_('is extended plugin'), default=False)
     plugins = PlaceholderField('smartsnippet_plugins', related_name='plugins')
 
     class Meta:
@@ -61,11 +62,23 @@ class SmartSnippet(models.Model):
         return 'smartsnippet-%s' % self.pk
 
     def render(self, context):
-        context.update({'plugins': self.plugins})
+        if self.is_extended:
+            context.update({'plugins': self.plugins})
         return self.get_template().render(context)
 
     def __unicode__(self):
         return self.name
+
+
+class ExtendedSmartSnippet(SmartSnippet):
+    class Meta:
+        proxy = True
+        verbose_name = 'Extended Smart Snippet'
+        verbose_name_plural = 'Extended Smart Snippets'
+
+    def save(self, *args, **kwargs):
+        self.is_extended = True
+        super(ExtendedSmartSnippet, self).save(*args, **kwargs)
 
 
 class SmartSnippetVariable(models.Model):

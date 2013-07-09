@@ -13,8 +13,12 @@ class Migration(SchemaMigration):
     no_dry_run = True
 
     def forwards(self, orm):
+        # Adding field 'SmartSnippet.is_extended'
+        db.add_column('smartsnippets_smartsnippet', 'is_extended',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
+
         # Adding field 'SmartSnippet.plugins'
-        self.backwards(orm)
         db.add_column('smartsnippets_smartsnippet', 'plugins',
                       self.gf('django.db.models.fields.related.ForeignKey')(related_name='plugins', null=True, to=orm['cms.Placeholder']),
                       keep_default=False)
@@ -28,6 +32,9 @@ class Migration(SchemaMigration):
             ss.save()
 
     def backwards(self, orm):
+        # Deleting field 'SmartSnippet.is_extended'
+        db.delete_column('smartsnippets_smartsnippet', 'is_extended')
+
         # Deleting field 'SmartSnippet.plugins'
         db.delete_column('smartsnippets_smartsnippet', 'plugins_id')
 
@@ -36,7 +43,7 @@ class Migration(SchemaMigration):
         'cms.cmsplugin': {
             'Meta': {'object_name': 'CMSPlugin'},
             'changed_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 7, 5, 0, 0)'}),
+            'creation_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2013, 7, 9, 0, 0)'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'language': ('django.db.models.fields.CharField', [], {'max_length': '15', 'db_index': 'True'}),
             'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
@@ -70,6 +77,7 @@ class Migration(SchemaMigration):
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'documentation_link': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_extended': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'plugins': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'plugins'", 'null': 'True', 'to': "orm['cms.Placeholder']"}),
             'sites': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['sites.Site']", 'symmetrical': 'False', 'blank': 'True'}),
