@@ -154,9 +154,9 @@ class ExtendedSiteAdminForm(add_bidirectional_m2m(registered_form(Site))):
         )
     )
 
-    def _get_bidirectinal_m2m_fields(self):
+    def _get_bidirectional_m2m_fields(self):
         return super(ExtendedSiteAdminForm, self).\
-            _get_bidirectinal_m2m_fields() + [('snippets', 'smartsnippet_set')]
+            _get_bidirectional_m2m_fields() + [('snippets', 'smartsnippet_set')]
 
     def clean_snippets(self):
         assigned_snippets = self.cleaned_data['snippets']
