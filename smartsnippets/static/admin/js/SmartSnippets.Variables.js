@@ -399,7 +399,7 @@
                 //use a setTimeout to capture pasted text
                 setTimeout(function () {
 
-                    var checkboxes = $('input[type=checkbox]');
+                    var checkboxes = $('.delete input[type=checkbox]');
                     $.each(checkboxes, function(i, box) {
                         $(this).attr('checked', false);
                     });
