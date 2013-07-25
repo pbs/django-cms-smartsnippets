@@ -388,6 +388,22 @@
         }
     };
 
+    $.updateSnippetVars = function(el){
+
+        //use a setTimeout to capture pasted text
+        setTimeout(function () {
+
+            var checkboxes = django.jQuery('.delete input[type=checkbox]');
+            django.jQuery.each(checkboxes, function(i, box) {
+                django.jQuery(this).attr('checked', false);
+            });
+
+            var text = django.jQuery(el).val();
+            var varNames = LayoutParser.extractVarnames(text);
+            LayoutParser.populate(varNames);
+        }, 100);
+    };
+
 
     $(document).ready(function () {
         var textArea = $('#id_template_code');

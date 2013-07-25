@@ -24,6 +24,7 @@
                                                         tabMode: "shift",
                                                         indentUnit: 4,
                                                         lineNumbers: true,
+                                                        lineWrapping: true,
                                                         readOnly: true,
                                                 });
                                         </script>
@@ -32,6 +33,29 @@
                                 {% endif %}
                         {% else %}
                                 {{ field.field }}
+                                {% if field.field.name == "template_code" %}
+                                    <script type="text/javascript">
+                                        var id_template_code = CodeMirror.fromTextArea(django.jQuery('#id_template_code')[0], {
+                                                continuousScanning: 500,
+                                                mode: 'htmlmixed',
+                                                height: "40.2em",
+                                                tabMode: "shift",
+                                                indentUnit: 4,
+                                                lineNumbers: true,
+                                                lineWrapping: true,
+                                                readOnly: false,
+                                        });
+
+                                        id_template_code.on("change", function(){
+                                            django.jQuery('#id_template_code')[0].value = id_template_code.getValue();
+                                            if(typeof django.jQuery.updateSnippetVars === 'function'){
+                                                django.jQuery.updateSnippetVars(django.jQuery('#id_template_code')[0])
+                                            }
+                                        })
+
+                                    </script>
+                                {% endif %}
+                                
                         {% endif %}
                      {% endif %}
                      {% if field.field.help_text and not field.is_readonly %}
