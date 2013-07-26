@@ -413,17 +413,7 @@
 
 //            if ($.trim($(el).val()).length == 0) {//only when the area is empty
                 //use a setTimeout to capture pasted text
-                setTimeout(function () {
-
-                    var checkboxes = $('.delete input[type=checkbox]');
-                    $.each(checkboxes, function(i, box) {
-                        $(this).attr('checked', false);
-                    });
-
-                    var text = $(el).val();
-                    var varNames = LayoutParser.extractVarnames(text);
-                    LayoutParser.populate(varNames);
-                }, 100);
+                $.updateSnippetVars(el);
 //            }
         });
     });
