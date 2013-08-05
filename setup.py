@@ -4,6 +4,16 @@ from setuptools import setup, find_packages
 README_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                            'README.rst')
 
+dependencies = [
+    'django-cms<2.3.6',
+    'django-admin-extend'
+]
+
+dependency_links = [
+    'http://github.com/pbs/django-admin-extend/tarball/master#egg=django-admin-extend',
+]
+
+
 setup(
     name='django-cms-smartsnippets',
     version='0.1.16',
@@ -14,6 +24,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='BSD License',
+    install_requires=dependencies,
+    dependency_links=dependency_links,
     setup_requires = ['s3sourceuploader', ],
-    install_requires= ['django-cms==2.3.5pbs', 'django-admin-extend==0.0.1'],
 )
