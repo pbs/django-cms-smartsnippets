@@ -1,6 +1,5 @@
 from django.db.models import Q
 from django.contrib.sites.models import Site
-from django.conf import settings
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
@@ -20,7 +19,6 @@ class SmartSnippetPlugin(CMSPluginBase):
     model = SmartSnippetPointer
     name = 'Smart Snippet'
     render_template = 'smartsnippets/plugin.html'
-    text_enabled = True
 
     def change_view(self, request, object_id, extra_context=None):
         if extra_context is None:
@@ -57,7 +55,5 @@ class SmartSnippetPlugin(CMSPluginBase):
         return (super(SmartSnippetPlugin, self)
                     .formfield_for_foreignkey(db_field, request, **kwargs))
 
-    def icon_src(self, instance):
-        return settings.STATIC_URL + u"images/ss_image_small.png"
 
 plugin_pool.register_plugin(SmartSnippetPlugin)

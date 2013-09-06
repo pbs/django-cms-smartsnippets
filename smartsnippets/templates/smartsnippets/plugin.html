@@ -1,12 +1,1 @@
-{% if inherited_from_parent %}
-
-<div style="text-align: center; {{ inherited_from_parent.style }}" class="clearfix">
- {{content|safe}}
-</div>
-
-{% else %}
-
 {{content|safe}}
-
-{% endif %}
-
