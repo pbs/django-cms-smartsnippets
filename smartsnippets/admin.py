@@ -91,7 +91,8 @@ class SnippetAdmin(admin.ModelAdmin):
     filter_horizontal = ('sites', )
 
     class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
+        js = ("admin/js/SmartSnippets.Variables.js",
+              "admin/js/cropduster_sizeset.js",)
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
