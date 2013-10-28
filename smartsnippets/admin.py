@@ -52,9 +52,6 @@ class SnippetForm(ModelForm):
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
 
-    def __init__(self, *args, **kwargs):
-        super(SnippetVariablesFormSet, self).__init__(*args, **kwargs)
-
     def get_queryset(self):
         if not hasattr(self, '_queryset'):
             available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
