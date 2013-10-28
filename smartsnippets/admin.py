@@ -51,7 +51,6 @@ class SnippetForm(ModelForm):
 
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
-
     def get_queryset(self):
         if not hasattr(self, '_queryset'):
             available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
@@ -67,7 +66,6 @@ class SnippetVariablesAdmin(admin.StackedInline):
         if db_field.name == 'widget':
             kwargs['widget'] = Select(choices=tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
         return super(SnippetVariablesAdmin,self).formfield_for_dbfield(db_field, **kwargs)
-
 
 
 class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
