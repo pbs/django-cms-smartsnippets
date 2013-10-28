@@ -51,6 +51,10 @@ class SnippetForm(ModelForm):
 
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super(SnippetVariablesFormSet, self).__init__(*args, **kwargs)
+
     def get_queryset(self):
         if not hasattr(self, '_queryset'):
             available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
@@ -66,6 +70,7 @@ class SnippetVariablesAdmin(admin.StackedInline):
         if db_field.name == 'widget':
             kwargs['widget'] = Select(choices=tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
         return super(SnippetVariablesAdmin,self).formfield_for_dbfield(db_field, **kwargs)
+
 
 
 class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
@@ -91,7 +96,8 @@ class SnippetAdmin(admin.ModelAdmin):
     filter_horizontal = ('sites', )
 
     class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
+        js = ("admin/js/SmartSnippets.Variables.js",
+              "admin/js/cropduster_sizeset.js",)
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
