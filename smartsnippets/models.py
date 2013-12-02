@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.core.cache import cache
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -5,8 +6,9 @@ from django.template import Template, TemplateSyntaxError, \
     TemplateDoesNotExist, loader
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-
+from django.db.models.signals import pre_delete
 from cms.models import CMSPlugin
+from django.dispatch import receiver
 
 from .settings import snippet_caching_time, caching_enabled
 
@@ -91,6 +93,19 @@ class SmartSnippetVariable(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+#noinspection PyUnusedLocal,PyUnresolvedReferences
+@receiver(pre_delete, sender=SmartSnippetVariable, dispatch_uid='ss_dispatch')
+def delete_img_context(sender, instance, **kwargs):
+    """ Delete the img_context entries which are indirectly linked (Generic_FK) to the SmartSnippetVariable
+    """
+    try:
+        from cropduster.models import ImageContext
+    except ImportError:
+        return
+    for obj in ImageContext.objects.get_by_object_id(instance.id):
+        obj.delete()
 
 
 class SmartSnippetPointer(CMSPlugin):
