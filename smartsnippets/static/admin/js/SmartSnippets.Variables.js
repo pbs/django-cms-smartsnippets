@@ -244,7 +244,7 @@
         addStdVar:function (varNameObj, container) {
             var fieldCx = this.clickAddNewFieldStd(container);
             $(fieldCx).find('input.vTextField').val(varNameObj.varname);
-            $(fieldCx).find('select').val(varNameObj.type);
+            $(fieldCx).find('select').val(varNameObj.type).change();
         },
 
         /**
@@ -388,11 +388,9 @@
         }
     };
 
-    $.updateSnippetVars = function(el){
-
-        //use a setTimeout to capture pasted text
+    $.updateSnippetVars = function(el) {
+        // use a setTimeout to capture pasted text
         setTimeout(function () {
-
             var checkboxes = django.jQuery('.delete input[type=checkbox]');
             django.jQuery.each(checkboxes, function(i, box) {
                 django.jQuery(this).attr('checked', false);
@@ -405,17 +403,13 @@
     };
 
 
-    $(document).ready(function () {
+    $(document).load(function () {
         var textArea = $('#id_template_code');
 
         textArea.bind('paste', function (e) {
-            var el = $(this);
-
-//            if ($.trim($(el).val()).length == 0) {//only when the area is empty
-                //use a setTimeout to capture pasted text
-                $.updateSnippetVars(el);
-//            }
+            $.updateSnippetVars($(this));
         });
     });
+
 
 })(django.jQuery);
