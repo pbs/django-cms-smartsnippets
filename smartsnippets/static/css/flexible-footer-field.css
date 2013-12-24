@@ -1,0 +1,37 @@
+table{
+    width:100%;
+}
+
+
+td.label{
+    width:10%;
+    vertical-align: middle;
+}
+
+.column td{
+    border:1px solid #eee;
+}
+
+td.link-column{
+    vertical-align: top;
+}
+
+.links input[type="text"]{
+    float: right;
+}
+
+.addlink{
+    cursor: pointer;
+}
+
+.clear{
+    clear: both;
+}
+
+label{
+    white-space: nowrap;
+    vertical-align: middle;
+}
+thead{
+    display: none;
+}
