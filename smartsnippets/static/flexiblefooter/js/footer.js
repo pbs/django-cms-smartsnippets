@@ -6,7 +6,7 @@
         var details = {};
 
         inputs.each(function(){
-            details[$(this).attr("name")] = $(this).val() || $(this).text();
+            details[$(this).attr("name")] = $(this).val();
         });
 
         return details;
