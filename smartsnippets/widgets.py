@@ -34,6 +34,7 @@ class DropDownField(SmartSnippetWidgetBase):
         return render_to_string('smartsnippets/widgets/dropdownfield/widget.html',
                                 {'field': self.variable},
                                     context_instance=context_instance)
+
 EMPTY_LINK = {
     'text': '',
     'url': ''
@@ -64,13 +65,12 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
         footer = self.formatted_value or {}
 
         def get_default_links():
-            footer_links = footer.get('links',[{}] * 4)
+            footer_links = footer.get('links', [{}] * 4)
             for col in footer_links:
                 col["header"] = col.get('header', EMPTY_LINK)
                 col["column_links"] = col.get('column_links', [EMPTY_LINK] * 6)
-        
-            return footer_links
 
+            return footer_links
 
         footer['links'] = footer.get('links', get_default_links())
         footer['details'] = footer.get('details', EMPTY_DETAILS)
