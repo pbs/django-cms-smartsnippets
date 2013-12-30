@@ -56,7 +56,7 @@
                   <input value="{{ col.header.url }}" class="subvar url" id="header_link_{{ forloop.counter }}" type="text" size="50">
                 </td>
               </tr>
-              {% with column as forloop.counter %}
+              {% with  forloop.counter as column%}
                 {% for link in col.column_links %}
                 <tr class="link">
                   <td colspan="2">
