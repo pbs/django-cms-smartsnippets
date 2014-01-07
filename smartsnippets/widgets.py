@@ -83,7 +83,52 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
             },
             context_instance=context_instance)
 
+
+PRESET_SCHEMES = [{
+        'base': '#cc0000',
+        'background':'#e06666',
+        'accent_1':'#660000',
+        'accent_2':'#f6b26b',
+        'accent_3':'#f9cb9c',
+        'name' : 'Red Theme'    
+    },{
+        'base': '#660000',
+        'background':'#ea9999',
+        'accent_1':'#4c1130',
+        'accent_2':'#c27ba0',
+        'accent_3':'#d5a6bd',
+        'name' : 'Red Theme 2'    
+    },{
+        'base': '#00ffff',
+        'background':'#a2c4c9',
+        'accent_1':'#0c343d',
+        'accent_2':'#45818e',
+        'accent_3':'#76a5af',
+        'name' : 'Explorer Turquoise'    
+    },{
+        'base': '#2b78e4',
+        'background':'#9fc5f8',
+        'accent_1':'#085394',
+        'accent_2':'#6fa8dc',
+        'accent_3':'#b4a7d6',
+        'name' : 'Blue'    
+    }]
+
+class ColorPickerField(SmartSnippetWidgetBase):
+    name = 'Color Picker Field'
+
+    def render(self, request):
+        context_instance = RequestContext(request)
+
+        return render_to_string(
+            'smartsnippets/widgets/colorpickerfield/widget.html', {
+                'field': self.variable,
+                'preset_schemes' : PRESET_SCHEMES
+            },
+            context_instance=context_instance)
+
 widget_pool.register_widget(TextField)
 widget_pool.register_widget(TextAreaField)
 widget_pool.register_widget(DropDownField)
 widget_pool.register_widget(FlexibleFooterField)
+widget_pool.register_widget(ColorPickerField)

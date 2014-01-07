@@ -1,0 +1,144 @@
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/admin-form.css" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/colorpicker.css" />
+<script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/tinycolor.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/admin-form.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/colorpicker.js"></script>
+
+
+<tr id="color-picker-views" style="display:none">
+  <td colspan="2" class="section-delimiter">
+    <div id="step_1" class="view">
+        <h1>Schema Creator</h1>
+        <p>This snippet allows you to customize the look and feel of your site to personalize it to the user experince you wish to cultivate. You may choose your oen branded color or from a tailored selection of colors for your site. Either selection will allow an additional header image.</p>
+
+        <h2>Step 1: Choose Profile Type</h2>
+        <div class="content">
+            <input type="radio" name="profile" value="custom" checked="checked"><span class="label">Custom</span>
+            <p class="radio-help-text">Choosing this option will allow you to customize the colors and accents used on your site. It will <b>NOT</b> allow you to use the PBS Explorer overlay.</p>
+
+            <input type="radio" name="profile" value="preselected"><span class="label">Pre-Selected Color Profiles</span>
+            <p class="radio-help-text">Choosing this option will allow you to use the PBS Explorer overlay and other preset profiles.</p>
+        </div>
+        <div class="clear"></div>
+        <div class="footer-view">
+            <a href="javascript:void(0)" data-name="cancel" class="cancel">Undo</a>
+            <input type="submit" name="next" class="next" value="Next"/>
+        </div>
+    </div>
+
+    <div id="step_2_a" class="view">
+        <h2>Step 2: Choose Colors</h2>
+        <h3>Create Scheme</h3>
+        <p>Use the slider to pick a color, or enter your pre-selected Hex Code into the field bellow. Once you have perfected your color scheme, choose your background color.</p>
+
+        <div class="colors-placeholder">
+            <div id="colorpickerHolder"></div>
+            <div class="color">
+                <div class="title">Base Color</div>
+                <div class="title hex">#ffffff</div>
+                <div id="c-base" class="output" style="background-color: #ffffff">&nbsp;</div>
+            </div>
+            <div class="color">
+                <div class="title">Background</div>
+                <div class="title hex">#ffffff</div>
+                <div id="c-background" class="output" style="background-color: #ffffff">&nbsp;</div>
+            </div>
+            <div class="color">
+                <div class="title">Accent 1</div>
+                <div class="title hex">#ffffff</div>
+                <div id="c-accent1" class="output" style="background-color: #ffffff">&nbsp;</div>
+            </div>
+            <div class="color">
+                <div class="title">Accent 2</div>
+                <div class="title hex">#ffffff</div>
+                <div id="c-accent2" class="output" style="background-color: #ffffff">&nbsp;</div>
+            </div>
+            <div class="color last">
+                <div class="title">Accent 3</div>
+                <div class="title hex">#ffffff</div>
+                <div id="c-accent3" class="output" style="background-color: #ffffff">&nbsp;</div>
+            </div>
+        </div>
+
+        <h3>Choose Background Color</h3>
+        <p>You may choose to use a static white or gray background instead of the pre-selected background</p>
+        <p>
+            <select id="background">
+                <option data-val="white">Use Color Picker Background</option>
+                <option data-val="white">Use Static White Background</option>
+                <option data-val="gray">Use Static Gray Background</option>
+            </select>
+        </p>
+        
+        <h3>Color Scheme Preview</h3>
+        <p><input type="submit" value="Preview Color Scheme" name="preview" class="preview-btn"></p>
+
+        <div class="clear"></div>
+        <div class="footer-view">
+            <a href="javascript:void(0)" data-name="cancel" class="cancel">Undo</a>
+            <input type="submit" value="Back to Step One" name="reset" class="cancel-btn">
+        </div>
+    </div>
+
+    <div id="step_2_b" class="view">
+        <h2>Step 2: Choose Pre-Selected Profile</h2>
+        <h3>Choose Color Scheme</h3>
+        <p>Choose one of the pre-selected color schemes.</p>
+        <div class="colors-placeholder">
+            {% for scheme in preset_schemes %}
+            <div class="scheme-container">
+                <input type="radio" name="scheme" value="{{ scheme.base }}" {% if forloop.counter == 1%}checked="checked"{% endif %}>
+                <div class="scheme">
+                    {{ scheme.name }}
+                    <div class="row">
+                        <div class="output" style="background-color:{{scheme.base}}">&nbsp;</div>
+                        <div class="title hex">{{scheme.base}}</div>
+                        <div class="title">Base Color</div>
+                    </div>
+                    <div class="row">
+                        <div class="output" style="background-color:{{scheme.background}}">&nbsp;</div>
+                        <div class="title hex">{{scheme.background}}</div>
+                        <div class="title">Background</div>
+                    </div>
+                    <div class="row">
+                        <div class="output" style="background-color:{{scheme.accent_1}}">&nbsp;</div>
+                        <div class="title hex">{{scheme.accent_1}}</div>
+                        <div class="title">Accent 1</div>
+                    </div>
+                    <div class="row">
+                        <div class="output" style="background-color:{{scheme.accent_2}}">&nbsp;</div>
+                        <div class="title hex">{{scheme.accent_2}}</div>
+                        <div class="title">Accent 2</div>
+                    </div>
+                    <div class="row">
+                        <div class="output" style="background-color:{{scheme.accent_3}}">&nbsp;</div>
+                        <div class="title hex">{{scheme.accent_3}}</div>
+                        <div class="title">Accent 3</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h3>Optional Overlay</h3>
+        <p>Using the preselected themes gives you the option to choose whether the PBS Explorer Brand Overlay appears on the background. If you would like to apply it to your site, check the box. If not, leave the box unchecked.</p>
+        <p class="select-box-containre"><input type="checkbox" name="apply-overlay"><span class="label">Apply PBS Explorer Overlay</span></p>
+
+        <h3>Color Scheme Preview</h3>
+        <p><input type="submit" value="Preview Color Scheme" name="preview" class="preview-btn"></p>
+
+        <div class="clear"></div>
+        <div class="footer-view">
+            <a href="javascript:void(0)" data-name="cancel" class="cancel">Undo</a>
+            <input type="submit" value="Back to Step One" name="reset" class="cancel-btn">
+        </div>
+    </div>
+
+    <!--
+    <input type="text" class="color"><br>
+    <div class="original" style="display:inline-block; vertical-align: top;"></div>
+    <div class="result" style="display:inline-block; vertical-align: top;"></div>
+-->
+  </td>
+</tr>
+

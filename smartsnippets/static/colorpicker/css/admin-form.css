@@ -1,0 +1,119 @@
+table{
+    width:100%;
+    height:100%;
+}
+.view{
+    display: none;
+}
+
+.view .clear{
+    clear: both;
+}
+
+.view p{
+    margin-bottom:20px;
+}
+
+.view h1,
+.view h2,
+.view h3{
+    margin-bottom: 10px;
+}
+
+.view .content{
+    margin-left: 10px;
+}
+
+.view .footer-view{
+    float: right;
+    clear: right;
+}
+.view input[type="submit"]{
+    margin-left:5px;
+}
+
+.view .colors-placeholder{
+    margin-left:50px;
+    margin-bottom:50px;
+}
+
+.view .colors-placeholder .color{
+    display: inline-block;
+    margin-right:10px;
+    width:80px;
+}
+
+.view .colors-placeholder .color.last{
+    margin-right:0;
+}
+
+.view .colors-placeholder .color .output{
+    width: 50px;
+    height:50px;
+    border:1px solid #ccc;
+}
+
+.view #colorpickerHolder{
+    margin-bottom:20px;
+
+}
+
+.view #background{
+    margin-left:50px;
+}
+
+.view .scheme-container,
+.view .scheme{
+    display:inline-block;
+    vertical-align: top;
+}
+
+.view .scheme{
+    border: 1px solid #ccc;
+    padding:5px;
+    margin-right:10px;
+    cursor:pointer;
+}
+
+.view .row{
+    margin-top: 5px;
+}
+
+.view .label{
+    cursor:pointer;
+    margin-left:5px;
+}
+
+.view .row div{
+    display: inline-block;
+    margin-right:5px;
+}
+
+.view .row div.output{
+    width: 20px;
+    height: 20px;
+    border:1px solid #ccc;
+}
+
+.view .row div.hex{
+    width: 70px;
+}
+
+.view input[name="apply-overlay"]{
+    margin-right:5px;
+    
+}
+
+.view .select-box-containre{
+    margin-left:50px;
+    margin-bottom:50px;
+    white-space: nowrap;
+}
+
+.view input[type=submit].default{
+    float: none;
+}
+
+.view .preview-btn[name="preview"]{
+    margin-left:50px;
+}
