@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from smartsnippets.widgets_pool import widget_pool
@@ -84,46 +85,78 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
             context_instance=context_instance)
 
 
-PRESET_SCHEMES = [{
-        'base': '#cc0000',
-        'background':'#e06666',
-        'accent_1':'#660000',
-        'accent_2':'#f6b26b',
-        'accent_3':'#f9cb9c',
-        'name' : 'Red Theme'    
-    },{
-        'base': '#660000',
-        'background':'#ea9999',
-        'accent_1':'#4c1130',
-        'accent_2':'#c27ba0',
-        'accent_3':'#d5a6bd',
-        'name' : 'Red Theme 2'    
-    },{
-        'base': '#00ffff',
-        'background':'#a2c4c9',
-        'accent_1':'#0c343d',
-        'accent_2':'#45818e',
-        'accent_3':'#76a5af',
-        'name' : 'Explorer Turquoise'    
-    },{
-        'base': '#2b78e4',
-        'background':'#9fc5f8',
-        'accent_1':'#085394',
-        'accent_2':'#6fa8dc',
-        'accent_3':'#b4a7d6',
-        'name' : 'Blue'    
-    }]
+PRESET_SCHEMES = [OrderedDict([
+        ('main_color', '#efa80e'),
+        ('background', '#ffffff'),
+        ('button_color', '#ef850d'),
+        ('light_accent', '#0087bb'),
+        ('darker_accent', '#016e97'),
+        ('name', 'Yellow Theme')    
+    ]),OrderedDict([
+        ('main_color', '#0d7f41'),
+        ('background', '#f3f4ee'),
+        ('button_color', '#ef850f'),
+        ('light_accent', '#7eb750'),
+        ('darker_accent', '#1f6038'),
+        ('name', 'Green Theme')    
+    ]),OrderedDict([
+        ('main_color', '#ee4a2f'),
+        ('background', '#f1f0ec'),
+        ('button_color', '#9a8783'),
+        ('light_accent', '#ff3d1f'),
+        ('darker_accent', '#27314c'),
+        ('name', 'Red Theme')    
+    ]),OrderedDict([
+        ('main_color', '#5d3b6d'),
+        ('background', '#f8f3f0'),
+        ('button_color', '#7e5a88'),
+        ('light_accent', '#a69ca7'),
+        ('darker_accent', '#46324b'),
+        ('name', 'Purple Theme')    
+    ]),OrderedDict([
+        ('main_color', '#ee6225'),
+        ('background', '#f8f3f0'),
+        ('button_color', '#d24a10'),
+        ('light_accent', '#20639a'),
+        ('darker_accent', '#0b3a64'),
+        ('name', 'Orange Theme')    
+    ]),OrderedDict([
+        ('main_color', '#c1ad94'),
+        ('background', '#ffffff'),
+        ('button_color', '#404955'),
+        ('light_accent', '#8697a5'),
+        ('darker_accent', '#687a92'),
+        ('name', 'Neutral Theme')    
+    ]),OrderedDict([
+        ('main_color', '#541357'),
+        ('background', '#fffef2'),
+        ('button_color', '#635262'),
+        ('light_accent', '#ffaa01'),
+        ('darker_accent', '#332244'),
+        ('name', 'Yellow/Purple Theme')    
+    ])]
 
 class ColorPickerField(SmartSnippetWidgetBase):
     name = 'Color Picker Field'
 
+    @property
+    def formatted_value(self):
+        json_string = self.variable.value or '""'
+        try:
+            scheme = json.loads(json_string)
+        except ValueError:
+            scheme = {}
+        return scheme
+
     def render(self, request):
         context_instance = RequestContext(request)
+        scheme = self.formatted_value or {}
 
         return render_to_string(
             'smartsnippets/widgets/colorpickerfield/widget.html', {
                 'field': self.variable,
-                'preset_schemes' : PRESET_SCHEMES
+                'preset_schemes' : PRESET_SCHEMES,
+                'scheme': scheme
             },
             context_instance=context_instance)
 

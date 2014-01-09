@@ -1,5 +1,16 @@
+{% load smartsnippets_tags filertags %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/admin-form.css" />
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/colorpicker.css" />
+<style>
+    #preview{
+        background: url({{ STATIC_URL }}colorpicker/images/preview_mock.png) no-repeat 0 0;
+    }
+    body.explorer.color-picker{
+        background-image: url({{ '/_bento_media/img/bg-explorer-white.jpg'|filerfile }});
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+    }
+</style>
 <script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/tinycolor.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/admin-form.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/colorpicker.js"></script>
@@ -7,6 +18,7 @@
 
 <tr id="color-picker-views" style="display:none">
   <td colspan="2" class="section-delimiter">
+    <input class="snippet-varible" id="var_{{ field.name }}" type="hidden" name="_{{ field.name }}_" value="{{ field.value }}">
     <div id="step_1" class="view">
         <h1>Schema Creator</h1>
         <p>This snippet allows you to customize the look and feel of your site to personalize it to the user experince you wish to cultivate. You may choose your oen branded color or from a tailored selection of colors for your site. Either selection will allow an additional header image.</p>
@@ -34,28 +46,28 @@
         <div class="colors-placeholder">
             <div id="colorpickerHolder"></div>
             <div class="color">
-                <div class="title">Base Color</div>
-                <div class="title hex">#ffffff</div>
+                <div class="title">Main Color</div>
+                <div class="title hex" data-name="main_color">#ffffff</div>
                 <div id="c-base" class="output" style="background-color: #ffffff">&nbsp;</div>
             </div>
             <div class="color">
                 <div class="title">Background</div>
-                <div class="title hex">#ffffff</div>
+                <div class="title hex" data-name="background">#ffffff</div>
                 <div id="c-background" class="output" style="background-color: #ffffff">&nbsp;</div>
             </div>
             <div class="color">
-                <div class="title">Accent 1</div>
-                <div class="title hex">#ffffff</div>
+                <div class="title">Button Color</div>
+                <div class="title hex" data-name="button_color">#ffffff</div>
                 <div id="c-accent1" class="output" style="background-color: #ffffff">&nbsp;</div>
             </div>
             <div class="color">
-                <div class="title">Accent 2</div>
-                <div class="title hex">#ffffff</div>
+                <div class="title">Light Accent</div>
+                <div class="title hex" data-name="light_accent">#ffffff</div>
                 <div id="c-accent2" class="output" style="background-color: #ffffff">&nbsp;</div>
             </div>
             <div class="color last">
-                <div class="title">Accent 3</div>
-                <div class="title hex">#ffffff</div>
+                <div class="title">Darker Accent</div>
+                <div class="title hex" data-name="darker_accent">#ffffff</div>
                 <div id="c-accent3" class="output" style="background-color: #ffffff">&nbsp;</div>
             </div>
         </div>
@@ -64,9 +76,9 @@
         <p>You may choose to use a static white or gray background instead of the pre-selected background</p>
         <p>
             <select id="background">
-                <option data-val="white">Use Color Picker Background</option>
-                <option data-val="white">Use Static White Background</option>
-                <option data-val="gray">Use Static Gray Background</option>
+                <option data-val="colorpicker">Use Color Picker Background</option>
+                <option data-val="#ffffff">Use Static White Background</option>
+                <option data-val="#efefef">Use Static Gray Background</option>
             </select>
         </p>
         
@@ -90,31 +102,15 @@
                 <input type="radio" name="scheme" value="{{ scheme.base }}" {% if forloop.counter == 1%}checked="checked"{% endif %}>
                 <div class="scheme">
                     {{ scheme.name }}
-                    <div class="row">
-                        <div class="output" style="background-color:{{scheme.base}}">&nbsp;</div>
-                        <div class="title hex">{{scheme.base}}</div>
-                        <div class="title">Base Color</div>
-                    </div>
-                    <div class="row">
-                        <div class="output" style="background-color:{{scheme.background}}">&nbsp;</div>
-                        <div class="title hex">{{scheme.background}}</div>
-                        <div class="title">Background</div>
-                    </div>
-                    <div class="row">
-                        <div class="output" style="background-color:{{scheme.accent_1}}">&nbsp;</div>
-                        <div class="title hex">{{scheme.accent_1}}</div>
-                        <div class="title">Accent 1</div>
-                    </div>
-                    <div class="row">
-                        <div class="output" style="background-color:{{scheme.accent_2}}">&nbsp;</div>
-                        <div class="title hex">{{scheme.accent_2}}</div>
-                        <div class="title">Accent 2</div>
-                    </div>
-                    <div class="row">
-                        <div class="output" style="background-color:{{scheme.accent_3}}">&nbsp;</div>
-                        <div class="title hex">{{scheme.accent_3}}</div>
-                        <div class="title">Accent 3</div>
-                    </div>
+                    {% for key, val in scheme.iteritems %}
+                        {% if key != "name" %}
+                        <div class="row">
+                            <div class="output" style="background-color:{{ val }}">&nbsp;</div>
+                            <div class="title hex" data-name="{{ key }}">{{ val }}</div>
+                            <div class="title">{{ key|underscore2space|title }}</div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
             {% endfor %}
@@ -134,11 +130,6 @@
         </div>
     </div>
 
-    <!--
-    <input type="text" class="color"><br>
-    <div class="original" style="display:inline-block; vertical-align: top;"></div>
-    <div class="result" style="display:inline-block; vertical-align: top;"></div>
--->
   </td>
 </tr>
 
