@@ -126,27 +126,28 @@ table{
 /* PREVIEW */
 
 #preview{
-    width: 1450px;
-    height:1972px;
+    width: 1024px;
+    height:1657px;
 }
 
 #preview *{
     position: absolute;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    z-index: -1;
 }
 
 #preview #top-stripe{
-    width: 100%;
+    width: 1024px;
     height: 7px;
     top: 30px;
 }
 
 #preview #menu-btn{
-    left: 245px;
-    top: 197px;
-    width: 67px;
-    height: 47px;
-    line-height: 47px;
+    left: 16px;
+    top: 199px;
+    width: 125px;
+    height: 45px;
+    line-height: 45px;
     text-align: center;
     color: #FFF;
     font-size: 14px;
@@ -154,40 +155,106 @@ table{
 }
 
 #preview #menu-stripe{
-    top: 241px;
-    width: 100%;
+    top: 244px;
+    width: 1024px;
     height: 5px;
 }
 
-#preview .title{
-    top: 786px;
-    height: 30px;
-    width:200px;
-    left: 976px;
-    background: #FFF;
-    font-size: 18px;
+#preview #top-theree-links{
+    left: 820px;
+    top: 50px;
+    font-size: 14px;
+    word-spacing: 6px;
+    z-index: 1;
+    white-space: nowrap;
 }
 
-#preview .read-blog{
-    top: 838px;
-    left: 910px;
-    background: #FFF;
-    font-size: 13px;
+#preview #top-theree-links *{
+    position: relative;
+    z-index: 1;
 }
+
+
+#preview .search{
+    width: 41px;
+    height: 32px;
+    display: inline-block;
+    top: 261px;
+    left: 967px;
+}
+
+#preview #right_rail_add{
+    width: 300px;
+    height: 96px;
+    top: 712px;
+    left: 684px;
+    padding: 12px;
+}
+
+#preview #right_rail_add *{
+    position: relative;
+}
+
+#preview #pledge{
+    z-index: 1;
+    top: 845px;
+    left: 790px;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#preview #module-header{
+    width: 653px;
+    height: 36px;
+    top: 1083px;
+    left: 16px;
+}
+
+
+#preview #module-text1,
+#preview #module-text2{
+    z-index: 1;
+    top: 1171px;
+    left: 138px;
+    font-size: 13px;
+    background: #FFF;
+    word-spacing: 2px;
+}
+
+#preview #module-text2{
+    top: 1265px;
+    font-weight: bold;
+    left: 29px;
+}
+
 
 #preview #footer-stripe{
-    top: 1695px;
-    height: 9px;
-    width: 100%;
+    top: 1364px;
+    height: 8px;
+    width: 1024px;
 }
 
 #preview #copyright{
-    top: 1899px;
-    width: 100%;
+    top: 1568px;
+    width: 964px;
     height: 75px;
-    padding: 0 267px;
+    padding: 0 30px;
     line-height: 75px;
     color: #fff;
     font-size: 14px;
+    text-align: left;
 }
 
+#preview a{
+    cursor: pointer;
+}
+
+#preview a:hover{
+    text-decoration: underline;
+}
+
+body{
+    overflow-x:hidden;
+    overflow-y:scroll;
+}

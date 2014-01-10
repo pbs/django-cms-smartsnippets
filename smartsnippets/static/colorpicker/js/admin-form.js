@@ -19,48 +19,42 @@
                 "attr": "id='top-stripe' class='main_color'",
             },{
                 "tag": "div",
+                "attr": "id='top-theree-links' ",
+                "text": "<a>Log In</a> | <a>Shop</a> | <a>Donate</a>"
+            },{
+                "tag": "div",
                 "attr": "id='menu-btn' class='main_color'",
-                "text": "Home"
+                "text": "HOME"
             },{
                 "tag": "div",
                 "attr": "id='menu-stripe' class='main_color'"
             },{
                 "tag" : "span",
-                "attr": "class='search'"
+                "attr": "class='search button_color'"
+            },{
+                "tag": "div",
+                "attr" : "id='right_rail_add' class='light_accent'",
             },{
                 "tag": "a",
-                "attr" : "href='javascript:void(0)' class='title'",
-                "text": "Bird On The Wire Blog"
+                "attr" : "id='pledge' href='javascript:void(0)'",
+                "text" : "Pledge your support today &gt;"
+            },{
+                "tag": "div",
+                "attr": "id='module-header' class='light_accent'",
             },{
                 "tag": "a",
-                "attr" : "href='javascript:void(0)' class='read-blog'",
-                "text": "Read the blog..."
-            },{
-                "tag": "div",
-                "attr" : "class='envelope accent_dark'"
-            },{
-                "tag": "div",
-                "attr" : "class='accent_light'",
-                "text" : "<h2>GET OUR NEWSLETTER</h2>Enter your email bellow",
-            },{
-                "tag": "div",
-                "attr" : "class='accent_light'",
-                "text" : "<h2>Support Rhode Island PBS</h2><br>Show your support for quality public television. Gifts of any donation are welcome and appreciated",
-            },{
-                "tag": "div",
-                "attr" : "class='accent_light'",
-                "text" : "<b>PLEDGE YOUR SUPPORT TODAY &gt;</b>"
+                "attr": "id='module-text1' href='javascript:void(0)'",
+                "text":"linked text"
             },{
                 "tag": "a",
-                "attr" : "href='javascript:void(0)'",
-                "text" : "Join Today!"
+                "attr": "id='module-text2' href='javascript:void(0)'",
+                "text":"Linked Text"
             },{
                 "tag": "div",
                 "attr": "id='footer-stripe' class='main_color'",
             },{
                 "tag": "div",
                 "attr": "id='copyright' class='main_color'",
-                "text":"Public Broadcasting Copyright &copy; Rhode Island PBS. All Rights Reserved."
             }];
 
         var scheme = window.opener.colorScheme;
@@ -74,11 +68,16 @@
                     if(i == 'background'){
                         HTML += 'body{background-color:'+scheme[i]+'}';
                     }
-                    if(i == 'apply_overlay' && scheme[i].toLowerCase() != 'true'){
-                        HTML += 'body{background-image:none}';
-                    }else{
-                        $('body').addClass('explorer color-picker')
+                    if(i == 'apply_overlay'){
+                        if(scheme[i].toLowerCase() != 'true'){
+                            HTML += 'body{background-image:none}';
+                        }else{
+                            $('body').addClass('explorer color-picker');
+                        }
                     }
+
+
+                    HTML += '#preview a, #preview a:hover{color:'+scheme.darker_accent+'}';
                 }
             }
         HTML += "</style>";
@@ -136,8 +135,8 @@
                 $('#container').css({
                     "visibility": "hidden", 
                     "height":"0px"});
-                 $('#container').hide();
-               
+                $('#container').hide();
+                $('#color-picker-css').remove()
                 $('body').append(getPreviewHTML());
             }
         }catch(e){}
@@ -287,7 +286,8 @@
             if($(this).attr('name') == "preview"){
                 var page = $('#step_1 input[name="profile"]:checked').val();
                 
-                win = window.open(window.location.href + "?preview="+page, "preview", 'height=800,width=1450,resizable=no,scrollbars=yes');
+                win = window.open(window.location.href + "?preview="+page, "preview", 'height=600,width=1034,resizable=no,scrollbars=no');
+              
                 win.focus();
                 window.colorScheme = getFormScheme();
                 handleSubmit(false);

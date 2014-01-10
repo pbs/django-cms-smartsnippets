@@ -93,7 +93,7 @@ PRESET_SCHEMES = [OrderedDict([
         ('darker_accent', '#016e97'),
         ('name', 'Yellow Theme')    
     ]),OrderedDict([
-        ('main_color', '#0d7f41'),
+        ('main_color', '#589846'),
         ('background', '#f3f4ee'),
         ('button_color', '#ef850f'),
         ('light_accent', '#7eb750'),
@@ -103,8 +103,8 @@ PRESET_SCHEMES = [OrderedDict([
         ('main_color', '#ee4a2f'),
         ('background', '#f1f0ec'),
         ('button_color', '#9a8783'),
-        ('light_accent', '#ff3d1f'),
-        ('darker_accent', '#27314c'),
+        ('light_accent', '#27314c'),
+        ('darker_accent', '#ff3d1f'),
         ('name', 'Red Theme')    
     ]),OrderedDict([
         ('main_color', '#5d3b6d'),
