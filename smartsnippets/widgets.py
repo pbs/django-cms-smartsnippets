@@ -128,12 +128,12 @@ PRESET_SCHEMES = [OrderedDict([
         ('darker_accent', '#687a92'),
         ('name', 'Neutral Theme')    
     ]),OrderedDict([
-        ('main_color', '#541357'),
-        ('background', '#fffef2'),
-        ('button_color', '#635262'),
-        ('light_accent', '#ffaa01'),
-        ('darker_accent', '#332244'),
-        ('name', 'Yellow/Purple Theme')    
+        ('main_color', '#ee4a2f'),
+        ('background', '#f1f0ec'),
+        ('button_color', '#9a8783'),
+        ('light_accent', '#faa232'),
+        ('darker_accent', '#27314c'),
+        ('name', 'Orange/Purple Theme')    
     ])]
 
 class ColorPickerField(SmartSnippetWidgetBase):
@@ -160,8 +160,43 @@ class ColorPickerField(SmartSnippetWidgetBase):
             },
             context_instance=context_instance)
 
+class ColorField(SmartSnippetWidgetBase):
+    name = 'Color Field'
+    
+    def render(self, request):
+        context_instance = RequestContext(request)
+        return render_to_string('smartsnippets/widgets/colorfield/widget.html',
+                                    {'field': self.variable},
+                                    context_instance=context_instance)
+
+
+class FlexibleHeaderField(SmartSnippetWidgetBase):
+    name = 'Flexible Header Field'
+
+    @property
+    def formatted_value(self):
+        json_string = self.variable.value or '""'
+        try:
+            header = json.loads(json_string)
+        except ValueError:
+            header = {}
+        return header
+
+    def render(self, request):
+        context_instance = RequestContext(request)
+        header = self.formatted_value or {}
+
+        return render_to_string(
+            'smartsnippets/widgets/flexibleheaderfield/widget.html', {
+                'field': self.variable,
+                'header': header
+            },
+            context_instance=context_instance)
+
 widget_pool.register_widget(TextField)
 widget_pool.register_widget(TextAreaField)
 widget_pool.register_widget(DropDownField)
 widget_pool.register_widget(FlexibleFooterField)
 widget_pool.register_widget(ColorPickerField)
+widget_pool.register_widget(FlexibleHeaderField)
+widget_pool.register_widget(ColorField)

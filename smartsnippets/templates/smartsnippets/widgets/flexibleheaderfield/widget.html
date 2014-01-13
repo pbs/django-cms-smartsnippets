@@ -1,0 +1,41 @@
+{% load smartsnippets_tags %}
+{% spaceless %}
+<tr class="section_{{ field.name }}">
+  <td colspan="2" class="section-delimiter">
+    <input class="snippet-varible" id="var_{{ field.name }}" type="hidden" name="_{{ field.name }}_" value="{{ field.value }}">
+    <fieldset class="module details">
+      <h2>Details</h2>
+      <table>
+        {% show_image_field "Logo-desktop" %}
+        {% show_image_field "Logo-mobile" %}
+        {% show_image_field "Branding-image" %}
+      </table>
+     
+    </fieldset>
+
+    <fieldset class="module links">
+      <h2>Links</h2>
+      <table>
+       {% show_text_field "Link1-Text" %}
+       {% show_text_field "Link1-URL" %}
+       {% show_text_field "Link2-Text" %}
+       {% show_text_field "Link2-URL" %}
+       {% show_text_field "Link3-Text" %}
+       {% show_text_field "Link3-URL" %}
+      </table>
+    </filedset>
+
+    <fieldset class="module">
+      <h2>Donate button</h2>
+      <table>
+        {% show_text_field "Donate-button-text" %}
+        {% show_text_field "Donate-button-URL" %}
+        {% show_color_field "Donate-button-color" %}
+      </table>
+    </filedset>
+
+  </td>
+</tr>
+
+{% endspaceless %}
+
