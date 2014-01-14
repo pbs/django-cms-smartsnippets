@@ -202,6 +202,7 @@
     }
 
     function initStep_2_a(){
+        $('#smartsnippetpointer_form').unbind("submit");
         var defaultColor =  '#0000ff';
         try{
             var scheme_color = JSON.parse($('.snippet-varible').val()).main_color;
@@ -240,19 +241,20 @@
         var form = $('#smartsnippetpointer_form');
 
         var handleSubmit = function(handler){
-            form.unbind("submit");
+            
             if(handler){
-                form.submit(handler);
+                form.bind("submit",handler);
             }else{
-                form.submit(function(){
+                form.bind("submit",function(){
+                    console.log("submit")
                     return false;
                 });
             }
         };
 
-        form.find('input[type="submit"]:not(input[name="_cancel"]), .footer-view .cancel').unbind("click");
-        form.find('input[type="submit"]:not(input[name="_cancel"]), .footer-view .cancel').click(function(){
-
+        form.find('input[type="submit"], .footer-view .cancel').unbind("click");
+        form.find('input[type="submit"], .footer-view .cancel').click(function(){
+            console.log("click")
             //"next" button is pressed
             if($(this).attr('name') == "next"){
                 var radioVal = form.find('input[name="profile"]:checked', form).val();
@@ -274,6 +276,11 @@
                 handleSubmit(false);
             }
 
+            //"concel" button is pressed
+            if($(this).attr('name') == "_cancel"){
+                form.unbind("submit");
+            }
+
             //"undo" button is pressed
             if($(this).attr('data-name') == "cancel"){
                 $('#var_schema option').filter(function() { 
@@ -287,7 +294,7 @@
                 var page = $('#step_1 input[name="profile"]:checked').val();
                 
                 win = window.open(window.location.href + "?preview="+page, "preview", 'height=600,width=1034,resizable=no,scrollbars=no');
-              
+
                 win.focus();
                 window.colorScheme = getFormScheme();
                 handleSubmit(false);

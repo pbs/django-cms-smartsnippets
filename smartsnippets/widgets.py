@@ -128,11 +128,11 @@ PRESET_SCHEMES = [OrderedDict([
         ('darker_accent', '#687a92'),
         ('name', 'Neutral Theme')    
     ]),OrderedDict([
-        ('main_color', '#ee4a2f'),
-        ('background', '#f1f0ec'),
-        ('button_color', '#9a8783'),
-        ('light_accent', '#faa232'),
-        ('darker_accent', '#27314c'),
+        ('main_color', '#541357'),
+        ('background', '#fffdf1'),
+        ('button_color', '#635262'),
+        ('light_accent', '#f18c09'),
+        ('darker_accent', '#332244'),
         ('name', 'Orange/Purple Theme')    
     ])]
 

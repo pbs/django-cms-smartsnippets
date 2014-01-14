@@ -1,0 +1,33 @@
+table{
+    width:100%;
+}
+.fields fieldset{
+    width:100%;
+}
+
+.fields fieldset table,
+.fields fieldset > p{
+    border:0;
+    width:70%;
+}
+
+.fields fieldset table td{
+    border:0;
+}
+
+.fields fieldset table td label{
+    white-space: nowrap;
+}
+
+.fields td.no-padding{
+    padding:0;
+}
+
+.fields div.help{
+    display: none;
+}
+
+.help-image{
+    float: right;
+    margin-right:5px;
+}
