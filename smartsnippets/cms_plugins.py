@@ -7,7 +7,7 @@ from smartsnippets.widgets_pool import widget_pool
 
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import shared_sites, include_orphan, restrict_user
-from .signals import smartsnippet_var_saved
+from .signals import ss_plugin_var_saved
 
 
 class SmartSnippetPlugin(CMSPluginBase):
@@ -44,7 +44,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             v, _ = Variable.objects.get_or_create(snippet=obj, snippet_variable=var)
             v.value = request.REQUEST.get('_'+var.name+'_', '')
             v.save()
-            smartsnippet_var_saved.send(sender=v, request=request.REQUEST)
+            ss_plugin_var_saved.send(sender=v, request=request.REQUEST)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "snippet":

@@ -2,5 +2,5 @@
 
 from django.dispatch import Signal
 
-# signal sent after a smartsnippet variable is persisted
-smartsnippet_var_saved = Signal(providing_args=["sender", "request"])
+# signal sent after a smartsnippet variable (Variable) is persisted
+ss_plugin_var_saved = Signal(providing_args=["sender", "request"])
