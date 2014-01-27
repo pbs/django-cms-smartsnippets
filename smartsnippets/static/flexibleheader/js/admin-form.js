@@ -65,7 +65,7 @@
         function () {
             limitChars($('#var_Link1_Text, #var_Link2_Text, #var_Link3_Text'), 30, $('#remaining-chars'));
 
-            $('#var_Donate-button-text').attr("maxlength", 8);
+            $('#var_Donate_button_text').attr("maxlength", 8);
 
             $('#smartsnippetpointer_form input[name="_save"]').click(function(){
                 saveSnippet();

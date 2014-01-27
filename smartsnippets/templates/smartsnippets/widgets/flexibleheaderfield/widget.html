@@ -7,7 +7,7 @@
     <input class="snippet-varible" id="var_header" type="hidden" name="_{{ field.name }}_" value="{{ field.value }}">
     <fieldset class="module section" data-name="images">
       <h2>Images</h2>
-      <a href='javascript:void(0)' class="help-image"><img src="{{STATIC_URL}}images/help.png">How will these images appear to the end user?</a>
+      <a href='javascript:void(0)' onclick="window.open('{{STATIC_URL}}flexibleheader/img/logo-branding-helper-image.jpg', links, 'height=280,width=950,resizable=no,scrollbars=no');" class="help-image"><img src="{{STATIC_URL}}images/help.png">How will these images appear to the end user?</a>
       <table>
         {% show_image_field "Logo_desktop" header.Logodesktop %}
         <tr><td></td><td class="no-padding"><p>Please provide a transparent PNG of your station's logo that will appear on all desktop and laptop computers; the logo should be a maximum 490px wide and 125px tall.</p></td></tr>
@@ -23,7 +23,7 @@
 
     <fieldset class="module section"  data-name="links">
       <h2>Links</h2>
-      <a href='javascript:void(0)' class="help-image"><img src="{{STATIC_URL}}images/help.png">How will these links appear to the end user?</a>
+      <a href='javascript:void(0)' onclick="window.open('{{STATIC_URL}}flexibleheader/img/header-links-helper-image.jpg', links, 'height=215,width=450,resizable=no,scrollbars=no');" class="help-image"><img src="{{STATIC_URL}}images/help.png">How will these links appear to the end user?</a>
       <p>You may add up to three links, with a character limit for all three (combined), including spaces, of 30 characters; each link will be separated by a pipe. The links are optional. You may use one , two, three, or none. To use none leave all fields blank.</p>
       <table>
        {% show_text_field "Link1_Text" header.Link1Text %}
@@ -38,7 +38,7 @@
 
     <fieldset class="module section"  data-name="donate">
       <h2>Donate button</h2>
-      <a href='javascript:void(0)' class="help-image"><img src="{{STATIC_URL}}images/help.png">How will this button apperat tot the end user?</a>
+      <a href='javascript:void(0)' onclick="window.open('{{STATIC_URL}}flexibleheader/img/donate-helper-image.jpg', links, 'height=215,width=450,resizable=no,scrollbars=no');" class="help-image"><img src="{{STATIC_URL}}images/help.png">How will this button apperat tot the end user?</a>
       <table>
         {% show_text_field "Donate_button_text" header.Donatebuttontext %}
         <tr><td></td><td class="no-padding"><p>Induce visitors to support your station; 8-character limit; use upper - and/or lower-case letters.</p></td></tr>
