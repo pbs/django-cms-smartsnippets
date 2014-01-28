@@ -246,7 +246,6 @@
                 form.bind("submit",handler);
             }else{
                 form.bind("submit",function(){
-                    console.log("submit")
                     return false;
                 });
             }
@@ -254,9 +253,9 @@
 
         form.find('input[type="submit"], .footer-view .cancel').unbind("click");
         form.find('input[type="submit"], .footer-view .cancel').click(function(){
-            console.log("click")
             //"next" button is pressed
             if($(this).attr('name') == "next"){
+                form.unbind("submit")
                 var radioVal = form.find('input[name="profile"]:checked', form).val();
 
                 if(radioVal == "custom"){
@@ -268,17 +267,21 @@
                     handleSubmit(false);
                     initStep_2_b();
                 }
+
+                return false
             }
 
             //"back to step one" button is pressed
             if($(this).attr('name') == "reset"){
                 toggleView($('#step_1'));
                 handleSubmit(false);
+                return
             }
 
             //"concel" button is pressed
             if($(this).attr('name') == "_cancel"){
                 form.unbind("submit");
+                return
             }
 
             //"undo" button is pressed
@@ -302,6 +305,7 @@
 
             //"save and apply new theme" button is pressed
             if($(this).attr('name') == "_save"){
+                form.unbind("submit")
                 handleSubmit(function(){
                     var scheme = getFormScheme();
                     $('.snippet-varible').val(JSON.stringify(scheme));
