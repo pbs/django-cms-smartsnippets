@@ -160,7 +160,7 @@ class ExtendedSiteAdminForm(add_bidirectional_m2m(registered_form(Site))):
 
     def clean_snippets(self):
         assigned_snippets = self.cleaned_data['snippets']
-        if self.instance.pk is None:
+        if self.instance.pk is None or include_orphan:
             return assigned_snippets
         pks = [s.pk for s in assigned_snippets]
         # snippets that were previously assigned to this site, but got unassigned
