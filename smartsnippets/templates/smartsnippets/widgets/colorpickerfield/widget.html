@@ -5,10 +5,9 @@
     #preview{
         background: url({{ STATIC_URL }}colorpicker/images/preview_mock.png) no-repeat 0 0;
     }
-    body.explorer.color-picker{
-        background-image: url({{ '/_bento_media/img/bg-explorer-white.jpg'|filerfile }});
+    body.explorer.passport{
         background-repeat: no-repeat;
-        background-position: 50% 50%;
+        background-position: 50% 100%;
     }
 </style>
 <script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/tinycolor.js"></script>
@@ -98,12 +97,18 @@
         <p>Choose one of the pre-selected color schemes.</p>
         <div class="colors-placeholder">
             {% for scheme in preset_schemes %}
+            <style>
+                body.explorer.passport.{{scheme.id}}{
+                    {% with "/_bento_media/passport/img/"|add:scheme.id|add:"-bubble-bg.png" as filename %}
+                    background-image: url({{ filename|filerfile }});
+                    {% endwith %}
+                }
+            </style>
             <div class="scheme-container">
                 <input type="radio" name="scheme" value="{{ scheme.base }}" {% if forloop.counter == 1%}checked="checked"{% endif %}>
-                <div class="scheme">
-                    {{ scheme.name }}
+                <div class="scheme" data-name="{{scheme.id}}">
                     {% for key, val in scheme.iteritems %}
-                        {% if key != "name" %}
+                        {% if key != "name" and key != "id"%}
                         <div class="row">
                             <div class="output" style="background-color:{{ val }}">&nbsp;</div>
                             <div class="title hex" data-name="{{ key }}">{{ val }}</div>

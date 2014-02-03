@@ -72,7 +72,7 @@
                         if(scheme[i].toLowerCase() != 'true'){
                             HTML += 'body{background-image:none}';
                         }else{
-                            $('body').addClass('explorer color-picker');
+                            $('body').addClass('explorer passport '+scheme.id);
                         }
                     }
 
@@ -119,7 +119,7 @@
 
         $('#container').css("visibility", "visible");
 
-        if(theme == 'color-picker'){
+        if(theme == 'passport'){
             toggleView(true);
             $('#smartsnippetpointer_form table tr:not(#color-picker-views)').hide();
             $('.plugin-submit-row input[name="_save"]').val("Save and Apply New Theme to My Site").attr("disabled", true);
@@ -188,6 +188,7 @@
             var radioBtn = $('#color-picker-views #step_2_b input[name="scheme"]:checked');
             hexElems = radioBtn.next('.scheme').find('.title.hex');
             scheme.apply_overlay = $('#color-picker-views #step_2_b input[name="apply-overlay"]').is(":checked") ? "true" : "";
+            scheme.id = radioBtn.next('.scheme').attr("data-name")
         }
 
         hexElems.each(function(){
@@ -324,7 +325,7 @@
 
             handleSubmitButton();
 
-            $('#var_schema').change(function(){
+            $('#var_theme').change(function(){
                 setDefaultView($(this).val());
             });
 
@@ -337,7 +338,7 @@
                 }
             });
 
-            setDefaultView($('#var_schema').val());
+            setDefaultView($('#var_theme').val());
             
         }
     );
