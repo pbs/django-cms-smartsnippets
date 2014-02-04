@@ -287,8 +287,8 @@
 
             //"undo" button is pressed
             if($(this).attr('data-name') == "cancel"){
-                $('#var_schema option').filter(function() { 
-                    return ($(this).text() == 'white' || $(this).text() == 'blue');
+                $('#var_theme option').filter(function() { 
+                    return ($(this).text() == 'explorer');
                 }).attr('selected', true);
                 setDefaultView($('#var_theme').val());
             }
