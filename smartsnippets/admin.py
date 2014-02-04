@@ -13,7 +13,8 @@ from admin_extend.extend import registered_form, extend_registered, \
     add_bidirectional_m2m
 
 from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
-from settings import shared_sites, include_orphan, restrict_user
+from settings import (
+    shared_sites, include_orphan, restrict_user, handle_permissions_checks)
 from widgets_pool import widget_pool
 
 
@@ -98,6 +99,9 @@ class SnippetAdmin(admin.ModelAdmin):
     site_list.short_description = 'sites'
 
     def get_readonly_fields(self, request, obj=None):
+        if not handle_permissions_checks:
+            return super(SnippetAdmin, self)\
+                .get_readonly_fields(request, obj=obj)
         ro = self.form.base_fields.keys()
         if request.user.is_superuser or obj is None:
             return []
@@ -107,6 +111,9 @@ class SnippetAdmin(admin.ModelAdmin):
         return []
 
     def has_delete_permission(self, request, obj=None):
+        if not handle_permissions_checks:
+            return super(SnippetAdmin, self)\
+                .has_delete_permission(request, obj=obj)
         if request.user.is_superuser or obj is None:
             return True
         if self.restrict_user and self.shared_sites:
@@ -114,6 +121,9 @@ class SnippetAdmin(admin.ModelAdmin):
         return True
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if not handle_permissions_checks:
+            return super(SnippetAdmin, self)\
+                .formfield_for_manytomany(db_field, request, **kwargs)
         if db_field.name == "sites":
             f = Q()
             if not request.user.is_superuser:
@@ -126,6 +136,8 @@ class SnippetAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         q = super(SnippetAdmin, self).queryset(request)
+        if not handle_permissions_checks:
+            return q
         f = Q()
         if not request.user.is_superuser:
             if self.restrict_user:
