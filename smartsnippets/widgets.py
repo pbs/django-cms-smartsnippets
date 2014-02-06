@@ -5,10 +5,12 @@ from smartsnippets.widgets_pool import widget_pool
 from smartsnippets.widgets_base import SmartSnippetWidgetBase
 from models import DropDownVariable
 from smartsnippets import settings
+from smartsnippets.utils import ColorPickerSchemes
+
 
 class TextField(SmartSnippetWidgetBase):
     name = 'Text Field'
-    
+
     def render(self, request):
         context_instance = RequestContext(request)
         return render_to_string('smartsnippets/widgets/textfield/widget.html',
@@ -18,7 +20,7 @@ class TextField(SmartSnippetWidgetBase):
 
 class TextAreaField(SmartSnippetWidgetBase):
     name = 'TextArea Field'
-    
+
     def render(self, request):
         context_instance = RequestContext(request)
         return render_to_string('smartsnippets/widgets/textareafield/widget.html',
@@ -29,7 +31,7 @@ class TextAreaField(SmartSnippetWidgetBase):
 class DropDownField(SmartSnippetWidgetBase):
     name = 'DropDown Field'
     model = DropDownVariable
-    
+
     def render(self, request):
         context_instance = RequestContext(request)
         return render_to_string('smartsnippets/widgets/dropdownfield/widget.html',
@@ -83,6 +85,7 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
 
 class ColorPickerField(SmartSnippetWidgetBase):
     name = 'Color Picker Field'
+    preset_schemes = ColorPickerSchemes()
 
     @property
     def formatted_value(self):
@@ -96,12 +99,11 @@ class ColorPickerField(SmartSnippetWidgetBase):
     def render(self, request):
         context_instance = RequestContext(request)
         scheme = self.formatted_value or {}
-        preset_schemes = getattr(settings, 'PRESET_COLORPICKER_SCHEMES', {})
 
         return render_to_string(
             'smartsnippets/widgets/colorpickerfield/widget.html', {
                 'field': self.variable,
-                'preset_schemes' : preset_schemes,
+                'preset_schemes' : ColorPickerField.preset_schemes,
                 'scheme': scheme
             },
             context_instance=context_instance)
@@ -109,7 +111,7 @@ class ColorPickerField(SmartSnippetWidgetBase):
 
 class ColorField(SmartSnippetWidgetBase):
     name = 'Color Field'
-    
+
     def render(self, request):
         context_instance = RequestContext(request)
         return render_to_string('smartsnippets/widgets/colorfield/widget.html',
