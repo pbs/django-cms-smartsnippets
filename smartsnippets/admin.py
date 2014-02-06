@@ -24,6 +24,23 @@ class SnippetForm(ModelForm):
         model = SmartSnippet
 
     def clean_sites(self):
+        self.cleaned_data['sites'] = self.cleaned_data.get(
+            'sites', []) or Site.objects.get_empty_query_set()
+        assigned_in_form = self.cleaned_data['sites']
+
+        all_in_form = self.base_fields['sites'].queryset
+        assigned_in_form_ids = list(
+            assigned_in_form.values_list('id', flat=True))
+        unassigned_in_form_ids = list(
+            all_in_form.exclude(id__in=assigned_in_form_ids)\
+                .values_list('id', flat=True))
+
+        assigned_and_unchanged_ids = list(
+            self.instance.sites.exclude(id__in=unassigned_in_form_ids)
+                .values_list('id', flat=True))
+        all_assigned = assigned_and_unchanged_ids + assigned_in_form_ids
+        self.cleaned_data['sites'] = Site.objects.filter(id__in=all_assigned)
+
         if not self.include_orphan:
             if not self.cleaned_data.get('sites', []):
                 raise ValidationError('This field is required.')
