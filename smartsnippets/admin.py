@@ -23,28 +23,38 @@ class SnippetForm(ModelForm):
     class Meta:
         model = SmartSnippet
 
+    def __init__(self, *args, **kwargs):
+        if 'sites' in self.base_fields:
+            # disallow django to validate if empty since it is done
+            #   in the clean sites method
+            self.base_fields['sites'].required = False
+        super(SnippetForm, self).__init__(*args, **kwargs)
+
     def clean_sites(self):
+        empty_sites = Site.objects.get_empty_query_set()
         self.cleaned_data['sites'] = self.cleaned_data.get(
-            'sites', []) or Site.objects.get_empty_query_set()
-        assigned_in_form = self.cleaned_data['sites']
+            'sites', empty_sites) or empty_sites
+
+        def ids_list(queryset):
+            return list(queryset.values_list('id', flat=True))
 
         all_in_form = self.base_fields['sites'].queryset
-        assigned_in_form_ids = list(
-            assigned_in_form.values_list('id', flat=True))
-        unassigned_in_form_ids = list(
-            all_in_form.exclude(id__in=assigned_in_form_ids)\
-                .values_list('id', flat=True))
+        assigned_in_form = ids_list(self.cleaned_data['sites'])
+        unassigned_in_form = ids_list(
+            all_in_form.exclude(id__in=assigned_in_form))
 
-        assigned_and_unchanged_ids = list(
-            self.instance.sites.exclude(id__in=unassigned_in_form_ids)
-                .values_list('id', flat=True))
-        all_assigned = assigned_and_unchanged_ids + assigned_in_form_ids
+        if self.instance.pk:
+            assigned_and_unchanged = ids_list(
+                self.instance.sites.exclude(id__in=unassigned_in_form))
+            all_assigned = assigned_in_form + assigned_and_unchanged
+        else:
+            all_assigned = assigned_in_form
+
         self.cleaned_data['sites'] = Site.objects.filter(id__in=all_assigned)
 
-        if not self.include_orphan:
-            if not self.cleaned_data.get('sites', []):
+        if not self.include_orphan and not self.cleaned_data['sites']:
                 raise ValidationError('This field is required.')
-        return self.cleaned_data.get('sites', [])
+        return self.cleaned_data['sites']
 
     def clean_template_code(self):
         code = self.cleaned_data.get('template_code', None)
