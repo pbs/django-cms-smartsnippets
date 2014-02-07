@@ -49,8 +49,6 @@ class SmartSnippetPlugin(CMSPluginBase):
             f = Q(sites=Site.objects.get_current())
             if self.shared_sites:
                 f |= Q(sites__name__in=self.shared_sites)
-            if include_orphan:
-                f |= Q(sites__isnull=True)
             kwargs["queryset"] = SmartSnippet.objects.filter(f).distinct()
         return (super(SmartSnippetPlugin, self)
                     .formfield_for_foreignkey(db_field, request, **kwargs))
