@@ -1,4 +1,4 @@
-{% load smartsnippets_tags filertags %}
+{% load smartsnippets_tags %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/admin-form.css" />
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/colorpicker.css" />
 <style>
@@ -99,16 +99,18 @@
             {% for scheme in preset_schemes %}
             <style>
                 body.explorer.passport.{{scheme.id}}{
-                    {% with "/_bento_media/passport/img/"|add:scheme.id|add:"-bubble-bg.png" as filename %}
-                    background-image: url({{ filename|filerfile }});
-                    {% endwith %}
+                    {% if scheme.bubble_image_url %}
+                        background-image: url({{ scheme.bubble_image_url }});
+                    {% else %}
+                        background-image: url({{STATIC_URL}}colorpicker/images/{{scheme.id}}-bubble-bg.png);
+                    {% endif %}
                 }
             </style>
             <div class="scheme-container">
                 <input type="radio" name="scheme" value="{{ scheme.base }}" {% if forloop.counter == 1%}checked="checked"{% endif %}>
                 <div class="scheme" data-name="{{scheme.id}}">
                     {% for key, val in scheme.iteritems %}
-                        {% if key != "name" and key != "id"%}
+                        {% if key != "name" and key != "id" and key != "bubble_image_url" %}
                         <div class="row">
                             <div class="output" style="background-color:{{ val }}">&nbsp;</div>
                             <div class="title hex" data-name="{{ key }}">{{ val }}</div>

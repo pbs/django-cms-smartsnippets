@@ -2,11 +2,15 @@
     var FOOTER = {};
 
     function getDetails(){
-        var inputs = $('#smartsnippetpointer_form fieldset.details .subvar');
+        var inputs = $('#smartsnippetpointer_form fieldset.details .subvar, #var_logo');
         var details = {};
 
         inputs.each(function(){
-            details[$(this).attr("name")] = $(this).val();
+            if($(this).attr("name") === '_logo_'){
+                details["logo"] = $(this).val();
+            }else{
+                details[$(this).attr("name")] = $(this).val();
+            }
         });
 
         return details;
@@ -115,49 +119,3 @@
     );
     
 }(django.jQuery));
-
-function showRelatedObjectLookupPopupImgField(caller, destination_id) {
-    var name, href, win;
-
-    image_field_name = destination_id;
-    name = caller.id.replace(/^lookup_/, '');
-    name = id_to_windowname(name);
-
-    if (caller.href.search(/\?/) >= 0) {
-        href = caller.href + '&pop=1';
-    } else {
-        href = caller.href + '?pop=1';
-    }
-    win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
-    win.focus();
-    //  In case the SmartSnippet has both image and merlin fields, the request to
-    //  opener.dismissRelatedImageLookupPopup should go to the right function
-    window.dismissRelatedImageLookupPopup = dismissRelatedImageLookupPopupImgField;
-
-    return false;
-}
-
-dismissRelatedImageLookupPopupImgField = function (win, chosenId, chosenThumbnailUrl, chosenDescriptionTxt) {
-    "use strict";
-
-    var jxhr, jQuery = django.jQuery;
-
-    win.close();
-    jxhr = jQuery.ajax({
-        url: filer_image_url,
-        data: {'id': chosenId},
-        success: function (data) {
-            if (data.url) {
-                jQuery("td.invalid_image").html('');
-                jQuery('#' + image_field_name).val(data.url);
-                jQuery('#' + image_field_name).next("img").attr("src",data.url);
-            } else {
-                jQuery("td.error_" + image_field_name).html('Please select a valid image type.');
-            }
-        },
-        error: function (data) {
-            alert('Error retrieving file information.');
-        }
-    });
-    return jxhr;
-};

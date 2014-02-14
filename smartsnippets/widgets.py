@@ -59,7 +59,7 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
             footer_links = footer.get('links', [{}] * 4)
             for col in footer_links:
                 col["header"] = col.get('header', {'text': '',
-                                                    'url': ''})
+                                                   'url': ''})
                 col["column_links"] = col.get('column_links', [{'text': '',
                                                                 'url': ''}] * 6)
 
@@ -67,10 +67,10 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
 
         footer['links'] = footer.get('links', get_default_links())
         footer['details'] = footer.get('details', {'logo': '',
-                                                    'logo_link': '',
-                                                    'address': '',
-                                                    'phone': '',
-                                                    'fax': ''})
+                                                   'logo_link': '',
+                                                   'address': '',
+                                                   'phone': '',
+                                                   'fax': ''})
         footer['copyright'] = footer.get('copyright', '')
 
         return render_to_string(
@@ -79,8 +79,6 @@ class FlexibleFooterField(SmartSnippetWidgetBase):
                 'footer': footer,
             },
             context_instance=context_instance)
-
-
 
 
 class ColorPickerField(SmartSnippetWidgetBase):
@@ -103,7 +101,7 @@ class ColorPickerField(SmartSnippetWidgetBase):
         return render_to_string(
             'smartsnippets/widgets/colorpickerfield/widget.html', {
                 'field': self.variable,
-                'preset_schemes' : ColorPickerField.preset_schemes,
+                'preset_schemes': ColorPickerField.preset_schemes,
                 'scheme': scheme
             },
             context_instance=context_instance)
@@ -115,8 +113,8 @@ class ColorField(SmartSnippetWidgetBase):
     def render(self, request):
         context_instance = RequestContext(request)
         return render_to_string('smartsnippets/widgets/colorfield/widget.html',
-                                    {'field': self.variable},
-                                    context_instance=context_instance)
+                                {'field': self.variable},
+                                context_instance=context_instance)
 
 
 class FlexibleHeaderField(SmartSnippetWidgetBase):

@@ -1,9 +1,7 @@
+{% load smartsnippets_tags %}
 {% spaceless %}
-<link media="all" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}/css/flexible-footer-field.css">
+<link media="all" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flexiblefooter/css/admin-form.css">
 <script src="{{ STATIC_URL }}flexiblefooter/js/footer.js"></script>
-<script>
-  var filer_image_url = "{% url cmsplugin_image.views.get_file %}";
-</script>
 
 <tr class="section_{{ field.name }}">
   <td colspan="2" class="section-delimiter">
@@ -13,21 +11,15 @@
       <table>
       {% for key, val in footer.details.iteritems %}
         <tr>
-          <td class="label"><label for="{{key}}">{{key|capfirst}}</label></td>
           {% if key == 'logo' %}
+            <td class="label"><label for="{{key}}">Logo</label></td>
             <td>
-
-              <input id="{{key}}" type="text" name="{{key}}" value="{{val}}" size="100" class="subvar hidden">
-              <img src="{{val}}" width="30" height="30">
-              <a href="{% url admin:filer_folder_changelist %}"
-                 class="related-lookup"
-                 id="lookup_id_image"
-                 title="Lookup"
-                 onclick="return showRelatedObjectLookupPopupImgField(this, '{{key}}');">
-                <img src="{{ STATIC_URL }}admin/img/icon_searchbox.png" alt="Lookup" height="16" width="16"></a>
-              <br >
+              <table class="no-label no-border">
+                {% show_image_field key val %}
+              </table>
             </td>
           {% else %}
+          <td class="label"><label for="{{key}}">{{key|capfirst}}</label></td>
             {% if key == 'address'%}
               <td><textarea class="subvar" id="{{key}}" name="{{key}}" type="text" cols="70">{{val}}</textarea></td>
             {% else %}
