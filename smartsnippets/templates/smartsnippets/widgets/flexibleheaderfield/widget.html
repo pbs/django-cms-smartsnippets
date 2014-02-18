@@ -1,0 +1,55 @@
+{% load smartsnippets_tags %}
+<link media="all" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flexibleheader/css/admin-form.css">
+<script type="text/javascript" src="{{ STATIC_URL }}flexibleheader/js/admin-form.js"></script>
+{% spaceless %}
+<tr class="section_{{ field.name }} fields">
+  <td colspan="2" class="section-delimiter">
+    <input class="snippet-varible" id="var_header" type="hidden" name="_{{ field.name }}_" value="{{ field.value }}">
+    <fieldset class="module section" data-name="images">
+      <h2>Images</h2>
+      <a href='javascript:void(0)' onclick="window.open('{{STATIC_URL}}flexibleheader/img/logo-branding-helper-image.jpg', links, 'height=280,width=950,resizable=no,scrollbars=no');" class="help-image"><img src="{{STATIC_URL}}images/help.png">How will these images appear to the end user?</a>
+      <table>
+        {% show_image_field "Logo_desktop" header.Logodesktop %}
+        <tr><td></td><td class="no-padding"><p>Please provide a transparent PNG of your station's logo that will appear on all desktop and laptop computers; the logo should be a maximum 490px wide and 125px tall.</p></td></tr>
+        {% show_image_field "Logo_mobile" header.Logomobile %}
+        <tr><td></td><td class="no-padding"><p>Please provide a transparent PNG of your station's logo for mobile devices; the logo should be black or color and have a maximum width of 436px and a maximum height of 45px.</p></td></tr>
+        {% show_text_field "Logo_title" header.Logotitle %}
+        {% show_text_field "Logo_URL" header.LogoURL %}
+        {% show_image_field "Branding_image" header.Brandingimage %}
+        <tr><td></td><td class="no-padding"><p>Please provide a transparent PNG of your branding image, which will appear on all desktop and laptop computers; the image should be a maximum of 490px wide and 165px tall. If left blank the area will remain white.</p></td></tr>
+      </table>
+      
+    </fieldset>
+
+    <fieldset class="module section"  data-name="links">
+      <h2>Links</h2>
+      <a href='javascript:void(0)' onclick="window.open('{{STATIC_URL}}flexibleheader/img/header-links-helper-image.jpg', links, 'height=215,width=450,resizable=no,scrollbars=no');" class="help-image"><img src="{{STATIC_URL}}images/help.png">How will these links appear to the end user?</a>
+      <p>You may add up to three links, with a character limit for all three (combined), including spaces, of 30 characters; each link will be separated by a pipe. The links are optional. You may use one , two, three, or none. To use none leave all fields blank.</p>
+      <table>
+       {% show_text_field "Link1_Text" header.Link1Text %}
+       {% show_text_field "Link1_URL" header.Link1URL %}
+       {% show_text_field "Link2_Text" header.Link2Text %}
+       {% show_text_field "Link2_URL" header.Link2URL %}
+       {% show_text_field "Link3_Text" header.Link3Text %}
+       {% show_text_field "Link3_URL" header.Link3URL %}
+       <tr><td></td><td><b id="remaining-chars">30</b> characters remaining</td></tr>
+      </table>
+    </fieldset>
+
+    <fieldset class="module section"  data-name="donate">
+      <h2>Donate button</h2>
+      <a href='javascript:void(0)' onclick="window.open('{{STATIC_URL}}flexibleheader/img/donate-helper-image.jpg', links, 'height=215,width=450,resizable=no,scrollbars=no');" class="help-image"><img src="{{STATIC_URL}}images/help.png">How will this button apperat tot the end user?</a>
+      <table>
+        {% show_text_field "Donate_button_text" header.Donatebuttontext %}
+        <tr><td></td><td class="no-padding"><p>Induce visitors to support your station; 8-character limit; use upper - and/or lower-case letters.</p></td></tr>
+        {% show_text_field "Donate_button_URL" header.DonatebuttonURL %}
+        <tr><td></td><td class="no-padding"><p>Enter the link to your Donate or Support page.</p></td></tr>
+        {% show_color_field "Donate_button_color" header.Donatebuttoncolor %}
+      </table>
+    </fieldset>
+
+  </td>
+</tr>
+
+{% endspaceless %}
+

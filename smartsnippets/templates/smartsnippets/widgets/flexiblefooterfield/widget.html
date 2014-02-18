@@ -1,0 +1,90 @@
+{% load smartsnippets_tags %}
+{% spaceless %}
+<link media="all" rel="stylesheet" type="text/css" href="{{ STATIC_URL }}flexiblefooter/css/admin-form.css">
+<script src="{{ STATIC_URL }}flexiblefooter/js/footer.js"></script>
+
+<tr class="section_{{ field.name }}">
+  <td colspan="2" class="section-delimiter">
+    <input class="snippet-varible" id="var_{{ field.name }}" type="hidden" name="_{{ field.name }}_" value="{{ field.value }}">
+    <fieldset class="module details">
+      <h2>Details</h2>
+      <table>
+      {% for key, val in footer.details.iteritems %}
+        <tr>
+          {% if key == 'logo' %}
+            <td class="label"><label for="{{key}}">Logo</label></td>
+            <td>
+              <table class="no-label no-border">
+                {% show_image_field key val %}
+              </table>
+            </td>
+          {% else %}
+          <td class="label"><label for="{{key}}">{{key|capfirst}}</label></td>
+            {% if key == 'address'%}
+              <td><textarea class="subvar" id="{{key}}" name="{{key}}" type="text" cols="70">{{val}}</textarea></td>
+            {% else %}
+              <td><input class="subvar" id="{{key}}" name="{{key}}" value="{{val}}" type="text" size="100"></td>
+            {% endif %}
+          {% endif %}
+        </tr>
+      {% endfor %}
+        
+      </table>
+    </fieldset>
+    <fieldset class="module links">
+      <h2>Links</h2>
+      <table>
+       <tr>
+          {% for col in footer.links %}
+          <td class="link-column">
+            <table class="column">
+              <tr>
+                <td class="header">
+                  <p>Header {{ forloop.counter }}</p>
+                  <label for="header_text_{{ forloop.counter }}">Text</label>
+                  <input value="{{ col.header.text }}" class="subvar text" id="header_text_{{ forloop.counter }}" type="text" size="50">
+                  <div class="clear"></div>
+                  <label for="header_link_{{ forloop.counter }}">URL</label>
+                  <input value="{{ col.header.url }}" class="subvar url" id="header_link_{{ forloop.counter }}" type="text" size="50">
+                </td>
+              </tr>
+              {% with  forloop.counter as column%}
+                {% for link in col.column_links %}
+                <tr class="link">
+                  <td colspan="2">
+                    <p>Link {{forloop.counter}}</p>
+                    <label for="text_{{column}}_{{forloop.counter}}">Text</label>
+                    <input value="{{link.text}}" name="text_{{column}}_{{forloop.counter}}" class="text subvar" id="text_{{column}}_{{forloop.counter}}" type="text" size="50">
+                    <div class="clear"></div>
+                    <label for="link_{{column}}_{{forloop.counter}}">URL</label>
+                    <input value="{{link.url}}" name="link_{{column}}_{{forloop.counter}}" class="url subvar" id="link_{{column}}_{{forloop.counter}}" type="text" size="50">
+                  </td>
+                </tr>
+                {% endfor %}
+              {% endwith %}
+                <tr>
+                  <td colspan="2"><span class="addlink">Add Link</span></td>
+                </tr>
+            </table>
+          </td>
+          {% endfor %}
+        </tr>
+      </table>
+    </filedset>
+    <fieldset class="module">
+      <h2>Copyright</h2>
+      <table>
+       <tr>
+          <td class="label">
+            <label for="copyright">Text</label>
+          </td>
+          <td><textarea name="copyright"class="subvar" id="copyright" type="text" cols="70">{{ footer.copyright }}</textarea></td>
+        </tr>
+      </table>
+    </filedset>
+
+  </td>
+</tr>
+
+{% endspaceless %}
+

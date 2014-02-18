@@ -1,0 +1,49 @@
+<tr>
+    <td><label for="var_{{ field.name }}">{{ field.name }}</label></td>
+    <td>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}colorpicker/css/colorpicker.css" />
+        <script type="text/javascript" src="{{ STATIC_URL }}colorpicker/js/colorpicker.js"></script>
+        <style>
+            .color-selector{
+                position: relative;
+                display: inline-block;
+                width: 36px;
+                height: 36px;
+                vertical-align: middle;
+                cursor:pointer;
+                background-image: url({{ STATIC_URL }}colorpicker/images/select2.png);
+            }
+
+            .color-selector div{
+                position: absolute;
+                top: 4px;
+                left: 4px;
+                width: 28px;
+                height: 28px;
+                background: url({{ STATIC_URL }}colorpicker/images/select2.png) 50% 50%;
+            }
+             
+        </style>
+        <script type="text/javascript">
+            (function($){
+                $(document).ready(function(){
+                    var defaultcolor = $('#var_{{ field.name }}').val() || '#ff0000'
+                    $('.color-selector').ColorPicker({
+                        color: defaultcolor,
+                        onChange: function (hsb, hex, rgb) {
+                            $('.color-selector div').css('background-color', '#'+hex);
+                            $('#var_{{ field.name }}').val('#'+hex);
+                        }
+                    });
+                    console.log("ready")
+                    $('.color-selector div').css('background-color', defaultcolor);
+                    $('#var_{{ field.name }}').val(defaultcolor);
+                })
+            }(django.jQuery || jQuery))
+        </script>
+        <input id="var_{{ field.name }}" type="hidden" name="_{{ field.name }}_" value="{{ field.value }}" size="20"/>
+        <div class="color-selector">
+            <div></div>
+        </div>
+    </td>
+</tr>
