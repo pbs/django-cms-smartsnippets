@@ -1,3 +1,4 @@
 include README.rst
 recursive-include smartsnippets/templates *.html
+recursive-include smartsnippets/tests *.html
 recursive-include smartsnippets/static *
