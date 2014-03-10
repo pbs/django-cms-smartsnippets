@@ -3,6 +3,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
     TemplateDoesNotExist, loader
+from django.db.models import signals
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
@@ -133,18 +134,17 @@ class SmartSnippetPointer(CMSPlugin):
 
     def render_pointer(self, context):
         vars_qs = self.variables.select_related('snippet_variable').all()
-        vars = dict(
+        variables = dict(
             (var.snippet_variable.name, var.formatted_value)
             for var in vars_qs
         )
-        context.update(vars)
+        context.update(variables)
         sekizai_differ = sekizai_context_watcher(context)
         content = self.snippet.render(context)
         sekizai_diff = sekizai_differ.get_changes()
         user = context.get('request').user
         return self.set_and_get_cache(user, sekizai_diff, content)
 
-        
     def render(self, context):
         return self.fetch_cached(context) or self.render_pointer(context)
 
@@ -198,3 +198,20 @@ class DropDownVariable(SmartSnippetVariable):
     def save(self, *args, **kwargs):
         self.widget = 'DropDownField'
         super(DropDownVariable, self).save(*args, **kwargs)
+
+
+def remove_cached_pointers(instance, **kwargs):
+    pointers = SmartSnippetPointer.objects.filter(snippet=instance)
+    for pointer in pointers:
+        key = pointer.get_cache_key()
+        if key in cache:
+            cache.delete(key)
+
+
+def remove_cached_variables(instance, **kwargs):
+    key = instance.snippet.get_cache_key()
+    if key in cache:
+        cache.delete(key)
+
+signals.post_save.connect(remove_cached_pointers, sender=SmartSnippet)
+signals.post_save.connect(remove_cached_variables, sender=Variable)
