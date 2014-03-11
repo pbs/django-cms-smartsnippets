@@ -101,9 +101,10 @@ class SmartSnippetVariable(models.Model):
 
 class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
+    cache_key_format = 'smartsnippet-pointer-{primary_key}'
 
     def get_cache_key(self):
-        return 'smartsnippet-pointer-%s' % self.pk
+        return self.cache_key_format.format(primary_key=self.pk)
 
     def _do_restore_sekizai_context(self, context, changes):
         """Sekizai tags involve magic with the context object.
@@ -201,11 +202,14 @@ class DropDownVariable(SmartSnippetVariable):
 
 
 def remove_cached_pointers(instance, **kwargs):
-    pointers = SmartSnippetPointer.objects.filter(snippet=instance)
-    for pointer in pointers:
-        key = pointer.get_cache_key()
-        if key in cache:
-            cache.delete(key)
+    pointer_pks = SmartSnippetPointer.objects.filter(
+        snippet=instance
+    ).values_list('pk', flat=True)
+    cache_keys = [
+        SmartSnippetPointer.cache_key_format.format(primary_key=pk)
+        for pk in pointer_pks
+    ]
+    cache.delete_many(cache_keys)
 
 
 def remove_cached_variables(instance, **kwargs):
