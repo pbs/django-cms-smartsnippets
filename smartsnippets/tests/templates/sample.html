@@ -1,0 +1,14 @@
+{% load sekizai_tags cms_tags %}
+<!doctype html>
+<html>
+
+  <head>
+    {% render_block "css" %}
+  </head>
+
+  <body>
+    {% placeholder content %}
+    {% render_block "js" %}
+  </body>
+
+</html>
