@@ -4,3 +4,4 @@ dist
 *.egg
 pytest-results.xml
 .tox
+*.pyo
