@@ -17,7 +17,7 @@ dependency_links = [
 
 setup(
     name='django-cms-smartsnippets',
-    version='0.2.0',
+    version='0.3.0',
     description='Parametrizable Django CMS snippets.',
     long_description = open(README_PATH, 'r').read(),
     author='Sever Banesiu',
