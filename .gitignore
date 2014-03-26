@@ -5,3 +5,4 @@ dist
 pytest-results.xml
 .tox
 *.pyo
+full.log
