@@ -3,10 +3,16 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
     TemplateDoesNotExist, loader
+from django.db.models import signals
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 
 from cms.models import CMSPlugin
+
+from sekizai.helpers import (
+    Watcher as sekizai_context_watcher,
+    get_varname as sekizai_cache_key,
+)
 
 from .settings import snippet_caching_time, caching_enabled
 
@@ -95,22 +101,53 @@ class SmartSnippetVariable(models.Model):
 
 class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
+    cache_key_format = 'smartsnippet-pointer-{primary_key}'
 
     def get_cache_key(self):
-        return 'smartsnippet-pointer-%s' % self.pk
+        return self.cache_key_format.format(primary_key=self.pk)
 
-    def render(self, context):
+    def _do_restore_sekizai_context(self, context, changes):
+        """Sekizai tags involve magic with the context object.
+        When need to restore the sekizai content to the context"""
+        cache_key = sekizai_cache_key()
+        sekizai_container = context.get(cache_key)
+        for key, values in changes.items():
+            sekizai_namespace = sekizai_container[key]
+            for value in values:
+                sekizai_namespace.append(value)
+
+    def fetch_cached(self, context):
         cache_key = self.get_cache_key()
         user = context['request'].user
         if not user.is_staff and caching_enabled and cache.has_key(cache_key):
-            return cache.get(cache_key)
-        vars = dict((var.snippet_variable.name, var.formatted_value)
-                    for var in self.variables.select_related('snippet_variable').all())
-        context.update(vars)
-        rendered_snippet = self.snippet.render(context)
+            cached_value = cache.get(cache_key)
+            rendered_content = cached_value.get('content')
+            sekizai = cached_value.get('sekizai')
+            self._do_restore_sekizai_context(context, sekizai)
+            return rendered_content
+
+    def set_and_get_cache(self, user, sekizai_diff, content):
         if not user.is_staff and caching_enabled:
-            cache.set(cache_key, rendered_snippet, snippet_caching_time)
-        return rendered_snippet
+            value = {'content': content, 'sekizai': sekizai_diff}
+            key = self.get_cache_key()
+            cache.set(key, value, snippet_caching_time)
+        return content
+
+    def render_pointer(self, context):
+        vars_qs = self.variables.select_related('snippet_variable').all()
+        variables = dict(
+            (var.snippet_variable.name, var.formatted_value)
+            for var in vars_qs
+        )
+        context.update(variables)
+        sekizai_differ = sekizai_context_watcher(context)
+        content = self.snippet.render(context)
+        sekizai_diff = sekizai_differ.get_changes()
+        user = context.get('request').user
+        return self.set_and_get_cache(user, sekizai_diff, content)
+
+    def render(self, context):
+        return self.fetch_cached(context) or self.render_pointer(context)
 
     def copy_relations(self, old_instance):
         for variable in old_instance.variables.all():
@@ -162,3 +199,23 @@ class DropDownVariable(SmartSnippetVariable):
     def save(self, *args, **kwargs):
         self.widget = 'DropDownField'
         super(DropDownVariable, self).save(*args, **kwargs)
+
+
+def remove_cached_pointers(instance, **kwargs):
+    pointer_pks = SmartSnippetPointer.objects.filter(
+        snippet=instance
+    ).values_list('pk', flat=True)
+    cache_keys = [
+        SmartSnippetPointer.cache_key_format.format(primary_key=pk)
+        for pk in pointer_pks
+    ]
+    cache.delete_many(cache_keys)
+
+
+def remove_cached_variables(instance, **kwargs):
+    key = instance.snippet.get_cache_key()
+    if key in cache:
+        cache.delete(key)
+
+signals.post_save.connect(remove_cached_pointers, sender=SmartSnippet)
+signals.post_save.connect(remove_cached_variables, sender=Variable)

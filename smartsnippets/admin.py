@@ -13,7 +13,8 @@ from admin_extend.extend import registered_form, extend_registered, \
     add_bidirectional_m2m
 
 from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
-from settings import shared_sites, include_orphan, restrict_user
+from settings import (
+    shared_sites, include_orphan, restrict_user, handle_permissions_checks)
 from widgets_pool import widget_pool
 
 
@@ -23,11 +24,38 @@ class SnippetForm(ModelForm):
     class Meta:
         model = SmartSnippet
 
+    def __init__(self, *args, **kwargs):
+        if 'sites' in self.base_fields:
+            # disallow django to validate if empty since it is done
+            #   in the clean sites method
+            self.base_fields['sites'].required = False
+        super(SnippetForm, self).__init__(*args, **kwargs)
+
     def clean_sites(self):
-        if not self.include_orphan:
-            if not self.cleaned_data.get('sites', []):
+        empty_sites = Site.objects.get_empty_query_set()
+        self.cleaned_data['sites'] = self.cleaned_data.get(
+            'sites', empty_sites) or empty_sites
+
+        def ids_list(queryset):
+            return list(queryset.values_list('id', flat=True))
+
+        all_in_form = self.base_fields['sites'].queryset
+        assigned_in_form = ids_list(self.cleaned_data['sites'])
+        unassigned_in_form = ids_list(
+            all_in_form.exclude(id__in=assigned_in_form))
+
+        if self.instance.pk:
+            assigned_and_unchanged = ids_list(
+                self.instance.sites.exclude(id__in=unassigned_in_form))
+            all_assigned = assigned_in_form + assigned_and_unchanged
+        else:
+            all_assigned = assigned_in_form
+
+        self.cleaned_data['sites'] = Site.objects.filter(id__in=all_assigned)
+
+        if not self.include_orphan and not self.cleaned_data['sites']:
                 raise ValidationError('This field is required.')
-        return self.cleaned_data.get('sites', [])
+        return self.cleaned_data['sites']
 
     def clean_template_code(self):
         code = self.cleaned_data.get('template_code', None)
@@ -98,6 +126,9 @@ class SnippetAdmin(admin.ModelAdmin):
     site_list.short_description = 'sites'
 
     def get_readonly_fields(self, request, obj=None):
+        if not handle_permissions_checks:
+            return super(SnippetAdmin, self)\
+                .get_readonly_fields(request, obj=obj)
         ro = self.form.base_fields.keys()
         if request.user.is_superuser or obj is None:
             return []
@@ -107,6 +138,9 @@ class SnippetAdmin(admin.ModelAdmin):
         return []
 
     def has_delete_permission(self, request, obj=None):
+        if not handle_permissions_checks:
+            return super(SnippetAdmin, self)\
+                .has_delete_permission(request, obj=obj)
         if request.user.is_superuser or obj is None:
             return True
         if self.restrict_user and self.shared_sites:
@@ -114,6 +148,9 @@ class SnippetAdmin(admin.ModelAdmin):
         return True
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if not handle_permissions_checks:
+            return super(SnippetAdmin, self)\
+                .formfield_for_manytomany(db_field, request, **kwargs)
         if db_field.name == "sites":
             f = Q()
             if not request.user.is_superuser:
@@ -126,6 +163,8 @@ class SnippetAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         q = super(SnippetAdmin, self).queryset(request)
+        if not handle_permissions_checks:
+            return q
         f = Q()
         if not request.user.is_superuser:
             if self.restrict_user:
@@ -160,7 +199,7 @@ class ExtendedSiteAdminForm(add_bidirectional_m2m(registered_form(Site))):
 
     def clean_snippets(self):
         assigned_snippets = self.cleaned_data['snippets']
-        if self.instance.pk is None:
+        if self.instance.pk is None or include_orphan:
             return assigned_snippets
         pks = [s.pk for s in assigned_snippets]
         # snippets that were previously assigned to this site, but got unassigned
