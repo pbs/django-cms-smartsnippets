@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 dependency_links = [
-    'http://github.com/pbs/django-admin-extend/tarball/master#egg=django-admin-extend-0.0.1',
+    'http://github.com/pbs/django-admin-extend/tarball/master#egg=django-admin-extend-dev',
 ]
 
 
