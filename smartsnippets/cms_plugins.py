@@ -19,6 +19,7 @@ class SmartSnippetPlugin(CMSPluginBase):
     model = SmartSnippetPointer
     name = 'Smart Snippet'
     render_template = 'smartsnippets/plugin.html'
+    text_enabled = True
 
     def change_view(self, request, object_id, extra_context=None):
         if extra_context is None:
