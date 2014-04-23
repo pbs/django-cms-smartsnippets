@@ -7,6 +7,7 @@ from smartsnippets.widgets_pool import widget_pool
 
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import shared_sites, include_orphan, restrict_user
+from django.conf import settings
 
 
 class SmartSnippetPlugin(CMSPluginBase):
@@ -54,5 +55,12 @@ class SmartSnippetPlugin(CMSPluginBase):
         return (super(SmartSnippetPlugin, self)
                     .formfield_for_foreignkey(db_field, request, **kwargs))
 
+    def icon_src(self, instance):
+        return settings.STATIC_URL + u"cms/images/plugins/snippet.png"
+
+    def icon_alt(self, instance):
+        if instance.snippet:
+            return instance.snippet.name
+        return ""
 
 plugin_pool.register_plugin(SmartSnippetPlugin)
