@@ -56,7 +56,7 @@ class SmartSnippetPlugin(CMSPluginBase):
                     .formfield_for_foreignkey(db_field, request, **kwargs))
 
     def icon_src(self, instance):
-        return settings.STATIC_URL + u"cms/images/plugins/snippet.png"
+        return settings.STATIC_URL + u"images/snippet.png"
 
     def icon_alt(self, instance):
         if instance.snippet:
