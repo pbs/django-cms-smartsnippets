@@ -40,14 +40,14 @@
         <script type="text/javascript">
           var in_admin = true;
         {% if add %}
+        {# if the rendering is happening in the add form #}
         $(document).ready(function(){
             jQuery('#id_snippet').change(function(){
                 var selected_snippet = jQuery('#id_snippet').val();
-                url = window.location.href
-                url += (url.split('?')[1] ? '&':'?') + "snippet=" + selected_snippet;
-                window.location = url
+                var url = window.location.href
+                url += (url.indexOf('?') !== -1 ? '&':'?') + "snippet=" + selected_snippet;
+                window.location = url;
             });
-
         });
         {% endif %}
         </script>
