@@ -22,6 +22,30 @@ class SmartSnippetPlugin(CMSPluginBase):
     render_template = 'smartsnippets/plugin.html'
     text_enabled = True
 
+    def add_view(self, request, form_url='', extra_context=None):
+        try:
+            snippet = SmartSnippet.objects.get(
+                id=int(request.GET.get('snippet', '')))
+        except ValueError, SmartSnippet.DoesNotExist:
+            pass
+        else:
+            extra_context = extra_context or {}
+            # make empty plugin variables objects with no values.
+            #   these will not get created in the db but will make the admin
+            #   show the varibles widgets.
+            empty_plugin_vars = [
+                Variable(
+                    snippet=SmartSnippetPointer(snippet=snippet),
+                    snippet_variable=snippet_var)
+                for snippet_var in snippet.variables.all()]
+            extra_context.update({
+                'variables': [
+                    widget_pool.get_widget(var.widget)(var)
+                    for var in empty_plugin_vars]
+            })
+        return super(SmartSnippetPlugin, self).add_view(
+            request, form_url, extra_context)
+
     def change_view(self, request, object_id, extra_context=None):
         if extra_context is None:
             extra_context = {}
