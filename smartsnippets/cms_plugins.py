@@ -23,6 +23,7 @@ class SmartSnippetPlugin(CMSPluginBase):
     text_enabled = True
 
     def add_view(self, request, form_url='', extra_context=None):
+        empty_plugin = None
         try:
             snippet = SmartSnippet.objects.get(
                 id=int(request.GET.get('snippet', '')))
@@ -33,18 +34,25 @@ class SmartSnippetPlugin(CMSPluginBase):
             # make empty plugin variables objects with no values.
             #   these will not get created in the db but will make the admin
             #   show the varibles widgets.
+            empty_plugin = SmartSnippetPointer(snippet=snippet)
             empty_plugin_vars = [
-                Variable(
-                    snippet=SmartSnippetPointer(snippet=snippet),
-                    snippet_variable=snippet_var)
+                Variable(snippet=empty_plugin, snippet_variable=snippet_var)
                 for snippet_var in snippet.variables.all()]
             extra_context.update({
                 'variables': [
                     widget_pool.get_widget(var.widget)(var)
                     for var in empty_plugin_vars]
             })
-        return super(SmartSnippetPlugin, self).add_view(
+        response = super(SmartSnippetPlugin, self).add_view(
             request, form_url, extra_context)
+        cms_plugin = response.context_data['plugin']
+        if empty_plugin is not None and cms_plugin:
+            # copy all attributes from the cms plugin to the plugin instance
+            #   in order for cms to render it as if it exists
+            empty_plugin.__dict__.update(cms_plugin.__dict__)
+            empty_plugin.pk = empty_plugin.id = -1
+            response.context_data['plugin'] = empty_plugin
+        return response
 
     def change_view(self, request, object_id, extra_context=None):
         if extra_context is None:
