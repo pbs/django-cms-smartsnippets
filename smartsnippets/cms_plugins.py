@@ -24,10 +24,10 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     def add_view(self, request, form_url='', extra_context=None):
         try:
-            selected_snippet = SmartSnippet.objects.get(
+            snippet = SmartSnippet.objects.get(
                 id=int(request.GET.get('snippet', '')))
         except ValueError, SmartSnippet.DoesNotExist:
-            selected_snippet = None
+            snippet = None
         else:
             empty_plugin_vars = self._make_vars_for_rendering(snippet)
             extra_context = extra_context or {}
@@ -35,9 +35,9 @@ class SmartSnippetPlugin(CMSPluginBase):
         response = super(SmartSnippetPlugin, self).add_view(
             request, form_url, extra_context)
 
-        if selected_snippet and hasattr(response, 'context_data'):
+        if snippet and hasattr(response, 'context_data'):
             self._change_snippet_plugin_for_preview(
-                response.context_data, selected_snippet)
+                response.context_data, snippet)
         return response
 
     def _make_vars_for_rendering(self, snippet, plugin=None):
