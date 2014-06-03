@@ -26,7 +26,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         try:
             snippet = SmartSnippet.objects.get(
                 id=int(request.GET.get('snippet', '')))
-        except ValueError, SmartSnippet.DoesNotExist:
+        except (ValueError, SmartSnippet.DoesNotExist):
             snippet = None
         else:
             empty_plugin_vars = self._make_vars_for_rendering(snippet)
@@ -94,7 +94,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         try:
             selected_snippet = SmartSnippet.objects.get(
                 id=int(request.GET.get('snippet', '')))
-        except ValueError, SmartSnippet.DoesNotExist:
+        except (ValueError, SmartSnippet.DoesNotExist):
             selected_snippet = None
 
         plugin = SmartSnippetPointer.objects.get(pk=object_id)
