@@ -14,8 +14,10 @@ from sekizai.helpers import (
     get_varname as sekizai_cache_key,
 )
 
-from .settings import snippet_caching_time, caching_enabled
 from .resources_processor import get_resources
+from .settings import (
+    snippet_caching_time, caching_enabled, allow_inheritance,
+    inherit_variable_pattern)
 
 
 class SmartSnippet(models.Model):
@@ -161,10 +163,17 @@ class SmartSnippetPointer(CMSPlugin):
 
     def render_pointer(self, context):
         vars_qs = self.variables.select_related('snippet_variable').all()
-        variables = dict(
-            (var.snippet_variable.name, var.formatted_value)
-            for var in vars_qs
-        )
+
+        def var_for_context(var):
+            default, overwrite = var.formatted_value, None
+            if allow_inheritance:
+                overwrite = context.get(
+                    inherit_variable_pattern.format(identifier=var.pk))
+            name = var.snippet_variable.name
+            value = overwrite if overwrite is not None else default
+            return (name, value)
+
+        variables = dict(var_for_context(var) for var in vars_qs)
         context.update(variables)
         sekizai_differ = sekizai_context_watcher(context)
         content = self.snippet.render(context)

@@ -1,0 +1,28 @@
+{% extends "admin/cms/page/plugin_change_form.html" %}
+
+{% block extrahead %}
+{{block.super}}
+<script type="text/javascript" src="{{STATIC_URL}}admin/smartsnippet_inherit/js/plugininherit_form.js"></script>
+{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/smartsnippet_inherit/css/plugininherit_form.css">
+{{block.super}}
+{% endblock %}
+
+
+{% block after_related_objects %}{{block.super}}
+    <div class="module" id='overwritten_variables'>
+        <h2>Overwrite snippet variables</h2>
+        <ul class='snippets-list'>
+        {% for snippet_plugin in snippet_plugins %}
+            <li data-snippet='{{snippet_plugin.id}}'>{{snippet_plugin}}</li>
+        {% empty %}
+            <p>No variables available.</p>
+        {% endfor %}
+        </ul>
+        <div class='variables-list'>
+
+        </div>
+    </div>
+{% endblock %}
