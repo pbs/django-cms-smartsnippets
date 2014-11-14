@@ -1,6 +1,4 @@
 {% extends "smartsnippets/plugin_change_form.html" %}
-{% load smartsnippets_tags %}
-
 
 {% if original.snippet.description or original.snippet.documentation_link%}
     {% block extrahead %}
@@ -86,9 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for variable in variables %}
-                {% render_widget variable %}
-            {% endfor %}
+            {% include 'smartsnippets/variables_widgets.html'%}
             </tbody>
         </table>
     </fieldset>

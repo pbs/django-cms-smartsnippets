@@ -111,7 +111,5 @@ class PageInheritPlugin(CMSPluginBase):
             return filter(can_be_overwritten, plugins)
         return []
 
-    def form_variables_view(request, snippet_plugin_id)
-
 
 plugin_pool.register_plugin(PageInheritPlugin)

@@ -1,8 +1,21 @@
 {% extends "admin/cms/page/plugin_change_form.html" %}
-
+{% load url from future %}
 {% block extrahead %}
 {{block.super}}
 <script type="text/javascript" src="{{STATIC_URL}}admin/smartsnippet_inherit/js/plugininherit_form.js"></script>
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function() {
+        SnippetVariablesEditor.init({
+            static_url: "{{STATIC_URL}}",
+            variables_module: "#overwritten_variables",
+            urls: {
+                variables: "{% url 'smartsnippets_inherit.views.variables_edit_view' plugin_id=plugin.id %}"
+            }
+        });
+    });
+}(django.jQuery));
+</script>
 {% endblock %}
 
 {% block extrastyle %}
