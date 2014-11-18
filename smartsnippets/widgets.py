@@ -38,15 +38,8 @@ class DropDownField(SmartSnippetWidgetBase):
                                     context_instance=context_instance)
 
 
-class JSONField(SmartSnippetWidgetBase):
+class JSONField(TextField):
     name = 'JSON Field'
-
-    def render(self, request):
-        return render_to_string(
-            'smartsnippets/widgets/jsonfield/widget.html',
-            {'field': self.variable},
-            context_instance=RequestContext(request)
-        )
 
     @property
     def formatted_value(self):
