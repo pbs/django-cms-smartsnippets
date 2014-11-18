@@ -46,6 +46,7 @@ class PageInheritPlugin(CMSPluginBase):
             var = overwrite_var.variable
             # change value without saving
             # this is required only to make sure the value is processed
+            #       and rendered as formatted
             var.value = overwrite_var.value
             context_var = inherit_variable_pattern.format(identifier=var.pk)
             new_vars[context_var] = var.formatted_value
@@ -75,7 +76,6 @@ class PageInheritPlugin(CMSPluginBase):
 
     def change_view(self, request, object_id, extra_context=None):
         extra_context = extra_context or {}
-
         try:
             plugin = InheritPageContent.objects.get(id=object_id)
             placeholder = plugin.get_placeholder()

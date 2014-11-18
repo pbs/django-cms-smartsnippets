@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import PermissionDenied
 from smartsnippets_inherit.models import InheritPageContent
 from smartsnippets.models import SmartSnippetPointer
-from smartsnippets.widgets_pool import widget_pool
 from django.template import RequestContext
 
 
@@ -21,7 +20,5 @@ def variables_edit_view(request, plugin_id):
 
 
     return render_to_response('smartsnippets/variables_widgets.html', {
-        'variables': [
-            widget_pool.get_widget(var.widget)(var)
-            for var in snippet_plugin.variables.all()]
+        'variables': snippet_plugin.variables.order_by('snippet_variable__name')
     }, context_instance=RequestContext(request))
