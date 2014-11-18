@@ -82,6 +82,8 @@ class SmartSnippetVariable(models.Model):
                     'in the smart snippet template.'))
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
 
+    resources = models.TextField(_('Admin resources'), null=True, blank=True)
+
     class Meta:
         unique_together = (('snippet', 'name'))
         ordering = ['name']
