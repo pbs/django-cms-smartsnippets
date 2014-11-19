@@ -48,7 +48,6 @@
                 });
             });
         </script>
-        {{var_widgets_media}}
     {% endblock %}
 {% endif %}
 
@@ -83,7 +82,7 @@
             </thead>
             <tbody>
             {% for variable in variables %}
-                {% render_variable variable %}
+                {% render_widget variable %}
             {% endfor %}
             </tbody>
         </table>

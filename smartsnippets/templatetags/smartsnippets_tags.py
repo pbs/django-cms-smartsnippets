@@ -5,6 +5,12 @@ from smartsnippets.widgets_pool import widget_pool
 register = template.Library()
 
 @register.simple_tag(takes_context=True)
+def render_widget(context, var):
+    request = context['request']
+    return widget_pool.get_widget(var.widget)(var).render(request)
+
+
+@register.simple_tag(takes_context=True)
 def render_variable(context, var):
     request = context['request']
     return var.render(request)
