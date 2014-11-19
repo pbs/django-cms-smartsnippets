@@ -9,33 +9,18 @@ import json
 
 class TextField(SmartSnippetWidgetBase):
     name = 'Text Field'
-
-    def render(self, request):
-        context_instance = RequestContext(request)
-        return render_to_string('smartsnippets/widgets/textfield/widget.html',
-                                    {'field': self.variable},
-                                    context_instance=context_instance)
+    template = 'smartsnippets/widgets/textfield/widget.html'
 
 
 class TextAreaField(SmartSnippetWidgetBase):
     name = 'TextArea Field'
-
-    def render(self, request):
-        context_instance = RequestContext(request)
-        return render_to_string('smartsnippets/widgets/textareafield/widget.html',
-                                    {'field': self.variable},
-                                    context_instance=context_instance)
+    template = 'smartsnippets/widgets/textareafield/widget.html'
 
 
 class DropDownField(SmartSnippetWidgetBase):
     name = 'DropDown Field'
     model = DropDownVariable
-
-    def render(self, request):
-        context_instance = RequestContext(request)
-        return render_to_string('smartsnippets/widgets/dropdownfield/widget.html',
-                                {'field': self.variable},
-                                    context_instance=context_instance)
+    template = 'smartsnippets/widgets/dropdownfield/widget.html'
 
 
 class JSONField(TextField):
