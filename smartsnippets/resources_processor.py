@@ -3,14 +3,12 @@ from django.contrib.admin.templatetags.admin_static import static
 from django.conf import settings
 import os
 
-try:
-    from filertags.templatetags.filertags import filerfile
-except ImportError:
-    filerfile = None
-
 
 def get_filer_url(link):
-    return filerfile(link) if filerfile else link
+    if 'filertags' in settings.INSTALLED_APPS:
+        from filertags.templatetags.filertags import filerfile
+        return filerfile(link)
+    return link
 
 
 def get_static_url(link):
@@ -32,6 +30,7 @@ def _process(resource):
         processor_type, link = link
     else:
         processor_type = None
+        link = link[0]
 
     res_type = os.path.splitext(link)[1].strip('.')
     if not res_type:
@@ -59,6 +58,6 @@ def get_resources(resources_data):
         processed_link = _process(resource)
         if not processed_link:
             continue
-        resources[processed_link[0]].append(processed_link[1])
+        resources[processed_link[0]].add(processed_link[1])
     return resources
 

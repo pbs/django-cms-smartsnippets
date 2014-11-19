@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.contrib.sites.models import Site
+from django.forms import Media
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
@@ -8,6 +9,7 @@ from smartsnippets.widgets_pool import widget_pool
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import shared_sites, include_orphan, restrict_user
 from django.conf import settings
+import itertools
 
 
 class SmartSnippetPlugin(CMSPluginBase):
@@ -67,7 +69,12 @@ class SmartSnippetPlugin(CMSPluginBase):
         Add the list of plugin varibles with their widget to the
             response context
         """
+
+        media = Media(
+            js=itertools.chain(*[var.js for var in variables]),
+            css={'all': itertools.chain(*[var.css for var in variables])})
         context.update({
+            'var_widgets_media': media,
             'variables': [
                 widget_pool.get_widget(var.widget)(var) for var in variables]
         })
