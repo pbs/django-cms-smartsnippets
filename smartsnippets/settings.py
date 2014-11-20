@@ -7,3 +7,4 @@ handle_permissions_checks = getattr(settings, 'SMARTSNIPPETS_HANDLE_PERMISSIONS_
 
 snippet_caching_time = getattr(settings, 'SMARTSNIPPETS_CACHING_TIME', 300)
 caching_enabled = snippet_caching_time != 0
+custom_widgets_resources = getattr(settings, 'SMARTSNIPPETS_PREDEFINED_WIDGETS', {})
