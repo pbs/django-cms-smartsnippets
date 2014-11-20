@@ -32,7 +32,12 @@
         (function($) {
             $(document).ready(function(){
                 $(".plugin-help-tooltip").tipTip({maxWidth: "250px", delay: 100});
-
+                SnippetWidgetRegistry.initializeVariables();
+                $("#{{ opts.module_name }}_form").submit(function(){
+                    if (!SnippetWidgetRegistry.allValid()){
+                        return false;
+                    }
+                });
             });
         })(jQuery);
         //]]>

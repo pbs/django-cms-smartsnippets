@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.contrib.sites.models import Site
+from django.contrib.admin.templatetags.admin_static import static
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
@@ -69,10 +70,14 @@ class SmartSnippetPlugin(CMSPluginBase):
             return
         formMedia = context.get('media')
         variables = context.get('variables')
-        if not formMedia or not variables:
+        if not formMedia:
+            return
+        formMedia.add_js([static('admin/js/SmartSnippetLib.js')])
+        if not variables:
             return
         formMedia.add_js(
-            itertools.chain(*[var.js for var in variables]))
+            itertools.chain(*[var.js for var in variables])
+        )
         formMedia.add_css(
             {'all': itertools.chain(*[var.css for var in variables])})
 
