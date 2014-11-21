@@ -1,3 +1,13 @@
+(function($) {
+    $(document).ready(function(){
+        $('.field-box.field-predefined_widgets').each(function(){
+            if ($(this).find('ul.predefined-widgets li').length === 0){
+                $(this).hide();
+            }
+        });
+    });
+}(django.jQuery));
+
 
 function populateWidgetResources(predefined_widget_el){
     (function($) {
