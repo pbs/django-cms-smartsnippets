@@ -8,7 +8,6 @@ from django.forms.models import BaseInlineFormSet
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
 from django.template.loader import render_to_string
-from django.template.defaultfilters import unordered_list
 from django.forms.widgets import Select
 
 from admin_extend.extend import registered_form, extend_registered, \
