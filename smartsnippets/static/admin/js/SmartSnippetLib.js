@@ -4,24 +4,32 @@ var SnippetWidgetRegistry = (function ($) {
     var _self = {
         'widgets': {},
         'variables': {},
+        'events': {}
     };
 
 
     function SnippetWidgetError(message){
-            this.level = "Error";
-            this.htmlMessage = "Error detected." + message;
-            this.message = message;
-            this.name = 'SnippetWidgetError';
-            this.toString = function(){
-                return this.name + ": " + this.message;
-            }
+        this.level = "Error";
+        this.htmlMessage = "Error detected." + message;
+        this.message = message;
+        this.name = 'SnippetWidgetError';
+        this.toString = function(){
+            return this.name + ": " + this.message;
+        }
     }
 
     return {
+        _call_event: function(event_name){
+            $.each(_self['events'], function (widget_type, event_data){
+                (event_data[event_name] || function(){})();
+            });
+        },
         initializeVariables: function(){
+            this._call_event('preInit');
             $.each(_self['variables'], function (var_name, var_cls) {
                var_cls.init(var_name);
             });
+            this._call_event('postInit');
         },
         allValid: function(){
             var isValid = true;
@@ -30,10 +38,14 @@ var SnippetWidgetRegistry = (function ($) {
             });
             return isValid;
         },
-        registerWidget: function (widget_type, widget_class) {
+        registerWidget: function (widget_type, widget_class, events) {
             if (widget_class['init'] && widget_class['validate']){
                 _self['widgets'][widget_type] = _self['widgets'][widget_type] || (
                     _self['widgets'][widget_type] = widget_class)
+                // register events
+                if (widget_class['events'] && !_self['events'][widget_type]){
+                    _self['events'][widget_type] = $.extend({}, widget_class['events']);
+                }
             } else {
                 throw new SnippetWidgetError("init and validate attrs required.")
             }
