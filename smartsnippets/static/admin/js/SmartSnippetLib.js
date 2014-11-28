@@ -63,6 +63,13 @@ var SnippetWidgetRegistry = (function ($) {
         deregisterVariable: function(variable_id){
             delete _self['variables'][variable_id]
         },
+        get_widget_class: function(widget_type){
+            var widget_class = _self['widgets'][widget_type];
+            if (!widget_class){
+                throw new SnippetWidgetError("Widget type " + widget_type + " is not registered.")
+            }
+            return widget_class;
+        },
         get_variables: function(widget_type){
             vars_ids = []
             if (!widget_type){
