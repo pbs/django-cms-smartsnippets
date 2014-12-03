@@ -1,6 +1,33 @@
 CHANGELOG
 =========
 
+Revision 703bd32 (03.12.2014, 14:31 UTC)
+----------------------------------------
+
+* LUN-1960
+
+  * added events for snippet widgets lib
+  * implemented js lib for snippet widgets registration inside plugin forms
+  * implemented display for predefined widgets
+
+* Misc commits
+
+  * pep8 fix
+  * add the ability to initialize/validate list of variables. * added required snippet js lib to model admin
+  * added helper for snippet widgets js lib
+  * added helper template tags
+  * filter predefined vars to make sure they have data defined
+  * don't render predefined vars unless they have widget or resources
+  * hide predefined widgets when not available
+  * fixed js custom exception + added variables getter utility
+  * widget resources are now added to form media.
+  * implemented functionality to expose global settings in template. Due to security issues django settings should not get exposed in templates (secret credentials might get stolen). What will get exposed in snippets settings will be up to the developer's decision.
+  * fixed bugs with parsing resources; widgets media are now rendered
+  * implemented functionality for parsing and using admin resources
+  * removed unused template; * added resources field for snippet vars
+  * default input should not be hidden. Users can define their own template for that
+  * added new json hidden widget
+
 Revision 8279fb9 (13.06.2014, 12:00 UTC)
 ----------------------------------------
 
