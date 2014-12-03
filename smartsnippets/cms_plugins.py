@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.contrib.sites.models import Site
+from django.contrib.admin.templatetags.admin_static import static
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
@@ -8,6 +9,25 @@ from smartsnippets.widgets_pool import widget_pool
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import shared_sites, include_orphan, restrict_user
 from django.conf import settings
+import itertools
+
+
+def add_variables_media(context):
+    if not context:
+        return
+    formMedia = context.get('media')
+    if not formMedia:
+        return
+    formMedia.add_js([static('admin/js/SmartSnippetLib.js')])
+
+    variables = context.get('variables')
+    if not variables:
+        return
+    formMedia.add_js(
+        itertools.chain(*[var.js for var in variables])
+    )
+    formMedia.add_css(
+        {'all': itertools.chain(*[var.css for var in variables])})
 
 
 class SmartSnippetPlugin(CMSPluginBase):
@@ -22,6 +42,9 @@ class SmartSnippetPlugin(CMSPluginBase):
     render_template = 'smartsnippets/plugin.html'
     text_enabled = True
 
+    class Media:
+        js = (static('admin/js/SmartSnippetLib.js'), )
+
     def add_view(self, request, form_url='', extra_context=None):
         try:
             snippet = SmartSnippet.objects.get(
@@ -31,13 +54,14 @@ class SmartSnippetPlugin(CMSPluginBase):
         else:
             empty_plugin_vars = self._make_vars_for_rendering(snippet)
             extra_context = extra_context or {}
-            self._add_plugin_vars_to_context(extra_context, empty_plugin_vars)
+            extra_context['variables'] = empty_plugin_vars
         response = super(SmartSnippetPlugin, self).add_view(
             request, form_url, extra_context)
 
         if snippet and hasattr(response, 'context_data'):
             self._change_snippet_plugin_for_preview(
                 response.context_data, snippet)
+            add_variables_media(response.context_data)
         return response
 
     def _make_vars_for_rendering(self, snippet, plugin=None):
@@ -61,16 +85,6 @@ class SmartSnippetPlugin(CMSPluginBase):
         return sorted(
             list(existing_plugin_vars) + empty_plugin_vars,
             key=lambda v: v.snippet_variable.name)
-
-    def _add_plugin_vars_to_context(self, context, variables):
-        """
-        Add the list of plugin varibles with their widget to the
-            response context
-        """
-        context.update({
-            'variables': [
-                widget_pool.get_widget(var.widget)(var) for var in variables]
-        })
 
     def _change_snippet_plugin_for_preview(self, context, snippet):
         """
@@ -110,12 +124,14 @@ class SmartSnippetPlugin(CMSPluginBase):
                 snippet_variable__in=snippet_vars
             ).order_by('snippet_variable__name')
 
-        self._add_plugin_vars_to_context(extra_context, variables)
+        extra_context['variables'] = variables
 
         response = super(SmartSnippetPlugin, self).change_view(
             request, object_id, extra_context=extra_context)
 
-        if snippet_changed and hasattr(response, 'context_data'):
+        context = getattr(response, 'context_data', None)
+        add_variables_media(context)
+        if snippet_changed and context:
             adminform = response.context_data.get('adminform')
             if not adminform:
                 return response

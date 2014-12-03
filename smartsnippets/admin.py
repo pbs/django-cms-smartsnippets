@@ -7,6 +7,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField
 from django.forms.models import BaseInlineFormSet
 from django.template import Template, TemplateSyntaxError, \
                             TemplateDoesNotExist, loader
+from django.template.loader import render_to_string
 from django.forms.widgets import Select
 
 from admin_extend.extend import registered_form, extend_registered, \
@@ -14,7 +15,8 @@ from admin_extend.extend import registered_form, extend_registered, \
 
 from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
 from settings import (
-    shared_sites, include_orphan, restrict_user, handle_permissions_checks)
+    shared_sites, include_orphan, restrict_user, handle_permissions_checks,
+    custom_widgets_resources)
 from widgets_pool import widget_pool
 
 
@@ -87,22 +89,45 @@ class SnippetVariablesFormSet(BaseInlineFormSet):
         return self._queryset
 
 
+
 class SnippetVariablesAdmin(admin.StackedInline):
     model = SmartSnippetVariable
     extra = 0
+    readonly_fields = ['predefined_widgets']
+
+    def predefined_widgets(self, ssvar):
+        return render_to_string(
+            'smartsnippets/predefined_widgets.html',
+            {'widgets': custom_widgets_resources,
+             'snippet_var': ssvar})
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'widget':
             kwargs['widget'] = Select(choices=tuple([(x.__name__, x.name) for x in widget_pool.get_all_widgets()]))
         return super(SnippetVariablesAdmin,self).formfield_for_dbfield(db_field, **kwargs)
 
+    @staticmethod
+    def _fieldsets(required):
+        return (
+            (None, {
+                'fields': (required, )
+            }),
+            ('Advanced', {
+                'fields': (('resources', 'predefined_widgets'), ),
+                'classes': ('collapse', )
+            }),
+        )
+
 
 class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
+    fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'widget'))
 
 
 class DropDownVariableAdmin(SnippetVariablesAdmin):
     model = DropDownVariable
     exclude = ('widget',)
+    fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'choices'))
 
 
 class SnippetAdmin(admin.ModelAdmin):
@@ -119,7 +144,8 @@ class SnippetAdmin(admin.ModelAdmin):
     filter_horizontal = ('sites', )
 
     class Media:
-        js = ("admin/js/SmartSnippets.Variables.js",)
+        js = ("admin/js/SmartSnippets.Variables.js",
+              "admin/js/SmartSnippets.PredefinedWidgets.js",)
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])

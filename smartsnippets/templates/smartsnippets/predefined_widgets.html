@@ -1,0 +1,10 @@
+{% load smartsnippets_tags %}
+{% for name in widgets|sortdict %}
+    {% with widget_data=widgets|get_item:name %}
+        {% if forloop.first %}<ul class='predefined-widgets'>{% endif %}
+        <li data-widget='{{ widget_data.widget }}' data-resources='{{widget_data.resources}}' onclick="populateWidgetResources(this);">{{ widget_data.title|default:name }}</li>
+        {% if forloop.last %}</ul>{% endif %}
+    {% endwith %}
+{% empty %}
+No widgets available.
+{% endfor %}

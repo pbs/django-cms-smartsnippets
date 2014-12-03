@@ -15,6 +15,7 @@ from sekizai.helpers import (
 )
 
 from .settings import snippet_caching_time, caching_enabled
+from .resources_processor import get_resources
 
 
 class SmartSnippet(models.Model):
@@ -81,6 +82,18 @@ class SmartSnippetVariable(models.Model):
         help_text=_('Select the type of the variable defined '
                     'in the smart snippet template.'))
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
+
+    resources = models.TextField(_('Admin resources'), null=True, blank=True)
+
+    def __init__(self, *args, **kwargs):
+        super(SmartSnippetVariable, self).__init__(*args, **kwargs)
+        self._resource_dict = None
+
+    @property
+    def resources_dict(self):
+        if self._resource_dict is None:
+            self._resource_dict = get_resources(self.resources)
+        return self._resource_dict
 
     class Meta:
         unique_together = (('snippet', 'name'))
@@ -171,7 +184,7 @@ class Variable(models.Model):
     @property
     def formatted_value(self):
         from widgets_pool import widget_pool
-        widget_instance = widget_pool.get_widget(self.snippet_variable.widget)(self)
+        widget_instance = widget_pool.get_widget(self.widget)(self)
         return widget_instance.formatted_value
 
     @property
@@ -181,6 +194,18 @@ class Variable(models.Model):
     @property
     def widget(self):
         return self.snippet_variable.widget
+
+    @property
+    def templates(self):
+        return self.snippet_variable.resources_dict.get('html', set())
+
+    @property
+    def js(self):
+        return self.snippet_variable.resources_dict.get('js', set())
+
+    @property
+    def css(self):
+        return self.snippet_variable.resources_dict.get('css', set())
 
 
 class DropDownVariable(SmartSnippetVariable):

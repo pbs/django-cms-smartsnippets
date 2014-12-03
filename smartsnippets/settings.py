@@ -7,3 +7,17 @@ handle_permissions_checks = getattr(settings, 'SMARTSNIPPETS_HANDLE_PERMISSIONS_
 
 snippet_caching_time = getattr(settings, 'SMARTSNIPPETS_CACHING_TIME', 300)
 caching_enabled = snippet_caching_time != 0
+
+
+def _has_data_defined(widget_data):
+    return (
+        widget_data.get('widget', None) or
+        widget_data.get('resources', None)
+    )
+
+custom_widgets_resources = {
+    widget_type: widget_data
+    for widget_type, widget_data in getattr(
+        settings, 'SMARTSNIPPETS_PREDEFINED_WIDGETS', {}).items()
+    if _has_data_defined(widget_data)
+}
