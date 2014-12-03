@@ -12,6 +12,24 @@ from django.conf import settings
 import itertools
 
 
+def add_variables_media(context):
+    if not context:
+        return
+    formMedia = context.get('media')
+    if not formMedia:
+        return
+    formMedia.add_js([static('admin/js/SmartSnippetLib.js')])
+
+    variables = context.get('variables')
+    if not variables:
+        return
+    formMedia.add_js(
+        itertools.chain(*[var.js for var in variables])
+    )
+    formMedia.add_css(
+        {'all': itertools.chain(*[var.css for var in variables])})
+
+
 class SmartSnippetPlugin(CMSPluginBase):
     shared_sites = shared_sites
     include_orphan = include_orphan
@@ -23,6 +41,9 @@ class SmartSnippetPlugin(CMSPluginBase):
     name = 'Smart Snippet'
     render_template = 'smartsnippets/plugin.html'
     text_enabled = True
+
+    class Media:
+        js = (static('admin/js/SmartSnippetLib.js'), )
 
     def add_view(self, request, form_url='', extra_context=None):
         try:
@@ -40,7 +61,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         if snippet and hasattr(response, 'context_data'):
             self._change_snippet_plugin_for_preview(
                 response.context_data, snippet)
-            self._add_variables_media(response.context_data)
+            add_variables_media(response.context_data)
         return response
 
     def _make_vars_for_rendering(self, snippet, plugin=None):
@@ -64,22 +85,6 @@ class SmartSnippetPlugin(CMSPluginBase):
         return sorted(
             list(existing_plugin_vars) + empty_plugin_vars,
             key=lambda v: v.snippet_variable.name)
-
-    def _add_variables_media(self, context):
-        if not context:
-            return
-        formMedia = context.get('media')
-        variables = context.get('variables')
-        if not formMedia:
-            return
-        formMedia.add_js([static('admin/js/SmartSnippetLib.js')])
-        if not variables:
-            return
-        formMedia.add_js(
-            itertools.chain(*[var.js for var in variables])
-        )
-        formMedia.add_css(
-            {'all': itertools.chain(*[var.css for var in variables])})
 
     def _change_snippet_plugin_for_preview(self, context, snippet):
         """
@@ -125,7 +130,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             request, object_id, extra_context=extra_context)
 
         context = getattr(response, 'context_data', None)
-        self._add_variables_media(context)
+        add_variables_media(context)
         if snippet_changed and context:
             adminform = response.context_data.get('adminform')
             if not adminform:

@@ -24,16 +24,30 @@ var SnippetWidgetRegistry = (function ($) {
                 (event_data[event_name] || function(){})();
             });
         },
-        initializeVariables: function(){
+        initializeVariables: function(variables_ids){
+            var vars = _self['variables'];
+            if(variables_ids){
+                vars = {};
+                $.each(variables_ids.filter(function(el){ return el in _self['variables']; }), function(i, var_name){
+                    vars[var_name] = _self['variables'][var_name];
+                });
+            }
             this._call_event('preInit');
-            $.each(_self['variables'], function (var_name, var_cls) {
+            $.each(vars, function (var_name, var_cls) {
                var_cls.init(var_name);
             });
             this._call_event('postInit');
         },
-        allValid: function(){
+        allValid: function(variables_ids){
+            var vars = _self['variables'];
+            if(variables_ids){
+                vars = {};
+                $.each(variables_ids.filter(function(el){ return el in _self['variables']; }), function(i, var_name){
+                    vars[var_name] = _self['variables'][var_name];
+                });
+            }
             var isValid = true;
-            $.each(_self['variables'], function (var_name, var_cls) {
+            $.each(vars, function (var_name, var_cls) {
                isValid = (var_cls.validate(var_name) && isValid);
             });
             return isValid;
