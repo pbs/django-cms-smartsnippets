@@ -15,7 +15,7 @@ def get_static_url(link):
     return static(link)
 
 
-processors = {
+PROCESSORS = {
     'static': get_static_url,
     'filer': get_filer_url,
 }
@@ -26,7 +26,7 @@ def _process(resource):
     link = resource.strip().split(':', 1)
 
     processor_type = link[0].strip()
-    if processor_type in processors:
+    if processor_type in PROCESSORS:
         processor_type, link = link
     else:
         processor_type = None
@@ -39,7 +39,7 @@ def _process(resource):
     if not processor_type:
         return (res_type, link)
 
-    return (res_type, processors[processor_type](link))
+    return (res_type, PROCESSORS[processor_type](link))
 
 
 def get_resources(resources_data):
