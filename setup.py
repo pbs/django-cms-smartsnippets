@@ -17,9 +17,9 @@ dependency_links = [
 
 setup(
     name='django-cms-smartsnippets',
-    version='0.4.0',
+    version='0.5.0',
     description='Parametrizable Django CMS snippets.',
-    long_description = open(README_PATH, 'r').read(),
+    long_description=open(README_PATH, 'r').read(),
     author='Sever Banesiu',
     author_email='banesiu.sever@gmail.com',
     packages=find_packages(),
@@ -27,5 +27,5 @@ setup(
     license='BSD License',
     install_requires=dependencies,
     dependency_links=dependency_links,
-    setup_requires = ['s3sourceuploader', ],
+    setup_requires=['s3sourceuploader', ],
 )
