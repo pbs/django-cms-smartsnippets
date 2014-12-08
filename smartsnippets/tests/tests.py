@@ -133,3 +133,24 @@ class TestSekizaiCache(TestCase):
 
     def tearDown(self):
         cache.clear()
+
+
+class TestVariables(TestCase):
+
+    def setUp(self):
+        self.snippet = SmartSnippet.objects.create(template_code='test')
+        self.plugin1 = SmartSnippetPointer.objects.create(snippet=self.snippet)
+        self.plugin2 = SmartSnippetPointer.objects.create(snippet=self.snippet)
+
+    def test_vars_generated(self):
+        self.assertEqual(Variable.objects.count(), 0)
+
+        ssvar = SmartSnippetVariable.objects.create(
+            snippet=self.snippet, name='item', widget='TextField')
+        self.assertEqual(self.plugin1.variables.count(), 1)
+        self.assertEqual(self.plugin2.variables.count(), 1)
+        # add another plugin
+        plugin3 = SmartSnippetPointer.objects.create(snippet=self.snippet)
+        ssvar.save()
+        self.assertEqual(Variable.objects.count(), 3)
+        self.assertEqual(plugin3.variables.count(), 1)

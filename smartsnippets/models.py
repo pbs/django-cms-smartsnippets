@@ -102,11 +102,24 @@ class SmartSnippetVariable(models.Model):
 
     def save(self, *args, **kwargs):
         super(SmartSnippetVariable, self).save(*args, **kwargs)
-        smartsnippet_pointers = self.snippet.smartsnippetpointer_set.all()
-        for spointer in smartsnippet_pointers:
-            v, _ = Variable.objects.get_or_create(snippet=spointer,
-                                                  snippet_variable=self)
-            v.save()
+        # auto-generate missing variables for all snippet plugins
+        plugin_ids = SmartSnippetPointer.objects \
+            .filter(snippet=self.snippet) \
+            .exclude(variables__snippet_variable=self) \
+            .values_list('id', flat=True)
+        # in order to improve performance do a bulk create
+        Variable.objects.bulk_create([
+            Variable(snippet_id=plugin_id, snippet_variable=self)
+            for plugin_id in plugin_ids
+        ])
+        if not caching_enabled:
+            return
+        # invalidate cache for changed plugins
+        cache_keys = [
+            SmartSnippetPointer.cache_key_format.format(primary_key=plugin_id)
+            for plugin_id in plugin_ids
+        ]
+        cache.delete_many(cache_keys)
 
     def __unicode__(self):
         return self.name
@@ -227,6 +240,9 @@ class DropDownVariable(SmartSnippetVariable):
 
 
 def remove_cached_pointers(instance, **kwargs):
+    if not caching_enabled:
+        return
+
     pointer_pks = SmartSnippetPointer.objects.filter(
         snippet=instance
     ).values_list('pk', flat=True)
@@ -238,6 +254,8 @@ def remove_cached_pointers(instance, **kwargs):
 
 
 def remove_cached_variables(instance, **kwargs):
+    if not caching_enabled:
+        return
     key = instance.snippet.get_cache_key()
     if key in cache:
         cache.delete(key)
