@@ -1,9 +1,10 @@
-
 from django import forms
 from django.forms.models import ModelForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from cms.models import Page
+from smartsnippets.cms_plugins import variables_media
+from smartsnippets.models import Variable
 from smartsnippets_inherit.models import InheritPageContent
 
 
@@ -16,10 +17,22 @@ class InheritPageForm(ModelForm):
         model = InheritPageContent
         exclude = ('page', 'position', 'placeholder', 'language', 'plugin_type')
 
+    @property
+    def media(self):
+        _media = super(InheritPageForm, self).media
+        variables_media(_media, self._cache_variables)
+        return _media
+
     def __init__(self, *args, **kwargs):
+        self._cache_variables = []
         super(InheritPageForm, self).__init__(*args, **kwargs)
         site_pages = Page.objects.drafts().on_site(self.site)
         self.fields['from_page'].queryset = site_pages
+        if self.instance.pk:
+            phd = self.instance.get_placeholder()
+            self._cache_variables = Variable.objects.filter(
+                snippet__placeholder=phd
+            ).select_related('snippet_variable')
 
     def clean_from_placeholder(self):
         slot = (self.cleaned_data.get('from_placeholder') or '').strip()

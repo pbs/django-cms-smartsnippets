@@ -77,6 +77,9 @@ var SnippetWidgetRegistry = (function ($) {
         deregisterVariable: function(variable_id){
             delete _self['variables'][variable_id]
         },
+        deregisterAllVariables: function(){
+            _self['variables'] = {}
+        },
         get_widget_class: function(widget_type){
             var widget_class = _self['widgets'][widget_type];
             if (!widget_class){

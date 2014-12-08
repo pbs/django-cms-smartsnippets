@@ -10,16 +10,14 @@
             $(this).addClass('selected');
             // show variables
             var snippet_plugin = $(this).attr('data-snippet');
+            SnippetWidgetRegistry.deregisterAllVariables();
             $.ajax({
                 url: _editor.options.urls.variables,
                 data: {'snippet_plugin': snippet_plugin},
                 success: function (data) {
                     $(varsBox).html(data);
-                    $(document).trigger('ready')
-                    console.log(data);
-                    $(varsBox).find(
-                        "[name^='_'][name$='_'][id^='var_']"
-                    ).each(function(){
+                    SnippetWidgetRegistry.initializeVariables();
+                    $(varsBox).find("[name^='_'][name$='_'][id^='var_']").each(function(){
                         var label = (
                             $(varsBox).find('label[for="' + $(this).attr('id') + '"]').text() ||
                             $(this).attr('name').replace(/(^_)|(_$)/g, '')
@@ -37,6 +35,9 @@
                         .val('Overwrite changed variables')
                         .appendTo($(varsBox))
                         .click(function() {
+                            if (!SnippetWidgetRegistry.allValid()){
+                                return false;
+                            }
                             var changed_vars = [];
                             $.each(_editor._initial[snippet_plugin], function(name, initial){
                                 if ($('[name="' + name + '"]').val() != initial['value']){

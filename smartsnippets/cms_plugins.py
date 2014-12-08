@@ -11,22 +11,24 @@ from django.conf import settings
 import itertools
 
 
+def variables_media(media, variables=None):
+    variables = variables or []
+    media.add_js([static('admin/js/SmartSnippetLib.js')])
+    media.add_js(
+        itertools.chain(*[var.js for var in variables])
+    )
+    media.add_css(
+        {'all': itertools.chain(*[var.css for var in variables])})
+
+
 def add_variables_media(context):
     if not context:
         return
     formMedia = context.get('media')
     if not formMedia:
         return
-    formMedia.add_js([static('admin/js/SmartSnippetLib.js')])
-
     variables = context.get('variables')
-    if not variables:
-        return
-    formMedia.add_js(
-        itertools.chain(*[var.js for var in variables])
-    )
-    formMedia.add_css(
-        {'all': itertools.chain(*[var.css for var in variables])})
+    variables_media(formMedia, variables)
 
 
 class SmartSnippetPlugin(CMSPluginBase):
