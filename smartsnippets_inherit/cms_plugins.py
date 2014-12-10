@@ -31,7 +31,7 @@ class PageInheritPlugin(CMSPluginBase):
     form = InheritPageForm
     page_only = True
 
-    def render_inherited(context, instance):
+    def render_inherited(self, context, instance):
         content = ''
         if not instance.from_page.published:
             return content
@@ -43,11 +43,7 @@ class PageInheritPlugin(CMSPluginBase):
         # prepare variables to be passed to the context with different values
         new_vars = {}
         for overwrite_var in instance.overwrite_variables.all():
-            var = overwrite_var.variable
-            # change value without saving
-            # this is required only to make sure the value is processed
-            #       and rendered as formatted
-            var.value = overwrite_var.value
+            var = overwrite_var.to_variable()
             context_var = inherit_variable_pattern.format(identifier=var.pk)
             new_vars[context_var] = var.formatted_value
 
@@ -60,12 +56,12 @@ class PageInheritPlugin(CMSPluginBase):
             content = inherited.render(context, None)
             # remove overwritten data from context
             for name in new_vars:
-                context.pop(name, None)
+                context[name] = None
 
         return content
 
     def render(self, context, instance, placeholder):
-        context.update({'content': render_inherited(context, instance)})
+        context.update({'content': self.render_inherited(context, instance)})
         return context
 
     def get_form(self, request, obj=None, **kwargs):
@@ -108,7 +104,10 @@ class PageInheritPlugin(CMSPluginBase):
             plugins = downcast_plugins(placeholder.get_plugins())
             if not plugins:
                 continue
-            return filter(can_be_overwritten, plugins)
+            return sorted(
+                filter(can_be_overwritten, plugins),
+                key=lambda plg: plg.position,
+            )
         return []
 
 

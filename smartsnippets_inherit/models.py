@@ -24,3 +24,12 @@ class OverwriteVariable(models.Model):
     # where I exist
     plugin = models.ForeignKey(
         InheritPageContent, related_name='overwrite_variables')
+
+    def to_variable(self):
+        """
+        Utility to transform this to a plugin variable object. This is used
+            for rendering as a plugin variable with the overwritten value.
+        """
+        variable = self.variable
+        variable.value = self.value
+        return variable

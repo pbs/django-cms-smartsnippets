@@ -25,3 +25,14 @@
     border-color: #5B80B2;
     font-weight: bold;
 }
+#overwritten_variables .ssvar-info {
+    font-style: italic;
+    font-weight: bold;
+    color: #5b80b2;
+}
+#overwritten_variables .ssvar-info.success{
+    color: green;
+}
+#overwritten_variables .ssvar-info.error{
+    color: red;
+}
