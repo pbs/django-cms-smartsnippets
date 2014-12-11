@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 821b9da (11.12.2014, 13:27 UTC)
+----------------------------------------
+
+* LUN-2008
+
+  * improve performance for snippet vars save
+
+No other commits.
+
 Revision 703bd32 (03.12.2014, 14:31 UTC)
 ----------------------------------------
 
