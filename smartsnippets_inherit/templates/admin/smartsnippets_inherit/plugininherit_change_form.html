@@ -27,6 +27,7 @@
 {% block after_related_objects %}{{block.super}}
     <div class="module" id='overwritten_variables'>
         <h2>Overwrite snippet variables</h2>
+        {% if not add %}
         <ul class='snippets-list'>
         {% for snippet_plugin in snippet_plugins %}
             <li data-snippet='{{snippet_plugin.id}}'>{{snippet_plugin}}</li>
@@ -35,5 +36,8 @@
         {% endfor %}
         </ul>
         <div class='variables-list'/>
+        {% else %}
+        <p>You need to save before you can overwrite variables.</p>
+        {% endif %}
     </div>
 {% endblock %}

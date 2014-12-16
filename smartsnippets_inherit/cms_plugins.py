@@ -5,7 +5,6 @@ from cms.models.placeholdermodel import Placeholder
 from cms.models.pluginmodel import CMSPlugin
 from smartsnippets_inherit.models import InheritPageContent
 from smartsnippets_inherit.forms import InheritPageForm
-from smartsnippets_inherit.settings import CMSPLUGIN_INHERIT_NAME
 from smartsnippets.settings import inherit_variable_pattern
 from smartsnippets.models import Variable, SmartSnippetPointer
 from contextlib import contextmanager
@@ -24,7 +23,7 @@ def current_page(request, page):
 
 class PageInheritPlugin(CMSPluginBase):
     model = InheritPageContent
-    name = CMSPLUGIN_INHERIT_NAME or "Inherit Content from Page"
+    name = "Inherit Content from Page"
     render_template = 'smartsnippets/plugin.html'
     change_form_template = 'admin/smartsnippets_inherit/plugininherit_change_form.html'
     admin_preview = False
@@ -55,8 +54,7 @@ class PageInheritPlugin(CMSPluginBase):
             #   with the updated context
             content = inherited.render(context, None)
             # remove overwritten data from context
-            for name in new_vars:
-                context[name] = None
+            context.update({name: None for name in new_vars})
 
         return content
 
@@ -67,7 +65,7 @@ class PageInheritPlugin(CMSPluginBase):
     def get_form(self, request, obj=None, **kwargs):
         formCls = super(PageInheritPlugin, self).get_form(
             request, obj, **kwargs)
-        formCls.site = self.cms_plugin_instance.page.site or self.page.site
+        formCls.current_page = self.cms_plugin_instance.page or self.page
         return formCls
 
     def change_view(self, request, object_id, extra_context=None):

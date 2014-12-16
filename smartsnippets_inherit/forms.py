@@ -12,10 +12,11 @@ class InheritPageForm(ModelForm):
     from_page = forms.ModelChoiceField(
         label=_("page"), queryset=Page.objects.drafts())
     site = None
+    current_page = None
 
     class Meta:
         model = InheritPageContent
-        exclude = ('page', 'position', 'placeholder', 'language', 'plugin_type')
+        fields = ('from_page', 'from_placeholder')
 
     @property
     def media(self):
@@ -26,8 +27,11 @@ class InheritPageForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self._cache_variables = []
         super(InheritPageForm, self).__init__(*args, **kwargs)
-        site_pages = Page.objects.drafts().on_site(self.site)
-        self.fields['from_page'].queryset = site_pages
+        if self.current_page is not None:
+            self.site = self.current_page.site
+        if self.site is not None and 'from_page' in self.fields:
+            site_pages = Page.objects.drafts().on_site(self.site)
+            self.fields['from_page'].queryset = site_pages
         if self.instance.pk:
             phd = self.instance.get_placeholder()
             self._cache_variables = Variable.objects.filter(

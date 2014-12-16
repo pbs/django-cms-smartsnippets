@@ -19,11 +19,12 @@
 
 #overwritten_variables ul.snippets-list li:hover{
     color: #ffffff;
-    background-color: #7CA0C7;
+    background: #7CA0C7 url(../../img/default-bg.gif) top left repeat-x;
 }
 #overwritten_variables ul.snippets-list li.selected{
     border-color: #5B80B2;
     font-weight: bold;
+    border-right: 0px;
 }
 #overwritten_variables .ssvar-info {
     font-style: italic;
