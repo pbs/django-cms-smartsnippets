@@ -54,7 +54,9 @@ class PageInheritPlugin(CMSPluginBase):
             #   with the updated context
             content = inherited.render(context, None)
             # remove overwritten data from context
-            context.update({name: None for name in new_vars})
+            for name in new_vars.keys():
+                if name in context:
+                    del context[name]
 
         return content
 
