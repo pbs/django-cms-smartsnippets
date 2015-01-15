@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+Revision 81af772 (15.01.2015, 12:55 UTC)
+----------------------------------------
+
+* LUN-1954
+
+  * confirm result looks better added in a variable.
+  * no need for second dict update, used list concat instead
+  * var names should be removed from context since there might be logic wich involves only context keys
+  * overwrite variables editing now functional
+  * added admin resources for variables forms
+  * added view for variables edit
+  * initial commit for new cms plugin which allowes other placeholder rendering
+
+* Misc commits
+
+  * no need for list casting on join for values list qs
+  * removed unused templs; added current page for plugin form; CMSPLUGIN_INHERIT_NAME not required.
+  * added js functionality to determine changed fields
+
 Revision 821b9da (11.12.2014, 13:27 UTC)
 ----------------------------------------
 
