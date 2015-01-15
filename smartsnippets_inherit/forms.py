@@ -58,8 +58,8 @@ class InheritPageForm(ModelForm):
         slot = cleaned_data.get('from_placeholder')
         page = cleaned_data.get('from_page')
         if not page.placeholders.filter(slot=slot).exists():
-            valid_slots = ', '.join(list(
-                page.placeholders.values_list('slot', flat=True)))
+            valid_slots = ', '.join(
+                page.placeholders.values_list('slot', flat=True))
             raise ValidationError(
                 'Placeholder with this name does not exist. '
                 'Valid choices are: %s' % valid_slots)
