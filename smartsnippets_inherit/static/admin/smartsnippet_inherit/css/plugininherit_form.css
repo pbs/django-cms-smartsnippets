@@ -1,0 +1,39 @@
+#overwritten_variables .variables-list{
+    display: inline-block;
+    vertical-align: top;
+}
+#overwritten_variables ul.snippets-list{
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+}
+
+#overwritten_variables ul.snippets-list li{
+    list-style-type: none;
+    border: 1px solid #DEDEDC;
+    padding: 5px;
+    cursor: pointer;
+    color: #5B80B2;
+    background: none;
+}
+
+#overwritten_variables ul.snippets-list li:hover{
+    color: #ffffff;
+    background: #7CA0C7 url(../../img/default-bg.gif) top left repeat-x;
+}
+#overwritten_variables ul.snippets-list li.selected{
+    border-color: #5B80B2;
+    font-weight: bold;
+    border-right: 0px;
+}
+#overwritten_variables .ssvar-info {
+    font-style: italic;
+    font-weight: bold;
+    color: #5b80b2;
+}
+#overwritten_variables .ssvar-info.success{
+    color: green;
+}
+#overwritten_variables .ssvar-info.error{
+    color: red;
+}

@@ -21,3 +21,10 @@ custom_widgets_resources = {
         settings, 'SMARTSNIPPETS_PREDEFINED_WIDGETS', {}).items()
     if _has_data_defined(widget_data)
 }
+
+allow_inheritance = getattr(
+    settings, 'SMARTSNIPPETS_ALLOW_INHERITANCE',
+    'smartsnippets_inherit' in settings.INSTALLED_APPS)
+inherit_variable_pattern = getattr(
+    settings, 'SMARTSNIPPETS_INHERIT_VAR_PATTERN',
+    '_snippet_inherit_{identifier}')
