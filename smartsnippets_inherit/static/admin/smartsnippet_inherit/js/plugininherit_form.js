@@ -51,9 +51,12 @@
                     alert('No variables changed');
                     return ;
                 }
-                if(!confirm("The following variables will be overwritten: " +
-                            self.variablesToString(varsEl) +
-                            ". Are you sure?")){
+                var answer = confirm(
+                    "The following variables will be overwritten: " +
+                    self.variablesToString(varsEl) +
+                    ". Are you sure?"
+                );
+                if(!answer){
                     return ;
                 }
                 self._variablesSubmission = true;
