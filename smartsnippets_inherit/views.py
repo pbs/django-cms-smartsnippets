@@ -60,7 +60,7 @@ def variables_edit_view(request, plugin_id):
     overwrite_as_vars = [v.to_variable() for v in overwrite_variables]
     vars_to_render = {
         var.snippet_variable.name: var
-        for var in variables + overwrite_as_vars
+        for var in list(variables) + overwrite_as_vars
     }
 
     return render_to_response('smartsnippets/variables_widgets.html', {
