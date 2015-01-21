@@ -18,7 +18,7 @@ class SmartSnippetWidgetBase(object):
     def get_extra_data(self, request):
         return {}
 
-    def render(self, request):
+    def render(self, request, context=None):
         if self.template is None:
             raise NotImplementedError(
                 "render needs to be implemented or set a default template")
@@ -28,5 +28,5 @@ class SmartSnippetWidgetBase(object):
         return render_to_string(
             select_template,
             dict(self.get_extra_data(request).items() + default_data.items()),
-            context_instance=RequestContext(request)
+            context_instance=(context or RequestContext(request))
         )

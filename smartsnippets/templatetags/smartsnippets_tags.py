@@ -8,13 +8,15 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def render_widget(context, var):
     request = context['request']
-    return widget_pool.get_widget(var.widget)(var).render(request)
+    widget_cls = widget_pool.get_widget(var.widget)
+    widget_obj = widget_cls(var)
+    return widget_obj.render(request, context)
 
 
 @register.simple_tag(takes_context=True)
 def render_variable(context, var):
     request = context['request']
-    return var.render(request)
+    return var.render(request, context)
 
 
 @register.assignment_tag
