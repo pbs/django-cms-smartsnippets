@@ -64,6 +64,7 @@ def variables_edit_view(request, plugin_id):
     }
 
     return render_to_response('smartsnippets/variables_widgets.html', {
+        'plugin': plugin,
         'variables': sorted(vars_to_render.values(),
                             key=lambda var: var.snippet_variable.name)
     }, context_instance=RequestContext(request))
