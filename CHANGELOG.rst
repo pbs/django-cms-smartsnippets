@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+Revision 90290a3 (22.01.2015, 13:29 UTC)
+----------------------------------------
+
+* LUN-2069
+
+  * variables rendering should access shared request context * passed plugin to context when editing its variables.
+
+* Misc commits
+
+  * qs has to be a list in order for + operand to work
+  * static files and templates missing from package
+
 Revision 81af772 (15.01.2015, 12:55 UTC)
 ----------------------------------------
 
