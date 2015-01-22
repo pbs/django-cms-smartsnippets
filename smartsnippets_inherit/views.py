@@ -27,7 +27,9 @@ def variables_edit_view(request, plugin_id):
     snippet_plugin = get_object_or_404(
         SmartSnippetPointer, id=snippet_plugin_id
     )
-    variables = snippet_plugin.variables.all()
+    variables = snippet_plugin.variables.filter(
+        snippet_variable__snippet=snippet_plugin.snippet
+    )
     overwrite_variables = None
 
     if request.method == 'POST':
