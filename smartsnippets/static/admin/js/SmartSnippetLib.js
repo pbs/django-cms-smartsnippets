@@ -46,10 +46,12 @@ var SnippetWidgetRegistry = (function ($) {
                     vars[var_name] = _self['variables'][var_name];
                 });
             }
+            this._call_event('preValidate');
             var isValid = true;
             $.each(vars, function (var_name, var_cls) {
                isValid = (var_cls.validate(var_name) && isValid);
             });
+            this._call_event('postValidate');
             return isValid;
         },
         registerWidget: function (widget_type, widget_class, events) {
