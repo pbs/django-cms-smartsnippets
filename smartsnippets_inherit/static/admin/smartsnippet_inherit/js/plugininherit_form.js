@@ -4,7 +4,7 @@
         _initial: {},
         _variablesSubmission: false,
         getInfoBox: function(text, type){
-            return "<span class='ssvar-info " + (type? type: '') + "'>" + text + "</span>"
+            return "<span class='ssvar-info " + (type? type: '') + "'>" + text + "</span>";
         },
         getVariablesEl: function(){
             return $(this.options.variables)
@@ -77,7 +77,7 @@
                     }
                 });
                 return false;
-            }
+            };
         },
         resetToOriginalVariables: function(snippetId){
             var self = this;
@@ -110,44 +110,53 @@
             };
         },
         resetToInitialVariables: function(snippetId){
-            return function(){ _editor.loadVariables(snippetId) };
+            return function(){ _editor.loadVariables(snippetId);};
         },
         loadVariables: function (snippetId) {
             var self = _editor;
             SnippetWidgetRegistry.deregisterAllVariables();
             // show variables
             var varsBox = $(self.options.variables);
-            $(varsBox).html(self.getInfoBox("Loading variables...", "progress"));
+            $(varsBox)
+                .html(self.getInfoBox("Loading variables...", "progress"))
+                .toggleClass('bg-empty', varsBox.is(':empty'));
             $.ajax({
                 url: self.options.urls.variables,
                 data: {'snippet_plugin': snippetId},
                 success: function (data) {
-                    $(varsBox).html(data).append(
-                        $('<button type="button" />')
-                            .text('Reset variables to original values')
-                            .click(self.resetToOriginalVariables(snippetId)),
+                    $(varsBox).html('<table>' + data + '</table>')
+                        .append(
+                            $('<button type="button" class="submit-row" />')
+                                .text('Reset variables to original values')
+                                .click(self.resetToOriginalVariables(snippetId)),
 
-                        $('<button type="button" />')
-                            .text('Reset changed variables')
-                            .click(self.resetToInitialVariables(snippetId)),
+                            $('<button type="button" class="submit-row" />')
+                                .text('Reset changed variables')
+                                .click(self.resetToInitialVariables(snippetId)),
 
-                        $('<button type="button" />')
-                            .text('Overwrite changed variables')
-                            .click(self.submitOverwriteData(snippetId))
-                    );
+                            $('<button type="button" class="submit-row" />')
+                                .text('Overwrite changed variables')
+                                .click(self.submitOverwriteData(snippetId))
+                        );
                     SnippetWidgetRegistry.initializeVariables();
                     self.registerInitialData(snippetId);
+                    varsBox.toggleClass('bg-empty', varsBox.is(':empty'));
                 },
                 error: function(){
-                    $(varsBox).html(self.getInfoBox("Error loading variables", "error"));
+                    $(varsBox)
+                        .html(self.getInfoBox("Error loading variables", "error"))
+                        .toggleClass('bg-empty', varsBox.is(':empty'));
                 },
                 complete: function(){
                     self.resizeIframe();
+                    varsBox.toggleClass('bg-empty', varsBox.is(':empty'));
                 }
             });
         },
         initSnippetPlugins: function(){
-            var self = this;
+            var self = this,
+                varsBox = $(self.options.variables);
+
             $(self.options.snippetItems).each(function(){
                 $(this).click(function(){
                     // mark selected
@@ -156,9 +165,12 @@
                     self.loadVariables(snippetId);
                 });
             });
+
             $('form').submit(function () {
                 return !self._variablesSubmission;
             });
+
+            varsBox.toggleClass('bg-empty', varsBox.is(':empty'));
         },
         initOpts: function(opts){
             this.options = $.extend(opts, {
@@ -195,7 +207,7 @@
             var _jQuery = window.parent.jQuery || window.parent.$ || (window.parent.django && window.parent.django.jQuery);
             _jQuery(window.frameElement).css('height', documentHeight + 'px');
         }
-    }
+    };
 
     SnippetVariablesEditor = window.SnippetVariablesEditor || {
         init: function(requiredOpts) {

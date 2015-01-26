@@ -1,11 +1,24 @@
-#overwritten_variables .variables-list{
-    display: inline-block;
-    vertical-align: top;
+#overwritten_variables .table{
+    display: table;
+    width: 100%;
 }
+
+#overwritten_variables .variables-list{
+    display: table-cell;
+    width: 80%;
+    vertical-align: top;
+    background-color: #F0F3F8;
+}
+
+#overwritten_variables .variables-list.bg-empty{
+    background-color: transparent;
+}
+
 #overwritten_variables ul.snippets-list{
     margin: 0px;
     padding: 0px;
-    display: inline-block;
+    display: table-cell;
+    width: 20%;
 }
 
 #overwritten_variables ul.snippets-list li{
@@ -22,9 +35,10 @@
     background: #7CA0C7 url(../../img/default-bg.gif) top left repeat-x;
 }
 #overwritten_variables ul.snippets-list li.selected{
-    border-color: #5B80B2;
-    font-weight: bold;
+    /*border-color: #5B80B2;*/
     border-right: 0px;
+    font-weight: bold;
+    background-color: #F0F3F8;
 }
 #overwritten_variables .ssvar-info {
     font-style: italic;
@@ -36,4 +50,9 @@
 }
 #overwritten_variables .ssvar-info.error{
     color: red;
+}
+
+#overwritten_variables .variables-list .submit-row{
+    margin-right:8px;
+    margin-left:8px;
 }
