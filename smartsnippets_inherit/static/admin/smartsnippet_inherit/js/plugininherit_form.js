@@ -127,15 +127,15 @@
                     $(varsBox).html('<table>' + data + '</table>')
                         .append(
                             $('<button type="button" class="submit-row" />')
-                                .text('Reset variables to original values')
+                                .text('Revert to original ' + self.options.plugin_name)
                                 .click(self.resetToOriginalVariables(snippetId)),
 
                             $('<button type="button" class="submit-row" />')
-                                .text('Reset changed variables')
+                                .text('Cancel Changes')
                                 .click(self.resetToInitialVariables(snippetId)),
 
                             $('<button type="button" class="submit-row" />')
-                                .text('Overwrite changed variables')
+                                .text('Save Changes')
                                 .click(self.submitOverwriteData(snippetId))
                         );
                     SnippetWidgetRegistry.initializeVariables();
@@ -206,6 +206,20 @@
                                           $('body').outerHeight(true));
             var _jQuery = window.parent.jQuery || window.parent.$ || (window.parent.django && window.parent.django.jQuery);
             _jQuery(window.frameElement).css('height', documentHeight + 'px');
+        },
+        alertOnSave: function () {
+            var self = this;
+            $('form').submit(function () {
+                if ($(self.options.snippetItems + '.selected').length > 0){
+                    var answer = confirm("Changes not saved.\n" +
+                        "Saving the " + self.options.plugin_name +
+                        " without first saving the smart snippet will result" +
+                        " in losing your changes. To prevent that, press" +
+                        " 'Cancel' and save the smart snippet first.");
+                    return answer;
+                }
+            });
+
         }
     };
 
@@ -215,6 +229,7 @@
             _editor.initSnippetPlugins();
             _editor.setHeaders();
             _editor.resizeIframe();
+            _editor.alertOnSave();
         }
     };
 })(django.jQuery);
