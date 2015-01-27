@@ -11,7 +11,8 @@
             variables_module: "#overwritten_variables",
             urls: {
                 variables: "{% url 'smartsnippets_inherit.views.variables_edit_view' plugin_id=plugin.id %}"
-            }
+            },
+            plugin_name: '{{plugin.get_plugin_name}}'
         });
     });
 }(django.jQuery));
