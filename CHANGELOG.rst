@@ -1,6 +1,27 @@
 CHANGELOG
 =========
 
+Revision 8c07893 (29.01.2015, 15:42 UTC)
+----------------------------------------
+
+* LUN-2062
+
+  * Style bentomatic andmin snippets vars
+
+* LUN-2068
+
+  * added pre/post validation events
+
+* LUN-2072
+
+  * variables shown need to belong to the current snippet set in the plugin
+
+* LUN-2078
+
+  * changed button labels; added confirm box on form submit
+
+No other commits.
+
 Revision 90290a3 (22.01.2015, 13:29 UTC)
 ----------------------------------------
 
