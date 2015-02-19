@@ -53,11 +53,16 @@ def get_resources(resources_data):
     if not resources_data:
         return {}
     resources_data = resources_data or ''
-    resources = defaultdict(set)
+    resources = defaultdict(list)
     for resource in resources_data.split(','):
         processed_link = _process(resource)
         if not processed_link:
             continue
-        resources[processed_link[0]].add(processed_link[1])
+        links = resources[processed_link[0]]
+        res_link = processed_link[1]
+        # check if already added. Note: using list and not set just to
+        #   make sure the ordering is kept
+        if res_link not in links:
+            links.append(processed_link[1])
     return resources
 
