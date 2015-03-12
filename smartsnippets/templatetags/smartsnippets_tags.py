@@ -1,7 +1,7 @@
 from django import template
 from collections import OrderedDict
 from smartsnippets.widgets_pool import widget_pool
-
+from datetime import datetime
 
 register = template.Library()
 
@@ -60,3 +60,7 @@ def split(string_to_split, delimiter=None):
 @register.assignment_tag
 def as_dict(**kwargs):
     return OrderedDict(kwargs)
+
+@register.assignment_tag
+def current_timestamp():
+    return datetime.utcnow().strftime("%Y%m%d_%H%M%S_%f")
