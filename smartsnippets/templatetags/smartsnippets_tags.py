@@ -64,3 +64,7 @@ def as_dict(**kwargs):
 @register.assignment_tag
 def current_timestamp():
     return datetime.utcnow().strftime("%Y%m%d_%H%M%S_%f")
+
+@register.assignment_tag(takes_context=True)
+def from_context(context, name):
+    return context.get(name, None)
