@@ -29,10 +29,15 @@
         //<![CDATA[
         (function($) {
             $(document).ready(function(){
+                var submitBtnName;
+
                 $(".plugin-help-tooltip").tipTip({maxWidth: "250px", delay: 100});
                 SnippetWidgetRegistry.initializeVariables();
+                $("#{{ opts.module_name }}_form").find(':submit').click(function(){
+                    submitBtnName  = $(this).attr('name');
+                });
                 $("#{{ opts.module_name }}_form").submit(function(){
-                    if (!SnippetWidgetRegistry.allValid()){
+                    if (submitBtnName !== '_cancel' && !SnippetWidgetRegistry.allValid()){
                         return false;
                     }
                 });
