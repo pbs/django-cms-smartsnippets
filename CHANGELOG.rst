@@ -1,6 +1,20 @@
 CHANGELOG
 =========
 
+Revision f5607ba (08.04.2015, 11:19 UTC)
+----------------------------------------
+
+* LUN-2115
+
+  * New assigment_tag created so we can take variables from context
+  * timestamp template tag created
+
+* LUN-2130
+
+  * Don't validate snippet fields when cancel is pressed
+
+No other commits.
+
 Revision 82231f8 (03.03.2015, 12:28 UTC)
 ----------------------------------------
 
