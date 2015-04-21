@@ -3,7 +3,9 @@ from collections import OrderedDict
 from smartsnippets.widgets_pool import widget_pool
 from datetime import datetime
 
+
 register = template.Library()
+
 
 @register.simple_tag(takes_context=True)
 def render_widget(context, var):
@@ -61,10 +63,41 @@ def split(string_to_split, delimiter=None):
 def as_dict(**kwargs):
     return OrderedDict(kwargs)
 
+
 @register.assignment_tag
 def current_timestamp():
     return datetime.utcnow().strftime("%Y%m%d_%H%M%S_%f")
 
+
 @register.assignment_tag(takes_context=True)
-def from_context(context, name):
-    return context.get(name, None)
+def from_context(context, name, sep=None, empty=None):
+    result_items = [
+        (context.get(n, None) or empty)
+        for n in name.split(sep or ',')]
+    return result_items if len(result_items) > 1 else result_items[0]
+
+
+def _by_args(args):
+    func_by_args = lambda x: x
+    args = args.rsplit(',', 1)
+    if len(args) != 2:
+        return func_by_args
+
+    what, which = args[0], args[1]
+    if not which or what not in ('key', 'attribute'):
+        return func_by_args
+
+    if what == 'key':
+        return lambda x: x.get(which, None)
+
+    return lambda x: getattr(x, which, None)
+
+
+@register.filter
+def map_by(items, args):
+    return map(_by_args(args), items)
+
+
+@register.filter
+def exclude_empty(items, args=None):
+    return filter(_by_args(args) if args else None, items)
