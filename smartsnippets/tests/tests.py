@@ -1,5 +1,5 @@
 from django.contrib.sites.models import Site
-from django.template import RequestContext
+from django.template import RequestContext, Context, Template
 from django.core.cache import cache
 from django import http
 from django.test import TestCase
@@ -154,3 +154,63 @@ class TestVariables(TestCase):
         ssvar.save()
         self.assertEqual(Variable.objects.count(), 3)
         self.assertEqual(plugin3.variables.count(), 1)
+
+
+class TestTemplateTags(TestCase):
+
+    class EasterEgg(object):
+
+        def __init__(self, color):
+            self.color = color
+
+    def setUp(self):
+        self.colors = 'red green blue'
+        self.context_colors = {color: color for color in self.colors.split()}
+        self.eggs = [self.EasterEgg(color) for color in self.colors.split()]
+
+    def _render(self, code, data):
+        ctx = Context(data or {})
+        return Template("{% load smartsnippets_tags %}" + code).render(ctx)
+
+    def test_map_by_attribute(self):
+        out = self._render(
+            "{{ eggs|map_by:'attribute,color'|join:' ' }}",
+            {'eggs': self.eggs})
+        self.assertEqual(out, self.colors)
+
+    def test_map_by_key(self):
+        objs = [{'image': 'img', 'color': c} for c in self.colors.split()]
+
+        out = self._render(
+            "{{ objs|map_by:'key,color'|join:' ' }}", {'objs': objs})
+        self.assertEqual(out, self.colors)
+
+    def test_from_context(self):
+        out = self._render(
+            "{% from_context 'colors' as out %}{{out}}",
+            {'colors': self.colors})
+        self.assertEqual(out, self.colors)
+
+        out = self._render(
+            "{% from_context 'red,green,blue' as out %}{{out|join:' '}}",
+            self.context_colors)
+        self.assertEqual(out, self.colors)
+        # test missing name + empty val
+        out = self._render(
+            "{% from_context 'red green black' ' ' 'yellow' as out %}"
+            "{{out|join:' '}}",
+            self.context_colors)
+        self.assertEqual(out, "red green yellow")
+
+    def test_exclude_empty(self):
+        out = self._render(
+            "{{ objs|exclude_empty|join:'' }}",
+            {'objs': ['', None, 'default']})
+        self.assertEqual(out, 'default')
+
+        objs = [{'attr': 'attr', 'color': c} for c in self.colors.split()]
+        objs += [{'color': '',}, {'color': None,}, {}]
+        out = self._render(
+            "{{ objs|exclude_empty:'key,color'|map_by:'key,color'|join:'' }}",
+            {'objs': objs})
+        self.assertEqual(out, self.colors.replace(' ', ''))
