@@ -72,7 +72,7 @@ def current_timestamp():
 @register.assignment_tag(takes_context=True)
 def from_context(context, name, sep=None, empty=None):
     result_items = [
-        (context.get(n, None) or empty)
+        context.get(n, empty)
         for n in name.split(sep or ',')]
     return result_items if len(result_items) > 1 else result_items[0]
 
@@ -134,5 +134,7 @@ def exclude_empty(items, operator_args=None):
         When operator_args is missing None will be used.
     Example operator_args: 'key,image' or 'attribute,color'
     """
-    operator_func = _select_operator(operator_args) if operator_args else None
-    return filter(operator_func, items)
+    result_items = filter(None, items)
+    if operator_args:
+        result_items = filter(_select_operator(operator_args), result_items)
+    return result_items
