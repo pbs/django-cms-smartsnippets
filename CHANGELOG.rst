@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+Revision 9a027c8 (23.04.2015, 07:45 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * exclude_empty should always exlude empty items before key/attr exclusion; from_context should not change value even if empty
+  * added docs + renamed funcs to be more explicit
+  * added custom helper filters
+
 Revision f5607ba (08.04.2015, 11:19 UTC)
 ----------------------------------------
 
