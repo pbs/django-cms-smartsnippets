@@ -6,8 +6,6 @@
 var current_site = {{current_site}};
 </script>
 {{ block.super }}
-<script type="text/javascript" src="{% admin_media_prefix %}js/jquery.min.js"></script>
-<script type="text/javascript" src="{% url admin:jsi18n %}"></script>
 {{ media }}
 
 <script type="text/javascript">
@@ -44,6 +42,7 @@ var current_site = {{current_site}};
 	runOnLoad(function(){
 		parent.setiframeheight($('body').height()+20, {{ plugin.pk }});
 	});
+
 	$(document).ready(function(){
 		$("a.add-another,a.related-lookup").each(function(i, sign){
 			var href = $(sign).attr("href")
@@ -52,8 +51,27 @@ var current_site = {{current_site}};
 				$(sign).attr("href", href);
 			}
 		});
+
+        var submitBtnName;
+
+        SnippetWidgetRegistry.initializeVariables();
+        $("#{{ opts.module_name }}_form").find(':submit').click(function(){
+            submitBtnName  = $(this).attr('name');
+        });
+        $("#{{ opts.module_name }}_form").submit(function(){
+            if (submitBtnName !== '_cancel' && !SnippetWidgetRegistry.allValid()){
+                return false;
+            }
+        });
+
+        $('#id_snippet').change(function(){
+            var selected_snippet = $('#id_snippet').val();
+            var url = window.location.href
+            url += (url.indexOf('?') !== -1 ? '&':'?') + "snippet=" + selected_snippet;
+            window.location = url;
+        });
 	});
-})(jQuery);
+})(jQuery || django.jQuery);
 //]]>
 </script>
 
