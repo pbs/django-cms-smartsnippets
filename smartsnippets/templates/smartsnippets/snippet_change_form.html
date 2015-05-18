@@ -1,5 +1,24 @@
 {% extends "smartsnippets/plugin_change_form.html" %}
 
+{% block extrahead %} 
+    {{ block.super }}
+
+    <script type="text/javascript">
+
+    (function($) {
+        $(document).ready(function(){
+            if (window.hasAceTheme == true) {
+                $('.plugin-help-tooltip').remove();
+            }
+            else {
+                $('.smartsnippet-description').remove();
+            }
+        });
+    })(jQuery || django.jQuery);
+    
+    </script>
+{% endblock %}
+
 {% block content_title %}
 {% if original.snippet.documentation_link %}
     <a class="plugin-help-tooltip" href='{{original.snippet.documentation_link}}' target='_blank' title='{% if original.snippet.description %}{{original.snippet.description}}<br/><br/>{% endif %}Follow link to see documentation'><img src="{{STATIC_URL}}images/help.png"></a>
@@ -10,7 +29,7 @@
 {% endblock%}
 
 {% block top %}
-<div style="padding:10px; margin-bottom: 10px; border:1px solid #ccc">
+<div style="padding:10px; margin-bottom: 10px; border:1px solid #ccc;overflow:hidden">
 <h3>Preview:</h3>
 <hr/><br/>
 {{ block.super }}
@@ -20,10 +39,22 @@
 {% block after_related_objects %}
 {{ block.super }}
 {% if variables %}
-    <fieldset class="module">
-        <h2>Smart Snippet Variables</h2>
-        <table>
-            <thead>
+     <fieldset class="module">
+        <div class="page-header no-border">
+            <h2 class="smartsnippet-title">{{original.snippet|default:"Smart Snippet Variables"}}</h2>
+            <div class="smartsnippet-description">
+                {% if original.snippet.documentation_link %}
+                    <div class="form-group">
+                        <p>{{ original.snippet.description }}</p>
+                        <p><a href="{{ original.snippet.documentation_link }}"><i class="ace-icon glyphicon glyphicon-link"></i> Follow link to see documentation</a></p>
+                    </div>
+                {% elif original.snippet.description %}
+                    <div class="form-group"><p>{{ original.snippet.description }}</p></div>
+                {% endif %}
+            </div>
+        </div>
+        <table class="form-horizontal">
+            <thead class="hide">
                 <tr>
                     <th>Name</th>
                     <th>Value</th>
@@ -37,3 +68,4 @@
 {% endif %}
 
 {% endblock %}
+

@@ -51,23 +51,27 @@ class SmartSnippetPlugin(CMSPluginBase):
         if not USE_BOTTSTRAP_ACE:
             media_obj = super(SmartSnippetPlugin, self).media
         else:
-            media_obj = WidgetsMedia(js=(), css={'all': ()})
+            media_obj = WidgetsMedia(js=((static('libs/jquery-2.1.1.min.js'), static('libs/bootstrap/js/bootstrap.min.js'), static('admin/js/custom.js'))), css={'all': ('//fonts.googleapis.com/css?family=Open+Sans:400,300"', static('libs/bootstrap/css/bootstrap.css'), static('libs/ace/css/ace.min.css'), static('admin/css/custom.css'),)})
 
         media_obj.add_js(
             (reverse('admin:jsi18n'),
-             static('admin/js/SmartSnippetLib.js')))
+             static('admin/js/SmartSnippetLib.js'),
+             static('admin/js/jquery.init.js'),
+             static('admin/js/default.jQuery.init.js')))
 
         if not USE_BOTTSTRAP_ACE:
             media_obj.add_css({
                 'all': (
+                    static('admin/css/forms.css'),
+                    static('admin/css/base.css'),
                     static('css/tipTip.css'),
-                    static('admin/css/snippet_plugin_default.css'))
+                    static('admin/css/snippet_plugin_default.css'), )
             })
             media_obj.add_js((
-                static('admin/js/default.jQuery.init.js'),
                 static('js/jquery.tipTip.minified.js'),
                 static('admin/js/snippet_plugin_default.js'), )
             )
+
         return media_obj
 
     def add_view(self, request, form_url='', extra_context=None):

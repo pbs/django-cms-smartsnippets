@@ -1,5 +1,7 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_modify adminmedia cms_admin %}
+{% load i18n admin_modify cms_admin %}
+
+{% block stylesheet %} {% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript">
@@ -78,9 +80,9 @@ var current_site = {{current_site}};
 
 {% endblock %}
 
-{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+{% block extrastyle %}{% endblock %}
 
-{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+{% block coltype %}{% if ordered_objects %}colMS page-content{% else %}colM page-content no-padding-bottom{% endif %}{% endblock %}
 
 {% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
 
@@ -132,9 +134,9 @@ var current_site = {{current_site}};
 {% prepopulated_fields_js %}
 
 </div>
-<span class="plugin-submit-row"{% if is_popup %} style="overflow: auto;"{% endif %}>
-	<input type="submit" name="_save" class="default" value="{% trans "Save" %}" {{ onclick_attrib }}/>
-	<input type="submit" style="margin-left: 8px;" value="{% trans "Cancel" %}" name="_cancel" class="cancel-btn">
+<span class="plugin-submit-row clearfix form-actions no-margin-bottom no-padding-right"{% if is_popup %} style="overflow: auto;"{% endif %}>
+	<input type="submit" name="_save" class="btn btn-info pull-right" value="{% trans "Save" %}" {{ onclick_attrib }}/>
+	<input type="submit" style="margin-left: 8px;" value="{% trans "Cancel" %}" name="_cancel" class="cancel-btn btn pull-right">
 </span>
 </form>
 
