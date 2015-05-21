@@ -16,7 +16,7 @@
 <script type="text/javascript">
 (function ($) {
 	$(document).ready(function(){
-	        function itemToJson(field_name) {
+	        function setState(field_name) {
 	            var switcher = $("#switcher_" + field_name);
 	            var json_field = $("#var_" + field_name);
 
@@ -25,7 +25,7 @@
 
 	            });
 	        };
-	       itemToJson('{{ field.name|lower }}');
+	       setState('{{ field.name|lower }}');
 	});
 })(jQuery || django.jQuery);
 </script>
