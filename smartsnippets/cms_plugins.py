@@ -1,3 +1,4 @@
+
 from django.db.models import Q
 from django.forms.widgets import Media as WidgetsMedia
 from django.contrib.sites.models import Site
@@ -48,10 +49,11 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     @property
     def media(self):
+        
         if not USE_BOTTSTRAP_ACE:
             media_obj = super(SmartSnippetPlugin, self).media
         else:
-            media_obj = WidgetsMedia(js=((static('libs/jquery-2.1.1.min.js'), static('libs/bootstrap/js/bootstrap.min.js'), static('admin/js/custom.js'))), css={'all': ('//fonts.googleapis.com/css?family=Open+Sans:400,300', static('libs/bootstrap/css/bootstrap.css'), static('libs/ace/css/ace.min.css'), static('admin/css/custom.css'),)})
+            media_obj = WidgetsMedia(js=((static('admin/js/core.js'), static('admin/js/admin/RelatedObjectLookups.js'), static('libs/jquery-2.1.1.min.js'), static('libs/bootstrap/js/bootstrap.min.js'), static('admin/js/custom.js'))), css={'all': ('//fonts.googleapis.com/css?family=Open+Sans:400,300', static('libs/bootstrap/css/bootstrap.css'), static('libs/ace/css/ace.min.css'), static('admin/css/custom.css'),)})
 
         media_obj.add_js(
             (reverse('admin:jsi18n'),
@@ -71,7 +73,6 @@ class SmartSnippetPlugin(CMSPluginBase):
                 static('js/jquery.tipTip.minified.js'),
                 static('admin/js/snippet_plugin_default.js'), )
             )
-
         return media_obj
 
     def add_view(self, request, form_url='', extra_context=None):
