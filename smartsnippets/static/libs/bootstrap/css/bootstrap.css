@@ -8025,3 +8025,46 @@ button.close {
     display: none !important;
   }
 }
+/* line 2, ../sass/_pbs.overrides.scss */
+.help-block {
+  font-size: 12px !important;
+  font-style: italic;
+}
+
+/* line 6, ../sass/_pbs.overrides.scss */
+.form-actions .btn-info {
+  min-width: 100px;
+  margin-left: 8px;
+}
+
+/* line 10, ../sass/_pbs.overrides.scss */
+.form-horizontal {
+  width: 100%;
+}
+
+/* line 13, ../sass/_pbs.overrides.scss */
+table td.control-label {
+  vertical-align: top;
+  text-transform: capitalize;
+}
+
+/* line 17, ../sass/_pbs.overrides.scss */
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+select {
+  color: black;
+  width: 55%;
+}
