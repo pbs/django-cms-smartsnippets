@@ -33,7 +33,7 @@
 .widget-drag {
   height: 38px;
   width: 15px;
-  background: url(../images/drag.gif) no-repeat 2px 4px;
+  background: url(../../images/drag.gif) no-repeat 2px 4px;
   display: inline-block;
   float: left;
   cursor: move;
