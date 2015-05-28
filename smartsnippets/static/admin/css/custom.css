@@ -15,6 +15,9 @@ input[type=search], input[type=tel], input[type=text], input[type=time],
 input[type=url], input[type=week], textarea, select {
   color: #393939;
 }
+.btn.btn-info[disabled] {
+  color: white !important;
+}
 .popover-content, .popover {
     min-width: 330px;
 }
