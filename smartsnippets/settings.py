@@ -29,5 +29,5 @@ inherit_variable_pattern = getattr(
     settings, 'SMARTSNIPPETS_INHERIT_VAR_PATTERN',
     '_snippet_inherit_{identifier}')
 
-USE_BOTTSTRAP_ACE = getattr(
-    settings, 'SMARTSNIPPETS_USE_BOTTSTRAP_ACE', False)
+USE_BOOTSTRAP_ACE = getattr(
+    settings, 'SMARTSNIPPETS_USE_BOOTSTRAP_ACE', False)

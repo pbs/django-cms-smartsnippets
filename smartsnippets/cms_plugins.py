@@ -10,7 +10,7 @@ from cms.plugin_pool import plugin_pool
 
 from .models import SmartSnippetPointer, SmartSnippet, Variable
 from .settings import (
-    shared_sites, include_orphan, restrict_user, USE_BOTTSTRAP_ACE)
+    shared_sites, include_orphan, restrict_user, USE_BOOTSTRAP_ACE)
 from django.conf import settings
 import itertools
 
@@ -50,7 +50,7 @@ class SmartSnippetPlugin(CMSPluginBase):
     @property
     def media(self):
         
-        if not USE_BOTTSTRAP_ACE:
+        if not USE_BOOTSTRAP_ACE:
             media_obj = super(SmartSnippetPlugin, self).media
         else:
             media_obj = WidgetsMedia(js=((static('admin/js/core.js'), static('admin/js/admin/RelatedObjectLookups.js'), static('libs/jquery-2.1.1.min.js'), static('libs/bootstrap/js/bootstrap.min.js'), static('admin/js/custom.js'))), css={'all': ('//fonts.googleapis.com/css?family=Open+Sans:400,300', static('libs/bootstrap/css/bootstrap.css'), static('libs/ace/css/ace.min.css'), static('admin/css/custom.css'),)})
@@ -61,7 +61,7 @@ class SmartSnippetPlugin(CMSPluginBase):
              static('admin/js/jquery.init.js'),
              static('admin/js/default.jQuery.init.js')))
 
-        if not USE_BOTTSTRAP_ACE:
+        if not USE_BOOTSTRAP_ACE:
             media_obj.add_css({
                 'all': (
                     static('admin/css/forms.css'),
