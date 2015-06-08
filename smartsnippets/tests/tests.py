@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.contrib.sites.models import Site
 from django.template import RequestContext, Context, Template
 from django.core.cache import cache
@@ -12,6 +13,10 @@ from smartsnippets.models import (
     SmartSnippetPointer,
     Variable,
 )
+class FakeSiteAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Site, FakeSiteAdmin)
+from smartsnippets.admin import SnippetAdmin, SnippetForm
 
 
 def do_make_smartsnippet(template_code):
@@ -154,6 +159,29 @@ class TestVariables(TestCase):
         ssvar.save()
         self.assertEqual(Variable.objects.count(), 3)
         self.assertEqual(plugin3.variables.count(), 1)
+
+    def test_validation_passes_for_correct_variables(self):
+        form = SnippetForm(http.QueryDict(
+            'name=test&'
+            'variables-0-name=correct_var_1'
+            'variables-1-name=also_correct%$^^ '
+            ))
+        self.assertTrue(form.is_valid())
+
+    def test_variable_name_is_cleaned(self):
+        variable = SmartSnippetVariable.objects.create(
+            snippet=self.snippet, name='item&&&& _name', widget='TextField')
+        variable.save()
+        self.assertEqual(variable.name, 'item__name')
+
+    def test_validation_fails_for_same_name_variables(self):
+        form = SnippetForm(http.QueryDict(
+            'name=test&'
+            'variables-0-name=var_1&'
+            'variables-2-0-name=var_1%^'
+            ))
+        self.assertFalse(form.is_valid())
+        self.assertDictEqual(form.errors, {'__all__': [u'The variable name "var_1" is used multiple times']})
 
 
 class TestTemplateTags(TestCase):
