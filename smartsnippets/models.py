@@ -1,3 +1,5 @@
+import re
+
 from django.core.cache import cache
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -9,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from cms.models import CMSPlugin
 
-import re
 from sekizai.helpers import (
     Watcher as sekizai_context_watcher,
     get_varname as sekizai_cache_key,
