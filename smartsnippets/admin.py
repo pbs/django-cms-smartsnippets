@@ -1,3 +1,5 @@
+import re
+
 from django.contrib import admin
 from django.db.models import Q
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -18,7 +20,6 @@ from settings import (
     shared_sites, include_orphan, restrict_user, handle_permissions_checks,
     custom_widgets_resources)
 from widgets_pool import widget_pool
-import re
 
 
 class SnippetForm(ModelForm):
