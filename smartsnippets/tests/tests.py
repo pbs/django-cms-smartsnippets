@@ -161,12 +161,15 @@ class TestVariables(TestCase):
         self.assertEqual(plugin3.variables.count(), 1)
 
     def test_validation_passes_for_correct_variables(self):
-        form = SnippetForm(http.QueryDict(
-            'name=test&'
-            'variables-0-name=correct_var_1'
-            'variables-1-name=also_correct%$^^ '
-            ))
-        self.assertTrue(form.is_valid())
+        valid_variable_requests=[
+            'name=test&variables-0-name=correct_var_1&variables-1-name=also_correct%$^^ ',
+            'name=test&variables-0-name=simple',
+            'name=test&variables-0-name=standard&variables-2-0-name=dropdown'
+            ]
+        for valid_variable_request in valid_variable_requests:
+            form = SnippetForm(http.QueryDict(valid_variable_request))
+            self.assertTrue(form.is_valid(),
+                            '{} request should be valid'.format(valid_variable_requests))
 
     def test_variable_name_is_cleaned(self):
         variable = SmartSnippetVariable.objects.create(
