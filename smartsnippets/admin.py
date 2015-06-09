@@ -95,7 +95,6 @@ class SnippetForm(ModelForm):
             if variable_name in unique_variable_names:
                 raise ValidationError(
                     'The variable name "{}" is used multiple times'.format(variable_name))
-            print variable_name
             unique_variable_names.add(variable_name)
 
 
