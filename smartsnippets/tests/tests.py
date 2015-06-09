@@ -179,13 +179,17 @@ class TestVariables(TestCase):
         self.assertEqual(variable.name, 'item__name')
 
     def test_validation_fails_for_same_name_variables(self):
-        form = SnippetForm(http.QueryDict(
-            'name=test&'
-            'variables-0-name=var_1&'
-            'variables-2-0-name=var_1%^'
-            ))
-        self.assertFalse(form.is_valid())
-        self.assertDictEqual(form.errors, {'__all__': [u'The variable name "var_1" is used multiple times']})
+        variables_requests = [
+            ('name=test&variables-0-name=var_1&variables-2-0-name=var_1%^',
+             u'The variable name "var_1" is used multiple times.'),
+            ('name=test&variables-0-name=var_1&variables-2-0-name=var_1%^&'
+             'variables-1-name=var2&variables-2-name=var2',
+             u'The variable names "var_1, var2" are used multiple times.')
+            ]
+        for request, expected_error in variables_requests:
+            form = SnippetForm(http.QueryDict(request))
+            self.assertFalse(form.is_valid())
+            self.assertDictEqual(form.errors, {'__all__': [expected_error]})
 
 
 class TestTemplateTags(TestCase):
