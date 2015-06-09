@@ -14,6 +14,7 @@ from smartsnippets.models import (
     Variable,
 )
 class FakeSiteAdmin(admin.ModelAdmin):
+    """ smartsnippets.admin module requires a model admin to be registed for Site, so fake it. """
     pass
 admin.site.register(Site, FakeSiteAdmin)
 from smartsnippets.admin import SnippetAdmin, SnippetForm
