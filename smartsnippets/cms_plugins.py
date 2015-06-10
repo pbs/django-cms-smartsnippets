@@ -102,6 +102,7 @@ class SmartSnippetPlugin(CMSPluginBase):
         empty_plugin.__dict__.update(context['plugin'].__dict__)
         empty_plugin.pk = empty_plugin.id
         context['plugin'] = empty_plugin
+        context['original'] = context['plugin']
 
     def change_view(self, request, object_id, extra_context=None):
         extra_context = extra_context or {}
