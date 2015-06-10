@@ -103,8 +103,8 @@ class SmartSnippetPlugin(CMSPluginBase):
         empty_plugin.pk = empty_plugin.id
         context['plugin'] = empty_plugin
 
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
+    def change_view(self, request, object_id, *args, **kwargs):
+        extra_context = kwargs.get('extra_context', None) or {}
 
         try:
             selected_snippet = SmartSnippet.objects.get(
@@ -126,9 +126,9 @@ class SmartSnippetPlugin(CMSPluginBase):
             ).order_by('snippet_variable__name')
 
         extra_context.update({'variables': variables})
-
+        kwargs['extra_context'] = extra_context
         response = super(SmartSnippetPlugin, self).change_view(
-            request, object_id, extra_context=extra_context)
+            request, object_id, *args, **kwargs)
 
         context = getattr(response, 'context_data', None)
         add_variables_media(context)

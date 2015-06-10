@@ -34,7 +34,7 @@ class SnippetForm(ModelForm):
         super(SnippetForm, self).__init__(*args, **kwargs)
 
     def clean_sites(self):
-        empty_sites = Site.objects.get_empty_query_set()
+        empty_sites = Site.objects.none()
         self.cleaned_data['sites'] = self.cleaned_data.get(
             'sites', empty_sites) or empty_sites
 
