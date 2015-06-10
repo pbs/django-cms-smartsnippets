@@ -184,6 +184,12 @@ class TestVariables(TestCase):
              u'The variable name "var_1" is used multiple times.'),
             ('name=test&variables-0-name=var_1&variables-2-0-name=var_1%^&'
              'variables-1-name=var2&variables-2-name=var2',
+             u'The variable names "var_1, var2" are used multiple times.'),
+            ('name=test&variables-0-name=var_1&variables-2-0-name=var_1%^&'
+             'variables-1-name=var_1',
+             u'The variable name "var_1" is used multiple times.'),
+            ('name=test&variables-0-name=var_1&variables-2-0-name=var_1%^&'
+             'variables-1-name=var2&variables-2-name=var2&variables-3-name=var2',
              u'The variable names "var_1, var2" are used multiple times.')
             ]
         for request, expected_error in variables_requests:
