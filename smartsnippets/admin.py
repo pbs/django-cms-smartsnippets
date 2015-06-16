@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 
 from django.contrib import admin
 from django.db.models import Q
@@ -88,16 +89,12 @@ class SnippetForm(ModelForm):
 
     def validate_unique_variable_names(self):
         """ Validates name uniqueness over all variable inlines. """
-        unique_variable_names = set()
-        duplicate_variable_names = set()
         all_variable_names = [clean_variable_name(value)
                               for key, value in self.data.dict().iteritems()
                               if re.match(r"variables[0-9-]*name", key)]
-        for variable_name in all_variable_names:
-            if variable_name in unique_variable_names:
-                duplicate_variable_names.add(variable_name)
-            else:
-                unique_variable_names.add(variable_name)
+        duplicate_variable_names = [var_name for var_name, count
+                                    in Counter(all_variable_names).iteritems()
+                                    if count > 1]
 
         if duplicate_variable_names:
             if len(duplicate_variable_names) == 1:
