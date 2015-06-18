@@ -4,3 +4,8 @@ recursive-include smartsnippets/tests *.html
 recursive-include smartsnippets/static *
 recursive-include smartsnippets_inherit/templates *.html
 recursive-include smartsnippets_inherit/static *
+recursive-exclude smartsnippets/static/libs/bootstrap/.sass-cache *
+exclude smartsnippets/static/libs/bootstrap/js/bootstrap.js
+recursive-exclude smartsnippets/static/libs/bootstrap/sass *
+exclude smartsnippets/static/libs/bootstrap/config.rb
+

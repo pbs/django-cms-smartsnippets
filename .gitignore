@@ -4,4 +4,6 @@ dist
 *.egg
 pytest-results.xml
 .tox
-*.pyo
+*.py
+.DS_Store
+.sass-cache
