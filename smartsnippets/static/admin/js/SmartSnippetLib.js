@@ -102,4 +102,4 @@ var SnippetWidgetRegistry = (function ($) {
             return vars_ids;
         }
     };
-})(django.jQuery || jQuery);
+})(jQuery || django.jQuery);

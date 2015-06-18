@@ -1,13 +1,13 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_modify adminmedia cms_admin %}
+{% load i18n admin_modify cms_admin %}
+
+{% block stylesheet %} {% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript">
 var current_site = {{current_site}};
 </script>
 {{ block.super }}
-<script type="text/javascript" src="{% admin_media_prefix %}js/jquery.min.js"></script>
-<script type="text/javascript" src="{% url admin:jsi18n %}"></script>
 {{ media }}
 
 <script type="text/javascript">
@@ -44,6 +44,7 @@ var current_site = {{current_site}};
 	runOnLoad(function(){
 		parent.setiframeheight($('body').height()+20, {{ plugin.pk }});
 	});
+
 	$(document).ready(function(){
 		$("a.add-another,a.related-lookup").each(function(i, sign){
 			var href = $(sign).attr("href")
@@ -52,17 +53,36 @@ var current_site = {{current_site}};
 				$(sign).attr("href", href);
 			}
 		});
+
+        var submitBtnName;
+
+        SnippetWidgetRegistry.initializeVariables();
+        $("#{{ opts.module_name }}_form").find(':submit').click(function(){
+            submitBtnName  = $(this).attr('name');
+        });
+        $("#{{ opts.module_name }}_form").submit(function(){
+            if (submitBtnName !== '_cancel' && !SnippetWidgetRegistry.allValid()){
+                return false;
+            }
+        });
+
+        $('#id_snippet').change(function(){
+            var selected_snippet = $('#id_snippet').val();
+            var url = window.location.href
+            url += (url.indexOf('?') !== -1 ? '&':'?') + "snippet=" + selected_snippet;
+            window.location = url;
+        });
 	});
-})(jQuery);
+})(jQuery || django.jQuery);
 //]]>
 </script>
 
 
 {% endblock %}
 
-{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+{% block extrastyle %}{% endblock %}
 
-{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+{% block coltype %}{% if ordered_objects %}colMS page-content{% else %}colM page-content no-padding-bottom{% endif %}{% endblock %}
 
 {% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
 
@@ -114,9 +134,9 @@ var current_site = {{current_site}};
 {% prepopulated_fields_js %}
 
 </div>
-<span class="plugin-submit-row"{% if is_popup %} style="overflow: auto;"{% endif %}>
-	<input type="submit" name="_save" class="default" value="{% trans "Save" %}" {{ onclick_attrib }}/>
-	<input type="submit" style="margin-left: 8px;" value="{% trans "Cancel" %}" name="_cancel" class="cancel-btn">
+<span class="plugin-submit-row clearfix form-actions no-margin-bottom no-padding-right"{% if is_popup %} style="overflow: auto;"{% endif %}>
+	<input type="submit" name="_save" class="btn btn-info pull-right" value="{% trans "Save" %}" {{ onclick_attrib }}/>
+	<input type="submit" style="margin-left: 8px;" value="{% trans "Cancel" %}" name="_cancel" class="cancel-btn btn pull-right">
 </span>
 </form>
 

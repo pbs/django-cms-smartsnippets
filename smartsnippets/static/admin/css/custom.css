@@ -1,0 +1,150 @@
+.smartsnippet-title {
+    color: #abbac3;
+    font-weight: 300;
+    font-size: 32px;
+}
+.smartsnippet-description {
+    font-size: 14px;
+}
+.smartsnippet-description p {
+    white-space: pre-wrap;
+}
+input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], 
+input[type=email], input[type=month], input[type=number], input[type=password], 
+input[type=search], input[type=tel], input[type=text], input[type=time], 
+input[type=url], input[type=week], textarea, select {
+  color: #393939;
+}
+.btn.btn-info[disabled] {
+  color: white !important;
+}
+.popover-content, .popover {
+    min-width: 330px;
+}
+.popover-content span {
+    display: block;
+    margin-bottom: 15px;
+}
+.popover-content img {
+    margin-top: 5px;
+    display: block;
+}
+.popover {
+    border-radius: 0;
+    padding: 0;
+    border-color: #ccc;
+    border-width: 1px;
+    color: #000;
+    font-weight: 300;
+    font-size: 12px;
+    box-shadow: none;
+}
+.widget-drag {
+  height: 38px;
+  width: 15px;
+  background: url(../../images/drag.gif) no-repeat 2px 4px;
+  display: inline-block;
+  float: left;
+  cursor: move;
+  margin-right: 12px;
+}
+.widget-box {
+  border: none;
+  margin-bottom: 20px;
+}
+.widget-body > table {
+  border: 1px solid #CCC !important;
+  border-top: none !important;
+}
+.deletelink { 
+  color: white !important;
+  margin-right: 20px;
+  padding: 8px 18px;
+  border: none;
+}
+.collapsed .glyphicon-chevron-up:before {
+  content: "\e114";
+}
+.collapse-item {
+  height: 0;
+  position: relative;
+  overflow: hidden;
+  -webkit-transition: all .3s;
+  -o-transition: all .3s;
+  transition: all .3s;
+}
+.collapse-item.on {
+  height: auto;
+}
+.submit-button {
+  float: right;
+  position: relative;
+}
+td.filer-input-wrapper  .help-button {
+  position: absolute;
+  top: 0;
+  right: -30px;
+}
+.help-button {
+  margin: 3px 0 0 10px;
+}
+.form-actions {
+	background: white;
+}
+.widget-header {
+  background: #fff;
+  padding: 0;
+  border: 1px solid #DDD;
+}
+.widget-header > .widget-title {
+  line-height: 36px;
+  font-size: 18px;
+  font-weight: 300;
+  text-transform: none;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  color: #666;
+}
+.limiterBox {
+  border: none;
+  background: none;
+  padding: 3px 6px;
+  font-size: 12px;
+  color: #737373;
+  text-align: right;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  margin-top: 3px;
+  margin-left: 15px;
+}
+.limiterBox:after {
+  display: none;
+}
+.limiterBox:before {
+ display: none;
+}
+.ui-dialog, .ui-jqdialog {
+  border: none;
+  display: inline-block !important;
+}
+.ui-dialog .ui-dialog-titlebar, .ui-jqdialog .ui-dialog-titlebar, .ui-dialog .ui-jqdialog-titlebar, .ui-jqdialog .ui-jqdialog-titlebar {
+  color: #fff;
+  background-color: #669fc7;
+  padding: 5px 10px;
+}
+.ui-dialog .ui-dialog-titlebar-close, .ui-jqdialog .ui-dialog-titlebar-close, .ui-dialog .ui-jqdialog-titlebar-close, .ui-jqdialog .ui-jqdialog-titlebar-close {
+  display: none;
+}
+#dialog-confirm {
+  padding: 10px 10px 0;
+}
+.ui-dialog .ui-dialog-buttonpane, .ui-jqdialog .ui-dialog-buttonpane, .ui-dialog .ui-jqdialog-buttonpane, .ui-jqdialog .ui-jqdialog-buttonpane {
+  padding: 0 10px 20px;
+  text-align: center;
+  background: none;
+  border-top: none;
+}
+.ui-dialog .ui-dialog-buttonpane button, .ui-jqdialog .ui-dialog-buttonpane button, .ui-dialog .ui-jqdialog-buttonpane button, .ui-jqdialog .ui-jqdialog-buttonpane button {
+  margin: 0 5px;
+}

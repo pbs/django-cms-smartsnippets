@@ -1,7 +1,7 @@
 <tr>
-    <td><label for="var_{{ field.name }}">{{ field.name }}</label></td>
-    <td>
-        <select id="var_{{ field.name }}" name="_{{ field.name }}_">
+    <td class="col-sm-3 control-label"><label for="var_{{ field.name }}" class="form-group no-margin-right no-margin-left">{{ field.name }}</label></td>
+    <td class="col-sm-9">
+        <select id="var_{{ field.name }}" name="_{{ field.name }}_" class="form-group no-margin-right no-margin-left">
             <option value="">---------</option>
             {% for value in field.snippet_variable.dropdownvariable.choices_list %}
                 <option {% if value == field.value %} selected="selected" {% endif %} value="{{ value }}" >{{ value }}</option>
