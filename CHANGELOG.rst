@@ -1,6 +1,31 @@
 CHANGELOG
 =========
 
+Revision f9511af (19.06.2015, 05:28 UTC)
+----------------------------------------
+
+* LUN-2227
+
+  * set default style for textareas
+  * default dark color set to all inputs/dropdowns/textareas
+  * added image for draggable items
+  * added pbs overrides for bootstrap and ace themes
+  * add missing js files
+  * small js and css updates
+  * new SwitcherField created for all smartsnippets
+  * Added Ace theme to all smartsnippets
+  * moved code around to allow bootstrap ACE theme to work
+
+* LUN-2228
+
+  * Display the correct documentation and set the correct smartsnippet documentation url when adding a new smartsnippet.
+
+* Misc commits
+
+  * added MANIFEST.in and .gitignore
+  * typo misspelling of bootstrap
+  * default style for disabled buttons set
+
 Revision 9a027c8 (23.04.2015, 07:45 UTC)
 ----------------------------------------
 
