@@ -1,3 +1,4 @@
+import json
 from django import template
 from collections import OrderedDict
 from smartsnippets.widgets_pool import widget_pool
@@ -40,6 +41,14 @@ def get_item(iterable, key):
         except (TypeError, ):
             return ''
     return (dictionary or {}).get(key, '')
+
+
+@register.filter
+def json_get_index(json_array, index):
+    try:
+        return json.loads(json_array)[index]
+    except (TypeError, IndexError, ValueError, ):
+        return ''
 
 
 @register.filter
