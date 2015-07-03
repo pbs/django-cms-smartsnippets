@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision fa079bb (03.07.2015, 13:12 UTC)
+----------------------------------------
+
+* LUN-2371
+
+  * Open snippet documentation link in new tab/window
+
+No other commits.
+
 Revision f9511af (19.06.2015, 05:28 UTC)
 ----------------------------------------
 
