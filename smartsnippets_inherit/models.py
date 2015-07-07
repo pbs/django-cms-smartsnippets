@@ -9,6 +9,9 @@ class InheritPageContent(CMSPlugin):
     # from which section
     from_placeholder = models.CharField(max_length=255, db_index=True)
 
+    class Meta:
+        db_table = 'cmsplugin_inheritpagecontent'
+
     def get_placeholder(self):
         try:
             return self.from_page.placeholders.get(slot=self.from_placeholder)

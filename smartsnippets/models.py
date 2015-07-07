@@ -131,6 +131,9 @@ class SmartSnippetPointer(CMSPlugin):
     snippet = models.ForeignKey(SmartSnippet)
     cache_key_format = 'smartsnippet-pointer-{primary_key}'
 
+    class Meta:
+        db_table = 'cmsplugin_smartsnippetpointer'
+
     def get_cache_key(self):
         return self.cache_key_format.format(primary_key=self.pk)
 
