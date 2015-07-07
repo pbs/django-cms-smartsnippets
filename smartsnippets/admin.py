@@ -25,6 +25,7 @@ class SnippetForm(ModelForm):
 
     class Meta:
         model = SmartSnippet
+        exclude = ()
 
     def __init__(self, *args, **kwargs):
         if 'sites' in self.base_fields:
@@ -187,8 +188,8 @@ class SnippetAdmin(admin.ModelAdmin):
         return (super(SnippetAdmin, self)
                     .formfield_for_manytomany(db_field, request, **kwargs))
 
-    def queryset(self, request):
-        q = super(SnippetAdmin, self).queryset(request)
+    def get_queryset(self, request):
+        q = super(SnippetAdmin, self).get_queryset(request)
         if not handle_permissions_checks:
             return q
         f = Q()

@@ -79,7 +79,7 @@ var current_site = {{current_site}};
 
 {% block content %}<div id="content-main">
 {% block top %}{% if preview %}{% render_plugin plugin %}{% endif %}{% endblock %}
-<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
 <div>
 {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
 {% if current_site %}<input type="hidden" name="_current_site" value="{{current_site}}" />{% endif %}
