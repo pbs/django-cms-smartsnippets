@@ -22,6 +22,9 @@ class DropDownField(SmartSnippetWidgetBase):
     model = DropDownVariable
     template = 'smartsnippets/widgets/dropdownfield/widget.html'
 
+class SwitcherField(SmartSnippetWidgetBase):
+    name = 'Switcher Field'
+    template = 'smartsnippets/widgets/switcherfield/widget.html'
 
 class JSONField(TextField):
     name = 'JSON Field'
@@ -42,4 +45,5 @@ class JSONField(TextField):
 widget_pool.register_widget(TextField)
 widget_pool.register_widget(TextAreaField)
 widget_pool.register_widget(DropDownField)
+widget_pool.register_widget(SwitcherField)
 widget_pool.register_widget(JSONField)

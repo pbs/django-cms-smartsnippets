@@ -1,0 +1,31 @@
+{% with fname=field.name|lower %}
+<tr class="bento-switcher switch-{{fname}}">
+	<td class="col-sm-3 control-label no-padding-top">
+		<label for="_{{ fname }}_switcher_" class="form-group no-margin-right no-margin-left">{{ field.name }}</label>
+		<input class="switcherfield_hidden" id="var_{{ field.name|lower|slugify }}" type="hidden" name="_{{ fname }}_" value="{{ field.value|default:'true' }}" size="100"/>
+	</td>
+	<td class="col-sm-9">
+		<label class="form-group no-margin-right no-margin-left">
+			<input id="switcher_{{ fname }}" type="checkbox" name="_{{ fname }}_switcher_" {% if field.value != 'false' %} checked {% endif%} class="ace ace-switch ace-switch-4 btn-empty">
+			<span class="lbl"></span>
+		</label>
+	</td>
+</tr>
+{% endwith %}
+
+<script type="text/javascript">
+(function ($) {
+	$(document).ready(function(){
+	        function setState(field_name) {
+	            var switcher = $("#switcher_" + field_name);
+	            var json_field = $("#var_" + field_name);
+
+	            switcher.on('click', function(){
+	            	json_field.val($(this).is(':checked'));
+
+	            });
+	        };
+	       setState('{{ field.name|lower }}');
+	});
+})(jQuery || django.jQuery);
+</script>
