@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 37ed35d (15.07.2015, 07:29 UTC)
+----------------------------------------
+
+* LUN-2401
+
+  * create new filter to get item from json array by index
+
+No other commits.
+
 Revision fa079bb (03.07.2015, 13:12 UTC)
 ----------------------------------------
 
