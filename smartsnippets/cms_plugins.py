@@ -49,11 +49,26 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     @property
     def media(self):
-        
+
         if not USE_BOOTSTRAP_ACE:
             media_obj = super(SmartSnippetPlugin, self).media
         else:
-            media_obj = WidgetsMedia(js=((static('admin/js/core.js'), static('admin/js/admin/RelatedObjectLookups.js'), static('libs/jquery-2.1.1.min.js'), static('libs/bootstrap/js/bootstrap.min.js'), static('admin/js/custom.js'))), css={'all': ('//fonts.googleapis.com/css?family=Open+Sans:400,300', static('libs/bootstrap/css/bootstrap.css'), static('libs/ace/css/ace.min.css'), static('admin/css/custom.css'),)})
+            media_obj = WidgetsMedia(
+                js=((
+                    static('admin/js/core.js'),
+                    static('admin/js/admin/RelatedObjectLookups.js'),
+                    static('libs/jquery-2.1.1.min.js'),
+                    static('libs/bootstrap/js/bootstrap.min.js'),
+                    static('admin/js/custom.js'), )
+                ),
+                css={
+                    'all': (
+                        '//fonts.googleapis.com/css?family=Open+Sans:400,300',
+                        static('libs/bootstrap/css/bootstrap.css'),
+                        static('libs/ace/css/ace.min.css'),
+                        static('admin/css/custom.css'), )
+                    }
+            )
 
         media_obj.add_js(
             (reverse('admin:jsi18n'),
@@ -74,6 +89,13 @@ class SmartSnippetPlugin(CMSPluginBase):
                 static('admin/js/snippet_plugin_default.js'), )
             )
         return media_obj
+
+    def response_add(self, request, obj, **kwargs):
+        response = super(SmartSnippetPlugin, self)\
+            .response_add(request, obj, **kwargs)
+        if hasattr(response, 'context_data'):
+            response.context_data['plugin'] = obj
+        return response
 
     def add_view(self, request, form_url='', extra_context=None):
         extra_context = extra_context or {}

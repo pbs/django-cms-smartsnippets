@@ -126,7 +126,13 @@ var current_site = {{current_site}};
 
 
 {% if add %}
-   <script type="text/javascript">document.getElementById("{{ adminform.first_field.auto_id }}").focus();</script>
+   <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $('form#{{ opts.model_name }}_form :input:visible:enabled:first').focus()
+            });
+        })(django.jQuery);
+    </script>
 {% endif %}
 
 {# JavaScript for prepopulated fields #}
