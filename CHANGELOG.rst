@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+Revision bf714da (17.07.2015, 13:28 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * tox: Don't allow django 1.8 prereleases
+  * changed static files urls in order for them to work with other static files storages
+  * s3sourceuploader no longer required
+  * Django 1.7 upgrade: fixed migrations & tests
+  * Django 1.7 upgrade: fixed deprecation warnings; fixed module_name
+  * Django 1.6 upgrade; fixed url templatetag
+  * Django 1.6 upgrade: fixed change_view & adminmedia tag
+
 Revision 37ed35d (15.07.2015, 07:29 UTC)
 ----------------------------------------
 
