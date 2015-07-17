@@ -70,8 +70,8 @@ class PageInheritPlugin(CMSPluginBase):
         formCls.current_page = self.cms_plugin_instance.page or self.page
         return formCls
 
-    def change_view(self, request, object_id, extra_context=None):
-        extra_context = extra_context or {}
+    def change_view(self, request, object_id, *args, **kwargs):
+        extra_context = kwargs.get('extra_context', None) or {}
         try:
             plugin = InheritPageContent.objects.get(id=object_id)
             placeholder = plugin.get_placeholder()
@@ -80,8 +80,9 @@ class PageInheritPlugin(CMSPluginBase):
             })
         except (InheritPageContent.DoesNotExist, ):
             pass
+        kwargs['extra_context'] = extra_context
         return super(PageInheritPlugin, self).change_view(
-            request, object_id, extra_context=extra_context)
+            request, object_id, *args, **kwargs)
 
     def get_inherited_snippets(self, placeholder):
         if not placeholder or not placeholder.page:

@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
-{% load i18n admin_modify adminmedia %}
+{% load i18n admin_modify %}
 {% load url from future %}
+{% load static from staticfiles %}
 
 {% block extrahead %}{{ block.super }}
 {% url 'admin:jsi18n' as jsi18nurl %}
@@ -16,9 +17,9 @@
 {% endblock %}
 
 {% block extrastyle %}{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />
-<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/codemirror.css" />
-<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/smartsnippets-extra.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/codemirror.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/smartsnippets-extra.css' %}" />
 {% endblock %}
 
 
@@ -46,7 +47,7 @@
   </ul>
 {% endif %}{% endif %}
 {% endblock %}
-<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
 <div>
 {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
 {% if save_on_top %}{% submit_row %}{% endif %}
@@ -78,7 +79,13 @@
 {% endif %}
 
 {% if adminform and add %}
-   <script type="text/javascript">document.getElementById("{{ adminform.first_field.id_for_label }}").focus();</script>
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $('form#{{ opts.model_name }}_form :input:visible:enabled:first').focus()
+            });
+        })(django.jQuery);
+    </script>
 {% endif %}
 
 {# JavaScript for prepopulated fields #}

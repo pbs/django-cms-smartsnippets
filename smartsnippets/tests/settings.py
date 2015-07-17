@@ -1,12 +1,9 @@
 import os
-from django.conf import settings
 
-shared_sites = getattr(settings, 'SMARTSNIPPETS_SHARED_SITES', [])
-include_orphan = getattr(settings, 'SMARTSNIPPETS_INCLUDE_ORPHAN', True)
-restrict_user = getattr(settings, 'SMARTSNIPPETS_RESTRICT_USER', False)
-
-snippet_caching_time = getattr(settings, 'SMARTSNIPPETS_CACHING_TIME', 300)
-caching_enabled = snippet_caching_time != 0
+SMARTSNIPPETS_SHARED_SITES = []
+SMARTSNIPPETS_INCLUDE_ORPHAN = True
+SMARTSNIPPETS_RESTRICT_USER = False
+SMARTSNIPPETS_CACHING_TIME = 300
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -25,9 +22,9 @@ INSTALLED_APPS = (
 
     'cms',
     'mptt',
-    'south',
     'sekizai',
     'smartsnippets',
+    'smartsnippets_inherit',
 )
 
 
@@ -64,5 +61,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 TEMPLATE_DIRS = (
-    os.path.join(HERE, 'templates',)
+    os.path.join(HERE, 'templates',),
 )
+SECRET_KEY = 'secret'
