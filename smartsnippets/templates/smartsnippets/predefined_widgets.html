@@ -1,4 +1,5 @@
 {% load smartsnippets_tags %}
+{% spaceless %}
 {% for name in widgets|sortdict %}
     {% with widget_data=widgets|get_item:name %}
         {% if forloop.first %}<ul class='predefined-widgets'>{% endif %}
@@ -8,3 +9,4 @@
 {% empty %}
 No widgets available.
 {% endfor %}
+{% endspaceless %}
