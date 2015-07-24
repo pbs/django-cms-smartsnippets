@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 9b2f779 (24.07.2015, 14:44 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * No need for line breaks
+
 Revision bf714da (17.07.2015, 13:28 UTC)
 ----------------------------------------
 
