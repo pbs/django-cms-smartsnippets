@@ -1,3 +1,5 @@
+import re
+
 from django.core.cache import cache
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -77,8 +79,8 @@ class SmartSnippet(models.Model):
 class SmartSnippetVariable(models.Model):
     name = models.CharField(
         max_length=50,
-        help_text=_('Enter the name of the variable defined in '
-                    'the smart snippet template.'))
+        help_text=_('Enter the name of the variable defined in the smart snippet '
+                    'template. Unallowed charactes will be removed when the form is saved.'))
     widget = models.CharField(
         max_length=50,
         help_text=_('Select the type of the variable defined '
@@ -103,6 +105,7 @@ class SmartSnippetVariable(models.Model):
         verbose_name = "Standard variable"
 
     def save(self, *args, **kwargs):
+        self.name = clean_variable_name(self.name)
         super(SmartSnippetVariable, self).save(*args, **kwargs)
         # auto-generate missing variables for all snippet plugins
         plugin_ids = SmartSnippetPointer.objects \
@@ -271,6 +274,10 @@ def remove_cached_variables(instance, **kwargs):
     key = instance.snippet.get_cache_key()
     if key in cache:
         cache.delete(key)
+
+def clean_variable_name(variable_name):
+    """ Convert the variable name to a name that can be used as a template variable. """
+    return re.sub(r"[^a-zA-Z0-9_]", '', variable_name.replace(' ', '_'))
 
 signals.post_save.connect(remove_cached_pointers, sender=SmartSnippet)
 signals.post_save.connect(remove_cached_variables, sender=Variable)

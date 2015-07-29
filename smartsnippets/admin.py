@@ -1,3 +1,6 @@
+import re
+from collections import Counter
+
 from django.contrib import admin
 from django.db.models import Q
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -13,7 +16,7 @@ from django.forms.widgets import Select
 from admin_extend.extend import registered_form, extend_registered, \
     add_bidirectional_m2m
 
-from models import SmartSnippet, SmartSnippetVariable, DropDownVariable
+from models import SmartSnippet, SmartSnippetVariable, DropDownVariable, clean_variable_name
 from settings import (
     shared_sites, include_orphan, restrict_user, handle_permissions_checks,
     custom_widgets_resources)
@@ -80,6 +83,27 @@ class SnippetForm(ModelForm):
             raise ValidationError(e)
         return path
 
+    def clean(self):
+        clean_result = super(SnippetForm, self).clean()
+        self.validate_unique_variable_names()
+        return clean_result
+
+    def validate_unique_variable_names(self):
+        """ Validates name uniqueness over all variable inlines. """
+        all_variable_names = [clean_variable_name(value)
+                              for key, value in self.data.dict().iteritems()
+                              if re.match(r"variables[0-9-]*name", key)]
+        duplicate_variable_names = [var_name for var_name, count
+                                    in Counter(all_variable_names).iteritems()
+                                    if count > 1]
+
+        if duplicate_variable_names:
+            if len(duplicate_variable_names) == 1:
+                raise ValidationError(
+                    'The variable name "{}" is used multiple times.'.format(duplicate_variable_names.pop()))
+            raise ValidationError('The variable names "{}" are used multiple times.'.format(
+                ', '.join(duplicate_variable_names)))
+
 
 class SnippetVariablesFormSet(BaseInlineFormSet):
     def get_queryset(self):
@@ -88,7 +112,6 @@ class SnippetVariablesFormSet(BaseInlineFormSet):
             qs = super(SnippetVariablesFormSet, self).get_queryset().filter(widget__in=available_widgets)
             self._queryset = qs
         return self._queryset
-
 
 
 class SnippetVariablesAdmin(admin.StackedInline):
