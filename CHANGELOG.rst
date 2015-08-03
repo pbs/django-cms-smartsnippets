@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+Revision 2d692b6 (03.08.2015, 09:13 UTC)
+----------------------------------------
+
+* LUN-2235
+
+  * Simplified the logic for detecting duplicate variable names.
+  * Better error message for duplicate variable names.
+  * Reordered imports.
+  * Added validation message for multiple duplicate variable names.
+  * Documented workaround for testing.
+  * Reordered imports.
+  * Added tests for variable name handling.
+  * Validate that variable names are unique in all the inlines.
+  * Cleaned the variable names before saving.
+
+* Misc commits
+
+  * Added more tests with valid variable names.
+  * Removed print.
+
 Revision 9b2f779 (24.07.2015, 14:44 UTC)
 ----------------------------------------
 
