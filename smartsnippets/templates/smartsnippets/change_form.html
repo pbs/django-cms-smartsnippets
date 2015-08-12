@@ -29,10 +29,27 @@
 
 {% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
-     <a href="../../../">{% trans "Home" %}</a> &rsaquo;
-     <a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo;
-     {% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &rsaquo;
-     {% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}
+  <ul class="breadcrumb">
+    <li>
+      <i class="ace-icon fa fa-home home-icon"></i>
+        <a href="../../../">{% trans 'Home' %}</a>
+    </li>
+    <li><a href="../../">{{ app_label|capfirst|escape }}</a></li>
+    <li>
+      {% if has_change_permission %}
+        <a href="../">{{ opts.verbose_name_plural|capfirst }}</a>
+      {% else %}
+        {{ opts.verbose_name_plural|capfirst }}
+      {% endif %}
+    </li>
+    <li>
+      {% if add %}
+        {% trans "Add" %} {{ opts.verbose_name }}
+      {% else %}
+        {{ original|truncatewords:"18" }}
+      {% endif %}
+    </li>
+  </ul>
 </div>
 {% endif %}{% endblock %}
 
