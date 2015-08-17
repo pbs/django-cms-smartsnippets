@@ -1,3 +1,6 @@
+body {
+  background: white;
+}
 .smartsnippet-title {
     color: #abbac3;
     font-weight: 300;
@@ -61,6 +64,13 @@ input[type=url], input[type=week], textarea, select {
   margin-right: 20px;
   padding: 8px 18px;
   border: none;
+}
+.form-horizontal .widget-body .snippet .row {
+  margin: 0;
+}
+.form-horizontal .widget-body .snippet {
+  margin-bottom: 0;
+  margin-top: 15px;
 }
 .collapsed .glyphicon-chevron-up:before {
   content: "\e114";
