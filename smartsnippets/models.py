@@ -73,8 +73,7 @@ class SmartSnippet(models.Model):
         pbs_provided = {'restriction_fields__shared_by_all': True,
             'restriction_fields__read_only': True,
             'id': self.id}
-        qs = SmartSnippet.objects.filter(**pbs_provided)
-        return bool(qs)
+        return SmartSnippet.objects.filter(**pbs_provided).exists()
 
     def render(self, context):
         if 'preview' in context and self.is_pbs_provided():
