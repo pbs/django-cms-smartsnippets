@@ -69,7 +69,15 @@ class SmartSnippet(models.Model):
     def get_cache_key(self):
         return 'smartsnippet-%s' % self.pk
 
+    def is_pbs_provided(self):
+        pbs_provided = {'restriction_fields__shared_by_all': True,
+            'restriction_fields__read_only': True,
+            'id': self.id}
+        return SmartSnippet.objects.filter(**pbs_provided).exists()
+
     def render(self, context):
+        if 'preview' in context and self.is_pbs_provided():
+            return ""
         return self.get_template().render(context)
 
     def __unicode__(self):
