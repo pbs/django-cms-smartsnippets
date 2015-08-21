@@ -17,9 +17,7 @@
 {% endblock %}
 
 {% block extrastyle %}{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/codemirror.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/smartsnippets-extra.css' %}" />
 {% endblock %}
 
 
@@ -88,8 +86,8 @@
 {% block after_related_objects %}{% endblock %}
 
 {% if read_only %}
-<div class="submit-row">
-    <a style="float:right; padding:10px" href="../">Back to Smart Snippets</a>
+<div class="submit-row form-actions text-right no-margin-bottom no-background">
+    <a href="../" class="default btn btn-primary">Back to Smart Snippets</a>
 </div>
 {% else %}
     {% submit_row %}
