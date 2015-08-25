@@ -28,7 +28,7 @@
                                                     new CMInstance(django.jQuery('#template_preview')[0])
                                                 </script>
                                         {% else %}
-                                               <p>{{ field.contents }}</p>
+                                               <p class="read-only-field">{{ field.contents }}</p>
                                         {% endif %}
                                 {% else %}
                                     {{ field.field }}
@@ -48,17 +48,6 @@
                                                         }
                                                     }
                                                 }])
-                                                // var editor = CodeMirror.fromTextArea('id_template_code', {
-                                                //     path: "{{STATIC_URL}}smartsnippets/js/",
-                                                //     parserfile: "parsedjango.js",
-                                                //     stylesheet: "{{STATIC_URL}}smartsnippets/css/codemirror.css",
-                                                //     continuousScanning: 500,
-                                                //     height: "40.2em",
-                                                //     tabMode: "shift",
-                                                //     indentUnit: 4,
-                                                //     lineNumbers: true,
-                                                //     readOnly: 'nocursor',
-                                                // });
                                         </script>
                                     {% endif %}      
                                 {% endif %}
@@ -69,9 +58,11 @@
                                       <span class="help-button" data-rel="popover" data-trigger="hover" data-placement="right" data-content='{{ field.field.help_text|escape }}'>?</span>
                                     {% endif %}
                                 {% endif %}
-                                <div class="help-block col-xs-12 col-sm-reset inline">
-                                    {% if line.fields|length_is:'1' %}{{ line.errors }}{% endif %}
-                                </div>
+                                {% if line.errors %}
+                                    <div class="help-block col-xs-12 col-sm-reset inline">
+                                        {% if line.fields|length_is:'1' %}{{ line.errors }}{% endif %}
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endif %}
                     </div>
