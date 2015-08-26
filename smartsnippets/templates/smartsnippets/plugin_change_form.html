@@ -85,26 +85,6 @@ var current_site = {{current_site}};
 
 {% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
 
-{% block breadcrumbs %}{% if not is_popup %}
-<div class="breadcrumbs">
-	<ul class="breadcrumb">
-        <li>
-	        <i class="ace-icon fa fa-home home-icon"></i>
-            <a href="../../../">{% trans 'Home' %}</a>
-        </li>
-
-	    <li><a href="../../">{{ app_label|capfirst|escape }}</a></li>
-     	<li>{% if has_change_permission %}
-     			<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>
-     		{% else %}
-     			{{ opts.verbose_name_plural|capfirst }}
-     		{% endif %}
-		</li>
-     	<li>{% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</li>
-     </ul>
-</div>
-{% endif %}{% endblock %}
-
 {% block content_title %}<h2>{{ plugin.get_plugin_name }}</h2>{% endblock %}
 
 {% block content %}<div id="content-main">
