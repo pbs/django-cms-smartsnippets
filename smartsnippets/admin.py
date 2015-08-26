@@ -27,6 +27,7 @@ from widgets_pool import widget_pool
 
 class SnippetForm(ModelForm):
     include_orphan = include_orphan
+    use_ace_theme = USE_BOOTSTRAP_ACE
 
     class Meta:
         model = SmartSnippet

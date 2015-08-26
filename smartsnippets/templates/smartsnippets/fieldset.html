@@ -1,7 +1,4 @@
-{% load smartsnippets_tags %}
-{% get_setting 'USE_BOOTSTRAP_ACE' as use_bootstrap_ace %}
-
-{% if not use_bootstrap_ace %}
+{% if not adminform.form.use_ace_theme %}
 
 <fieldset class="module aligned {{ fieldset.classes }}">
     {% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %}

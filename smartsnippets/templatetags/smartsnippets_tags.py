@@ -148,7 +148,3 @@ def exclude_empty(items, operator_args=None):
     if operator_args:
         result_items = filter(_select_operator(operator_args), result_items)
     return result_items
-
-@register.assignment_tag
-def get_setting(setting_name, default=''):
-    return getattr(settings, setting_name, default)
