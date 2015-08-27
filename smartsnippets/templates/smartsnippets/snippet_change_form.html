@@ -44,7 +44,7 @@
             <div class="smartsnippet-description">
                 {% if original.snippet.documentation_link %}
                     <div class="form-group">
-                        <p>{{ original.snippet.description }}</p>
+                        <p>{{ original.snippet.description|striptags }}</p>
                         <p><a href="{{ original.snippet.documentation_link }}" target='_blank'><i class="ace-icon glyphicon glyphicon-link"></i> Follow link to see documentation</a></p>
                     </div>
                 {% elif original.snippet.description %}
