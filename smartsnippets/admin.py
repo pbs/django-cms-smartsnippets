@@ -170,6 +170,10 @@ class SnippetAdmin(admin.ModelAdmin):
     change_form_template = 'smartsnippets/change_form.html'
     filter_horizontal = ('sites', )
 
+    class Media:
+        js = ("admin/js/SmartSnippets.Variables.js",
+              "admin/js/SmartSnippets.PredefinedWidgets.js",)
+
     @property
     def media(self):
 
@@ -181,8 +185,6 @@ class SnippetAdmin(admin.ModelAdmin):
                     static('admin/css/forms.css'),
                     static('admin/css/smartsnippets-extra.css'),)
             })
-        media_obj.add_js((static('admin/js/SmartSnippets.Variables.js'),
-                         static('admin/js/SmartSnippets.PredefinedWidgets.js'),))
         return media_obj
 
     def site_list(self, template):
