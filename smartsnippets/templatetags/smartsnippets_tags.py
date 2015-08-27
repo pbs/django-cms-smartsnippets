@@ -3,7 +3,6 @@ from django import template
 from collections import OrderedDict
 from smartsnippets.widgets_pool import widget_pool
 from datetime import datetime
-from smartsnippets import settings
 
 
 register = template.Library()

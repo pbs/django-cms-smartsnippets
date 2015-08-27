@@ -1,0 +1,54 @@
+<fieldset class="module aligned {{ fieldset.classes }}">
+    {% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %}
+    {% if fieldset.description %}
+        <div class="description">{{ fieldset.description|safe }}</div>
+    {% endif %}
+    {% for line in fieldset %}
+        <div class="form-row{% if line.fields|length_is:'1' and line.errors %} errors{% endif %}{% for field in line %} {{ field.field.name }}{% endfor %}">
+            {% if line.fields|length_is:'1' %}{{ line.errors }}{% endif %}
+            {% for field in line %}
+                <div{% if not line.fields|length_is:'1' %} class="field-box{% if not field.is_readonly and field.errors %} errors{% endif %}"{% endif %}>
+                    {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
+                    {% if field.is_checkbox %}
+                        {{ field.field }}{{ field.label_tag }}
+                    {% else %}
+                        {{ field.label_tag }}
+                        {% if field.is_readonly %}
+                                {% if field.field.name == "template_code" %}
+                                        <textarea id='template_preview'>{{ field.contents }}</textarea>
+                                        <script type="text/javascript">
+                                            new CMInstance(django.jQuery('#template_preview')[0])
+                                        </script>
+                                {% else %}
+                                       <p>{{ field.contents }}</p>
+                                {% endif %}
+                        {% else %}
+                                {{ field.field }}
+                                {% if field.field.name == "template_code" %}
+                                    <script type="text/javascript">
+                                        new CMInstance(django.jQuery('#id_template_code')[0],
+                                            {
+                                                readOnly: false
+                                            },
+                                            [{
+                                                name: "change",
+                                                handler: function(target){
+                                                    django.jQuery('#id_template_code')[0].value = target.getValue();
+                                                    if(typeof django.jQuery.updateSnippetVars === 'function'){
+                                                        django.jQuery.updateSnippetVars(django.jQuery('#id_template_code')[0])
+                                                    }
+                                                }
+                                            }])
+                                    </script>
+                                {% endif %}
+                                
+                        {% endif %}
+                     {% endif %}
+                     {% if field.field.help_text and not field.is_readonly %}
+                        <p class="help">{{ field.field.help_text|safe }}</p>
+                     {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</fieldset>
