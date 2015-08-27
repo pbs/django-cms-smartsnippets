@@ -13,18 +13,21 @@ from django.template import Template, TemplateSyntaxError, \
 from django.template.loader import render_to_string
 from django.forms.widgets import Select
 
+from django.contrib.admin.templatetags.admin_static import static
+
 from admin_extend.extend import registered_form, extend_registered, \
     add_bidirectional_m2m
 
 from models import SmartSnippet, SmartSnippetVariable, DropDownVariable, clean_variable_name
 from settings import (
     shared_sites, include_orphan, restrict_user, handle_permissions_checks,
-    custom_widgets_resources)
+    custom_widgets_resources, USE_BOOTSTRAP_ACE)
 from widgets_pool import widget_pool
 
 
 class SnippetForm(ModelForm):
     include_orphan = include_orphan
+    use_ace_theme = USE_BOOTSTRAP_ACE
 
     class Meta:
         model = SmartSnippet
@@ -170,6 +173,19 @@ class SnippetAdmin(admin.ModelAdmin):
     class Media:
         js = ("admin/js/SmartSnippets.Variables.js",
               "admin/js/SmartSnippets.PredefinedWidgets.js",)
+
+    @property
+    def media(self):
+
+        media_obj = super(SnippetAdmin, self).media
+
+        if not USE_BOOTSTRAP_ACE:
+            media_obj.add_css({
+                'all': (
+                    static('admin/css/forms.css'),
+                    static('admin/css/smartsnippets-extra.css'),)
+            })
+        return media_obj
 
     def site_list(self, template):
         return ", ".join([site.name for site in template.sites.all()])
