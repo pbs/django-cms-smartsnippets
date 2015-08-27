@@ -17,9 +17,7 @@
 {% endblock %}
 
 {% block extrastyle %}{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/codemirror.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/smartsnippets-extra.css' %}" />
 {% endblock %}
 
 
@@ -27,22 +25,13 @@
 
 {% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
 
-{% block breadcrumbs %}{% if not is_popup %}
-<div class="breadcrumbs">
-     <a href="../../../">{% trans "Home" %}</a> &rsaquo;
-     <a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo;
-     {% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &rsaquo;
-     {% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}
-</div>
-{% endif %}{% endblock %}
-
 {% block content %}<div id="content-main">
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
   <ul class="object-tools">
     {% block object-tools-items %}
     <li><a href="history/" class="historylink">{% trans "History" %}</a></li>
-    {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+    {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "Preview site" %}</a></li>{% endif%}
     {% endblock %}
   </ul>
 {% endif %}{% endif %}
@@ -71,8 +60,8 @@
 {% block after_related_objects %}{% endblock %}
 
 {% if read_only %}
-<div class="submit-row">
-    <a style="float:right; padding:10px" href="../">Back to Smart Snippets</a>
+<div class="submit-row form-actions text-right no-margin-bottom no-background">
+    <a href="../" class="default btn btn-primary">Back to Smart Snippets</a>
 </div>
 {% else %}
     {% submit_row %}

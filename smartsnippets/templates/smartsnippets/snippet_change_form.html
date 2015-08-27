@@ -37,14 +37,14 @@
 
 {% block after_related_objects %}
 {{ block.super }}
- <fieldset class="module">
+<fieldset class="module">
     {% if original.snippet %}
     <div class="page-header no-border">
-        <h2 class="smartsnippet-title">{{original.snippet}}</h2>
+        <h2 class="smartsnippet-title">{{original.snippet|default:"Smart Snippet Variables"}}</h2>
         <div class="smartsnippet-description">
             {% if original.snippet.documentation_link %}
                 <div class="form-group">
-                    <p>{{ original.snippet.description }}</p>
+                    <p>{{ original.snippet.description|safe }}</p>
                     <p><a href="{{ original.snippet.documentation_link }}" target='_blank'><i class="ace-icon glyphicon glyphicon-link"></i> Follow link to see documentation</a></p>
                 </div>
             {% elif original.snippet.description %}
