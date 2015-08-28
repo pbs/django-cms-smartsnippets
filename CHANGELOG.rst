@@ -1,6 +1,37 @@
 CHANGELOG
 =========
 
+Revision 2f33933 (28.08.2015, 07:21 UTC)
+----------------------------------------
+
+* LUN-2310
+
+  * refactor Media resources
+  * fielset refactoring
+  * removed get_setting tag due to security issues
+  * added newline at the end of tags.py file
+  * fieldset updated for non-ace theme
+  * removed custom breadcrumbs
+  * toggle resources based on active Ace theme or not
+  * error messages fix
+  * refactoring of html to match Ace theme
+  * preview link text and background changed
+  * breadcrumbs updated
+
+* LUN-2325
+
+  * Make snippet documentation link and description visible event if snippet doesn't have variables
+
+* LUN-2564
+
+  * added -safe- filter for smartsnippet_description
+  * striptags from smartsnippet_description
+
+* Misc commits
+
+  * master Added missing migration for changes to help_text.
+  * master Removed git ignore for py files.
+
 Revision 2d692b6 (03.08.2015, 09:13 UTC)
 ----------------------------------------
 
