@@ -5,6 +5,7 @@ from cms.models.placeholdermodel import Placeholder
 from cms.models.pluginmodel import CMSPlugin
 from smartsnippets_inherit.models import InheritPageContent
 from smartsnippets_inherit.forms import InheritPageForm
+from smartsnippets_inherit.settings import USE_BOOTSTRAP_ACE
 from smartsnippets.settings import inherit_variable_pattern
 from smartsnippets.models import Variable, SmartSnippetPointer
 from contextlib import contextmanager
@@ -68,6 +69,7 @@ class PageInheritPlugin(CMSPluginBase):
         formCls = super(PageInheritPlugin, self).get_form(
             request, obj, **kwargs)
         formCls.current_page = self.cms_plugin_instance.page or self.page
+        formCls.use_ace_theme = USE_BOOTSTRAP_ACE
         return formCls
 
     def change_view(self, request, object_id, *args, **kwargs):

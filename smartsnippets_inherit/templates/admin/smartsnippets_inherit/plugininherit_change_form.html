@@ -20,7 +20,9 @@
 {% endblock %}
 
 {% block extrastyle %}
+{% if not adminform.form.use_ace_theme %}
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/smartsnippet_inherit/css/plugininherit_form.css">
+{% endif %}
 {{block.super}}
 {% endblock %}
 
@@ -30,15 +32,15 @@
         <h2>Overwrite snippet variables</h2>
         {% spaceless %}
             {% if not add %}
-                <div class="table">
-                    <ul class='snippets-list'>
+                <div class="table tabbable tabs-left">
+                    <ul class='snippets-list nav nav-tabs nav-stacked'>
                     {% for snippet_plugin in snippet_plugins %}
-                        <li data-snippet='{{snippet_plugin.id}}'>{{snippet_plugin}}</li>
+                        <li data-snippet='{{snippet_plugin.id}}'><a href="#">{{snippet_plugin}}</a></li>
                     {% empty %}
                         <p>No variables available.</p>
                     {% endfor %}
                     </ul>
-                    <div class='variables-list bg-empty'></div>
+                    <div class='variables-list tab-content bg-empty'></div>
                 </div>
             {% else %}
                 <p>You need to save before you can overwrite variables.</p>
