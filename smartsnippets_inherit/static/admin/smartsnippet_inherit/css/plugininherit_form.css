@@ -45,10 +45,10 @@
     font-weight: bold;
     color: #5b80b2;
 }
-#overwritten_variables .ssvar-info.success{
+#overwritten_variables .ssvar-info.alert-success{
     color: green;
 }
-#overwritten_variables .ssvar-info.error{
+#overwritten_variables .ssvar-info.alert-error{
     color: red;
 }
 

@@ -4,7 +4,7 @@
         _initial: {},
         _variablesSubmission: false,
         getInfoBox: function(text, type){
-            return "<span class='ssvar-info " + (type? type: '') + "'>" + text + "</span>";
+            return "<div class='ssvar-info alert alert-block " + (type? 'alert-' + type: '') + "'>" + text + "</div>";
         },
         getVariablesEl: function(){
             return $(this.options.variables)
@@ -60,7 +60,7 @@
                     return ;
                 }
                 self._variablesSubmission = true;
-                varsBox.html(self.getInfoBox("Saving variables...", "progress"));
+                varsBox.html(self.getInfoBox("Saving variables...", "warning"));
                 $.ajax({
                     url: self.options.urls.variables,
                     data: post_data,
@@ -91,7 +91,7 @@
                     return ;
                 }
                 var varsBox = $(self.options.variables);
-                varsBox.html(self.getInfoBox("Reseting variables to original values...", "progress"));
+                varsBox.html(self.getInfoBox("Reseting variables to original values...", "warning"));
                 $.ajax({
                     url: self.options.urls.variables,
                     data: {'snippet_plugin': snippetId},
@@ -118,7 +118,7 @@
             // show variables
             var varsBox = $(self.options.variables);
             $(varsBox)
-                .html(self.getInfoBox("Loading variables...", "progress"))
+                .html(self.getInfoBox("Loading variables...", "warning"))
                 .toggleClass('bg-empty', varsBox.is(':empty'));
             $.ajax({
                 url: self.options.urls.variables,
@@ -126,17 +126,26 @@
                 success: function (data) {
                     $(varsBox).html('<table>' + data + '</table>')
                         .append(
-                            $('<button type="button" class="submit-row" />')
-                                .text('Revert to original ' + self.options.plugin_name)
-                                .click(self.resetToOriginalVariables(snippetId)),
+                            $("<div />").addClass("form-actions no-background").append(
+                                $('<button type="button"/>')
+                                    .addClass('submit-row btn btn-light')
+                                    .html('<i class="ace-icon fa fa-undo" />' +
+                                          'Revert to original ' +
+                                          self.options.plugin_name)
+                                    .click(self.resetToOriginalVariables(snippetId)),
 
-                            $('<button type="button" class="submit-row" />')
-                                .text('Cancel Changes')
-                                .click(self.resetToInitialVariables(snippetId)),
+                                $('<button type="button" />')
+                                    .addClass('submit-row btn cancel-btn')
+                                    .html('<i class="ace-icon fa fa-remove" />' +
+                                          'Cancel Changes')
+                                    .click(self.resetToInitialVariables(snippetId)),
 
-                            $('<button type="button" class="submit-row" />')
-                                .text('Save Changes')
-                                .click(self.submitOverwriteData(snippetId))
+                                $('<button type="button" />')
+                                    .addClass('submit-row btn btn-primary')
+                                    .html('<i class="ace-icon fa fa-check" />' +
+                                          'Save Changes')
+                                    .click(self.submitOverwriteData(snippetId))
+                            )
                         );
                     SnippetWidgetRegistry.initializeVariables();
                     self.registerInitialData(snippetId);
