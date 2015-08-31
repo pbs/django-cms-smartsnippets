@@ -34,7 +34,7 @@
     color: #ffffff;
     background: #7CA0C7 url(../../img/default-bg.gif) top left repeat-x;
 }
-#overwritten_variables ul.snippets-list li.selected{
+#overwritten_variables ul.snippets-list li.active{
     /*border-color: #5B80B2;*/
     border-right: 0px;
     font-weight: bold;

@@ -169,7 +169,7 @@
             $(self.options.snippetItems).each(function(){
                 $(this).click(function(){
                     // mark selected
-                    $(this).addClass('selected').siblings().removeClass('selected');
+                    $(this).addClass('active').siblings().removeClass('active');
                     var snippetId = parseInt($(this).attr('data-snippet'), 10);
                     self.loadVariables(snippetId);
                 });
