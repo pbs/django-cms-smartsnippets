@@ -1,4 +1,4 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/change_form.html" %}
 {% load i18n admin_modify %}
 {% load url from future %}
 {% load static from staticfiles %}
@@ -13,74 +13,33 @@
 <script type="text/javascript" src="{{ STATIC_URL}}admin/js/CMInstance.js"></script>
 
 <script type="text/javascript" src="{{ STATIC_URL}}admin/js/codemirror/htmlmixed.js"></script>
-{{ media }}
 {% endblock %}
+{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
 
 {% block extrastyle %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/codemirror.css' %}" />
 {% endblock %}
 
-
-{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
-
-{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
-
-{% block content %}<div id="content-main">
-{% block object-tools %}
-{% if change %}{% if not is_popup %}
-  <ul class="object-tools">
-    {% block object-tools-items %}
-    <li><a href="history/" class="historylink">{% trans "History" %}</a></li>
-    {% if has_absolute_url %}<li><a href="../../../r/{{ content_type_id }}/{{ object_id }}/" class="viewsitelink">{% trans "Preview site" %}</a></li>{% endif%}
-    {% endblock %}
-  </ul>
-{% endif %}{% endif %}
-{% endblock %}
-<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.model_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
-<div>
-{% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
-{% if save_on_top %}{% submit_row %}{% endif %}
-{% if errors %}
-    <p class="errornote">
-    {% blocktrans count errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-    </p>
-    {{ adminform.form.non_field_errors }}
-{% endif %}
-
-{% for fieldset in adminform %}
-  {% include "smartsnippets/fieldset.html" %}
-{% endfor %}
-
-{% block after_field_sets %}{% endblock %}
-
-{% for inline_admin_formset in inline_admin_formsets %}
-    {% include inline_admin_formset.opts.template %}
-{% endfor %}
-
-{% block after_related_objects %}{% endblock %}
-
-{% if read_only %}
+{% block submit_buttons_bottom %}{% if read_only %}
 <div class="submit-row form-actions text-right no-margin-bottom no-background">
     <a href="../" class="default btn btn-primary">Back to Smart Snippets</a>
 </div>
 {% else %}
     {% submit_row %}
 {% endif %}
+{% endblock %}
 
-{% if adminform and add %}
-    <script type="text/javascript">
-        (function($) {
-            $(document).ready(function() {
-                $('form#{{ opts.model_name }}_form :input:visible:enabled:first').focus()
-            });
-        })(django.jQuery);
-    </script>
-{% endif %}
-
-{# JavaScript for prepopulated fields #}
-{% prepopulated_fields_js %}
-
+{% block submit_buttons_top %}{% if read_only %}
+<div class="submit-row form-actions text-right no-margin-bottom no-background">
+    <a href="../" class="default btn btn-primary">Back to Smart Snippets</a>
 </div>
-</form></div>
+{% else %}
+    {% submit_row %}
+{% endif %}
+{% endblock %}
 
+{% block field_sets %}
+{% for fieldset in adminform %}
+  {% include "smartsnippets/fieldset.html" %}
+{% endfor %}
 {% endblock %}
