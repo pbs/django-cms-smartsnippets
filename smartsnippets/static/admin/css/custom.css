@@ -1,6 +1,9 @@
 body {
   background: white;
 }
+.text-left {
+  text-align: left !important;
+}
 .smartsnippet-title {
     color: #abbac3;
     font-weight: 300;
@@ -71,6 +74,15 @@ input[type=url], input[type=week], textarea, select {
 .form-horizontal .widget-body .field-snippet {
   margin-bottom: 0;
   margin-top: 15px;
+}
+.form-horizontal .widget-body .field-snippet .col-sm-2 {
+  width: 25%;
+}
+.form-horizontal .widget-body .field-snippet .col-sm-9 {
+  padding-left: 15px !important;
+}
+.form-horizontal .widget-body .field-snippet .control-label {
+  text-align: right !important;
 }
 .collapsed .glyphicon-chevron-up:before {
   content: "\e114";
