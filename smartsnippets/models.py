@@ -1,5 +1,4 @@
 import re
-from collections import OrderedDict
 
 from django.core.cache import cache
 from django.db import models
