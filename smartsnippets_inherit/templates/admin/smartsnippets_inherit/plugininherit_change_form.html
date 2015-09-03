@@ -20,10 +20,13 @@
 {% endblock %}
 
 {% block extrastyle %}
+{{block.super}}
 {% if not adminform.form.use_ace_theme %}
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/smartsnippet_inherit/css/plugininherit_form.css">
+{% else %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/smartsnippet_inherit/css/ace_plugininherit.css">
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/custom.css">
 {% endif %}
-{{block.super}}
 {% endblock %}
 
 
@@ -33,7 +36,7 @@
         {% spaceless %}
             {% if not add %}
                 <div class="table tabbable tabs-left">
-                    <ul class='snippets-list nav nav-tabs nav-stacked'>
+                    <ul class='snippets-list nav nav-tabs'>
                     {% for snippet_plugin in snippet_plugins %}
                         <li data-snippet='{{snippet_plugin.id}}'><a href="#">{{snippet_plugin}}</a></li>
                     {% empty %}

@@ -124,9 +124,9 @@
                 url: self.options.urls.variables,
                 data: {'snippet_plugin': snippetId},
                 success: function (data) {
-                    $(varsBox).html('<table>' + data + '</table>')
+                    $(varsBox).html('<table class="form-horizontal">' + data + '</table>')
                         .append(
-                            $("<div />").addClass("form-actions no-background").append(
+                            $("<div />").addClass("form-actions no-background text-right").append(
                                 $('<button type="button"/>')
                                     .addClass('submit-row btn btn-light')
                                     .html('<i class="ace-icon fa fa-undo" />' +
