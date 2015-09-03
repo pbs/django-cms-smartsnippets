@@ -148,13 +148,13 @@ class SnippetVariablesAdmin(admin.StackedInline):
 
 class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
     formset = SnippetVariablesFormSet
-    fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'widget'))
+    fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'widget', 'position'))
 
 
 class DropDownVariableAdmin(SnippetVariablesAdmin):
     model = DropDownVariable
     exclude = ('widget',)
-    fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'choices'))
+    fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'choices', 'position'))
 
 
 class SnippetAdmin(admin.ModelAdmin):

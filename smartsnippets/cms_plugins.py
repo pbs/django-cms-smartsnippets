@@ -119,7 +119,7 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     def _make_vars_for_rendering(self, snippet, plugin=None):
         """
-        Create plugin varibles instances prepared for template rendering.
+        Create plugin variables instances prepared for template rendering.
         """
         plugin = plugin or SmartSnippetPointer(snippet=snippet)
         selected_snippet_vars = snippet.variables.all()
@@ -137,7 +137,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             if snippet_var.id not in existing_snippet_var_ids]
         return sorted(
             list(existing_plugin_vars) + empty_plugin_vars,
-            key=lambda v: v.snippet_variable.name)
+            key=lambda v: v.snippet_variable.position)
 
     def _change_snippet_plugin_for_preview(self, context, snippet):
         """
@@ -175,7 +175,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             snippet_vars = plugin.snippet.variables.all()
             variables = plugin.variables.filter(
                 snippet_variable__in=snippet_vars
-            ).order_by('snippet_variable__name')
+            ).order_by('snippet_variable__position')
 
         extra_context.update({'variables': variables})
         kwargs['extra_context'] = extra_context
