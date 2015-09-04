@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+Revision bb811eb (04.09.2015, 09:01 UTC)
+----------------------------------------
+
+* LUN-2291
+
+  * fixes for Ace theme on bentomatic
+  * added forgotten active class for selected tab
+  * allow ace theme for admin plugin form
+
+* LUN-2579
+
+  * refactor change_form, fixed breadcrumbs
+
+* LUN-2596
+
+  * fieldset columns width updated
+
+No other commits.
+
 Revision 2f33933 (28.08.2015, 07:21 UTC)
 ----------------------------------------
 
