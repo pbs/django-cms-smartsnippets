@@ -80,7 +80,7 @@ class SmartSnippetVariable(models.Model):
     name = models.CharField(
         max_length=50,
         help_text=_('Enter the name of the variable defined in the smart snippet '
-                    'template. Unallowed charactes will be removed when the form is saved.'))
+                    'template. Unallowed characters will be removed when the form is saved.'))
     widget = models.CharField(
         max_length=50,
         help_text=_('Select the type of the variable defined '
