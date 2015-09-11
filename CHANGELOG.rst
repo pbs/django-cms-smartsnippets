@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 52c96af (11.09.2015, 13:58 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * 2620: misspelled help_text fixed
+
 Revision bb811eb (04.09.2015, 09:01 UTC)
 ----------------------------------------
 
