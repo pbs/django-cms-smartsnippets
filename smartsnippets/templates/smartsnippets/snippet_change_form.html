@@ -48,7 +48,7 @@
                     <p><a href="{{ original.snippet.documentation_link }}" target='_blank'><i class="ace-icon glyphicon glyphicon-link"></i> Follow link to see documentation</a></p>
                 </div>
             {% elif original.snippet.description %}
-                <div class="form-group"><p>{{ original.snippet.description }}</p></div>
+                <div class="form-group"><p>{{ original.snippet.description|safe }}</p></div>
             {% endif %}
         </div>
     </div>
