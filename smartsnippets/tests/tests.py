@@ -95,47 +95,59 @@ class TestSekizaiCache(TestCase):
 
     def test_sekizai_context_alteration(self):
         context = make_context()
-        self.assertEqual(sekizai_context(context), {})
-        content = self.snippet_pointer.render(context)
-        css_block = sekizai_context(context)['css']
-        self.assertEqual(content, self.text + self.value1)
-        self.assertEqual(css_block, [self.css_content])
+        with context.bind_template(Template("")):
+            self.assertEqual(sekizai_context(context), {})
+            content = self.snippet_pointer.render(context)
+            css_block = sekizai_context(context)['css']
+            self.assertEqual(content, self.text + self.value1)
+            self.assertEqual(css_block, [self.css_content])
 
     def test_caching(self):
-        self.snippet_pointer.render(make_context())
-        cache_key = self.snippet_pointer.get_cache_key()
-        cache_value = cache.get(cache_key)
-        self.assertEqual(cache_value['sekizai']['css'], [self.css_content])
-        self.assertEqual(cache_value['content'], self.text + self.value1)
+        context = make_context()
+        with context.bind_template(Template("")):
+            self.snippet_pointer.render(context)
+            cache_key = self.snippet_pointer.get_cache_key()
+            cache_value = cache.get(cache_key)
+            self.assertEqual(
+                cache_value['sekizai']['css'], [self.css_content])
+            self.assertEqual(
+                cache_value['content'], self.text + self.value1)
 
     def test_sekizai_restore(self):
-        self.snippet_pointer.render(make_context())
         context = make_context()
-        content = self.snippet_pointer.render(context)
-        css_block = sekizai_context(context)['css']
-        self.assertEqual(css_block, [self.css_content])
-        self.assertEqual(content, self.text + self.value1)
+        with context.bind_template(Template("")):
+            self.snippet_pointer.render(context)
+            content = self.snippet_pointer.render(context)
+            css_block = sekizai_context(context)['css']
+            self.assertEqual(css_block, [self.css_content])
+            self.assertEqual(content, self.text + self.value1)
 
     def test_variable_cache_invalidation(self):
-        self.snippet_pointer.render(make_context())
-        self.variable.value = self.value2
-        self.variable.save()
         context = make_context()
-        content = self.snippet_pointer.render(context)
-        css_block = sekizai_context(context)['css']
-        self.assertEqual(css_block, [self.css_content])
-        self.assertEqual(content, self.text + self.value2)
+        with context.bind_template(Template("")):
+            self.snippet_pointer.render(context)
+            self.variable.value = self.value2
+            self.variable.save()
+        context = make_context()
+        with context.bind_template(Template("")):
+            content = self.snippet_pointer.render(context)
+            css_block = sekizai_context(context)['css']
+            self.assertEqual(css_block, [self.css_content])
+            self.assertEqual(content, self.text + self.value2)
 
     def test_content_cache_invalidation(self):
-        extra = ' extra_text'
-        self.snippet_pointer.render(make_context())
-        self.snippet.template_code += extra
-        self.snippet.save()
         context = make_context()
-        content = self.snippet_pointer.render(context)
-        css_block = sekizai_context(context)['css']
-        self.assertEqual(css_block, [self.css_content])
-        self.assertEqual(content, self.text + self.value1 + extra)
+        with context.bind_template(Template("")):
+            self.snippet_pointer.render(context)
+            extra = ' extra_text'
+            self.snippet.template_code += extra
+            self.snippet.save()
+        context = make_context()
+        with context.bind_template(Template("")):
+            content = self.snippet_pointer.render(context)
+            css_block = sekizai_context(context)['css']
+            self.assertEqual(css_block, [self.css_content])
+            self.assertEqual(content, self.text + self.value1 + extra)
 
     def tearDown(self):
         cache.clear()
