@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+Revision c7df47c (23.09.2015, 15:30 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * Django 1.8 upgrade: updated admin templates
+  * Django 1.8 upgrade: removed some django1.9 deprecation warnings
+  * Django 1.8 support: fixed tests failing since RequestContext must be bounded to a template in order for the template processors to be executed
+
 Revision 52c96af (11.09.2015, 13:58 UTC)
 ----------------------------------------
 
