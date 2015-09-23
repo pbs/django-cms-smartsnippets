@@ -7,20 +7,20 @@
             <div class="description">{{ fieldset.description|safe }}</div>
         {% endif %}
         {% for line in fieldset %}
-            <div class="form-row form-group{% if line.fields|length_is:'1' and line.errors %} errors{% endif %}{% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %}">
+            <div class="form-row form-group{% if line.fields|length_is:'1' and line.errors %} errors{% endif %}{% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %} no-margin-left no-margin-right">
 
                 {% for field in line %}
                     <div class="row{% if not line.fields|length_is:'1' %} field-box{% if not field.is_readonly and field.errors %} errors{% endif %}{% endif %}">
                         {% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
                         {% if field.is_checkbox %}
-                            <div class="col-sm-3 control-label no-padding">{{ field.label_tag }}</div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-2 control-label text-left">{{ field.label_tag }}</div>
+                            <div class="col-sm-9 no-padding-left margin-top-5">
                                 {{ field.field }}
                                 <span class="lbl"></span>
                             </div> 
                         {% else %}
-                            <div class="col-sm-3 control-label no-padding-right">{{ field.label_tag }}</div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-2 control-label text-left">{{ field.label_tag }}</div>
+                            <div class="col-sm-9 no-padding-left">
                                 {% if field.is_readonly %}
                                         {% if field.field.name == "template_code" %}
                                                 <textarea id='template_preview'>{{ field.contents }}</textarea>
