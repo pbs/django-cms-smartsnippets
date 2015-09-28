@@ -212,7 +212,17 @@ class SmartSnippetPlugin(CMSPluginBase):
                 f |= Q(sites__name__in=self.shared_sites)
             kwargs["queryset"] = SmartSnippet.objects.filter(f).distinct()
         return (super(SmartSnippetPlugin, self)
-                    .formfield_for_foreignkey(db_field, request, **kwargs))
+                .formfield_for_foreignkey(db_field, request, **kwargs))
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(SmartSnippetPlugin, self).formfield_for_dbfield(
+            db_field, **kwargs)
+        if db_field.name == "snippet":
+            # hide related widget buttons
+            formfield.widget.can_add_related = \
+                formfield.widget.can_change_related = \
+                formfield.widget.can_delete_related = False
+        return formfield
 
     def icon_src(self, instance):
         return settings.STATIC_URL + u"images/snippet.png"
