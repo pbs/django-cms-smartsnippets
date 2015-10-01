@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 6a793c1 (01.10.2015, 12:21 UTC)
+----------------------------------------
+
+* LUN-2679
+
+  * hide related buttons for snippet field on plugin form
+
+No other commits.
+
 Revision c7df47c (23.09.2015, 15:30 UTC)
 ----------------------------------------
 
