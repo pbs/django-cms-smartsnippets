@@ -44,8 +44,7 @@ class SmartSnippet(models.Model):
 
     class Meta:
         ordering = ['name']
-        verbose_name = 'Smart Snippet'
-        verbose_name_plural = 'Smart Snippets'
+        verbose_name = _('Component')
 
     def __init__(self, *args, **kwargs):
         #hack due to
