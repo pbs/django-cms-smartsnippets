@@ -8,7 +8,6 @@ from django.template import Template, TemplateSyntaxError, \
 from django.db.models import signals
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 from cms.models import CMSPlugin
 
@@ -86,11 +85,6 @@ class SmartSnippetVariable(models.Model):
         max_length=50,
         help_text=_('Select the type of the variable defined '
                     'in the smart snippet template.'))
-    position = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
-        help_text=_("The order in which to display the variable in the admin."),
-        null=True
-    )
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
 
     resources = models.TextField(_('Admin resources'), null=True, blank=True)
@@ -107,7 +101,7 @@ class SmartSnippetVariable(models.Model):
 
     class Meta:
         unique_together = (('snippet', 'name'))
-        ordering = ['position']
+        order_with_respect_to = 'snippet'
         verbose_name = "Standard variable"
 
     def save(self, *args, **kwargs):

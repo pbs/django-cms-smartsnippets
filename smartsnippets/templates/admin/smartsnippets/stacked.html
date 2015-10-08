@@ -1,0 +1,56 @@
+{% load i18n admin_urls admin_static %}
+<div class="inline-group" id="{{ inline_admin_formset.formset.prefix }}-group">
+  <h2 class="header h4 smaller lighter blue block">{{ inline_admin_formset.opts.verbose_name_plural|capfirst }}</h2>
+{{ inline_admin_formset.formset.management_form }}
+{{ inline_admin_formset.formset.non_form_errors }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var variablesGroupId = "#{{ inline_admin_formset.formset.prefix }}-group";
+            $(variablesGroupId + " > div").css('cursor', 'move');
+            $("#variables-group, #variables-2-group").sortable({
+                items: "> div",
+                update: function() {
+                    $("#variables-group, #variables-2-group").find("> div").not('[id$=-empty],[class=add-row]').each(function(i) {
+                        $(this).find('.order input').attr('value', i + 1);
+                    });
+                }
+            });
+        });
+    </script>
+
+{% for inline_admin_form in inline_admin_formset %}<div class="inline-related{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last %} empty-form last-related{% endif %}" id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
+  <h3 class="background-grey block no-margin-top h5 custom-style">{{ inline_admin_formset.opts.verbose_name|capfirst }}:&nbsp;<span class="inline_label">{% if inline_admin_form.original %}{{ inline_admin_form.original }}{% if inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %} <a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}" class="inlinechangelink">{% trans "Change" %}</a>{% endif %}{% else %}#{{ forloop.counter }}{% endif %}</span>
+      {% if inline_admin_form.show_url %}<a href="{{ inline_admin_form.absolute_url }}">{% trans "View on site" %}</a>{% endif %}
+    <span class="order" style='display:none'>{{ inline_admin_form.ordering_field.field }}</span>
+    {% if inline_admin_formset.formset.can_delete and inline_admin_form.original %}<span class="delete">{{ inline_admin_form.deletion_field.field }} {{ inline_admin_form.deletion_field.label_tag }}</span>{% endif %}
+  </h3>
+  {% if inline_admin_form.form.non_field_errors %}{{ inline_admin_form.form.non_field_errors }}{% endif %}
+  {% for fieldset in inline_admin_form %}
+    {% include "admin/includes/fieldset.html" %}
+  {% endfor %}
+  {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+  {{ inline_admin_form.fk_field.field }}
+</div>{% endfor %}
+</div>
+
+<script type="text/javascript">
+(function($) {
+  var formset = $("#{{ inline_admin_formset.formset.prefix }}-group .inline-related");
+
+  formset.stackedFormset({
+    prefix: '{{ inline_admin_formset.formset.prefix }}',
+    adminStaticPrefix: '{% static "admin/" %}',
+    deleteText: "{% trans "Remove" %}",
+    addText: "{% blocktrans with verbose_name=inline_admin_formset.opts.verbose_name|capfirst %}Add another {{ verbose_name }}{% endblocktrans %}"
+  });
+  // we need to re-attach popover function for tooltips that are rendered later
+  // Bootstrap uses jQuery and not django.jQuery
+  jQuery(document).on('click', formset.filter(":last").next().find("a"), function(){
+    jQuery('[data-rel="popover"]').popover({
+      html: true,
+    });
+  });
+
+})(django.jQuery);
+</script>

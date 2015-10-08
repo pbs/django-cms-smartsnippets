@@ -137,7 +137,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             if snippet_var.id not in existing_snippet_var_ids]
         return sorted(
             list(existing_plugin_vars) + empty_plugin_vars,
-            key=lambda v: v.snippet_variable.position)
+            key=lambda v: v.snippet_variable._order)
 
     def _change_snippet_plugin_for_preview(self, context, snippet):
         """
@@ -175,7 +175,7 @@ class SmartSnippetPlugin(CMSPluginBase):
             snippet_vars = plugin.snippet.variables.all()
             variables = plugin.variables.filter(
                 snippet_variable__in=snippet_vars
-            ).order_by('snippet_variable__position')
+            ).order_by('snippet_variable___order')
 
         extra_context.update({'variables': variables})
         kwargs['extra_context'] = extra_context
