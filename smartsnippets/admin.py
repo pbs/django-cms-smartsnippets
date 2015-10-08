@@ -116,10 +116,12 @@ class SnippetVariableOrderedFormSet(BaseInlineFormSet):
     def save(self, commit=True):
         result = super(SnippetVariableOrderedFormSet, self).save(commit)
         ordered_pks = [f.instance.pk for f in self.ordered_forms]
-        ordered_pks_db = [f.pk for f in SmartSnippetVariable.objects.filter(id__in=ordered_pks)]
+        ordered_pks_db = [f.pk for f in SmartSnippetVariable.objects.filter(
+            id__in=ordered_pks)]
 
         if ordered_pks != ordered_pks_db:
-            for idx, snippet_var in enumerate(SmartSnippetVariable.objects.filter(id__in=ordered_pks_db)):
+            for idx, snippet_var in enumerate(
+                    SmartSnippetVariable.objects.filter(id__in=ordered_pks_db)):
                 snippet_var._order = self.ordered_forms[idx].instance._order
                 snippet_var.save()
 
