@@ -1,8 +1,6 @@
-from django.template.loader import render_to_string
-from django.template import RequestContext
 from smartsnippets.widgets_pool import widget_pool
 from smartsnippets.widgets_base import SmartSnippetWidgetBase
-from models import DropDownVariable
+from .models import DropDownVariable
 import collections
 import json
 
