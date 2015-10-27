@@ -101,7 +101,7 @@ class SmartSnippetVariable(models.Model):
 
     class Meta:
         unique_together = (('snippet', 'name'))
-        ordering = ['name']
+        order_with_respect_to = 'snippet'
         verbose_name = "Standard variable"
 
     def save(self, *args, **kwargs):

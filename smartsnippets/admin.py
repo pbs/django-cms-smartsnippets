@@ -108,7 +108,27 @@ class SnippetForm(ModelForm):
                 ', '.join(duplicate_variable_names)))
 
 
-class SnippetVariablesFormSet(BaseInlineFormSet):
+class SnippetVariableOrderedFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        self.can_order = True
+        super(SnippetVariableOrderedFormSet, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        result = super(SnippetVariableOrderedFormSet, self).save(commit)
+        ordered_pks = [f.instance.pk for f in self.ordered_forms]
+        ordered_pks_db = [f.pk for f in SmartSnippetVariable.objects.filter(
+            id__in=ordered_pks)]
+
+        if ordered_pks != ordered_pks_db:
+            for idx, snippet_var in enumerate(
+                    SmartSnippetVariable.objects.filter(id__in=ordered_pks_db)):
+                snippet_var._order = self.ordered_forms[idx].instance._order
+                snippet_var.save()
+
+        return result
+
+
+class SnippetVariablesFormSet(SnippetVariableOrderedFormSet):
     def get_queryset(self):
         if not hasattr(self, '_queryset'):
             available_widgets = [widget.__name__ for widget in widget_pool.get_all_widgets()]
@@ -119,6 +139,7 @@ class SnippetVariablesFormSet(BaseInlineFormSet):
 
 class SnippetVariablesAdmin(admin.StackedInline):
     model = SmartSnippetVariable
+    template = 'admin/smartsnippets/stacked.html'
     extra = 0
     readonly_fields = ['predefined_widgets']
 
@@ -153,6 +174,7 @@ class RegularSnippetVariablesAdmin(SnippetVariablesAdmin):
 
 class DropDownVariableAdmin(SnippetVariablesAdmin):
     model = DropDownVariable
+    formset = SnippetVariableOrderedFormSet
     exclude = ('widget',)
     fieldsets = SnippetVariablesAdmin._fieldsets(('name', 'choices'))
 
