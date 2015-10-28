@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+Revision 2ac0965 (28.10.2015, 12:01 UTC)
+----------------------------------------
+
+* LUN-2238
+
+  *  LUN-2238: Add position field to smartsnippet variables.
+
+* Misc commits
+
+  * Added merge migration for parallel changes.
+  * Add migration for order_with_respect_to.
+  * Shorten code lines.
+  * Support drag and drop for smartsnippet variable reordering.
+  * Remove unused import.
+
 Revision 6a793c1 (01.10.2015, 12:21 UTC)
 ----------------------------------------
 
