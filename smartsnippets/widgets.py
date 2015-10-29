@@ -1,8 +1,6 @@
-from django.template.loader import render_to_string
-from django.template import RequestContext
 from smartsnippets.widgets_pool import widget_pool
 from smartsnippets.widgets_base import SmartSnippetWidgetBase
-from models import DropDownVariable
+from .models import DropDownVariable
 import collections
 import json
 
@@ -26,6 +24,12 @@ class SwitcherField(SmartSnippetWidgetBase):
     name = 'Switcher Field'
     template = 'smartsnippets/widgets/switcherfield/widget.html'
 
+
+class URLField(SmartSnippetWidgetBase):
+    name = 'URL Field'
+    template = 'smartsnippets/widgets/urlfield/widget.html'
+
+
 class JSONField(TextField):
     name = 'JSON Field'
 
@@ -46,4 +50,5 @@ widget_pool.register_widget(TextField)
 widget_pool.register_widget(TextAreaField)
 widget_pool.register_widget(DropDownField)
 widget_pool.register_widget(SwitcherField)
+widget_pool.register_widget(URLField)
 widget_pool.register_widget(JSONField)
