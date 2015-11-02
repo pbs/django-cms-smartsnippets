@@ -1,4 +1,15 @@
 <tr>
-    <td class="col-sm-3 control-label"><label for="var_{{ field.name }}" class="form-group no-margin-right no-margin-left">{{ field.name }}</label></td>
-    <td class="col-sm-9"><input id="var_{{ field.name }}" type="url" name="_{{ field.name }}_" value="{{ field.value }}" size="150"/ class="form-group no-margin-right no-margin-left" pattern="https?://.+"></td>
+	<td class="col-sm-3 control-label">
+		<label for="var_{{ field.name }}" class="form-group no-margin-right no-margin-left">{{ field.name }}</label>
+	</td>
+	<td class="col-sm-9">
+		<input id="var_{{ field.name }}" type="text" name="_{{ field.name }}_"
+			value="{{ field.value }}" size="100"/
+			class="form-group no-margin-right no-margin-left"
+			title="http(s)://address or /relative-url without spaces."
+			pattern="(https?://|/|\.\./)[^ ]+">
+		<span class="help-button" data-rel="popover" data-trigger="hover"
+			data-placement="right"
+			data-content='URL Fields support either an absolute URL: "http(s)//address" or a relative URL: "/relative_url". The provided URL should be already encoded so it should not contain spaces or other invalid characters.'>?</span>
+	</td>
 </tr>
