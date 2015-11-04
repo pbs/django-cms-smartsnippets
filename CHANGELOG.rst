@@ -1,6 +1,29 @@
 CHANGELOG
 =========
 
+Revision 0f57a0d (04.11.2015, 15:03 UTC)
+----------------------------------------
+
+* LUN-2477
+
+  * remove custom style of popover text, left default from ace
+  * if no documentation link, description was not interpreting html
+
+* LUN-2550
+
+  * Fix typo.
+  * Narrow the allowed URLs.
+  * Clean imports.
+  * Add URLField widget.
+
+* LUN-2771
+
+  * Support obsolete ordering by name if _order remains 0.
+
+* Misc commits
+
+  * Update pattern and messages for URL field validation.
+
 Revision 2ac0965 (28.10.2015, 12:01 UTC)
 ----------------------------------------
 
