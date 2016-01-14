@@ -6,6 +6,7 @@ README_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 dependencies = [
     'django-cms>=2.3,<2.3.6',
+    'django-sekizai>=0.6.1,<0.9.0',
     'django-admin-extend'
 ]
 
