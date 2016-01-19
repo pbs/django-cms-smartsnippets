@@ -6,7 +6,6 @@ README_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 dependencies = [
     'django-cms>=2.3,<2.3.6',
-    'django-sekizai>=0.6.1,<0.9.0',
     'django-admin-extend'
 ]
 
@@ -17,7 +16,7 @@ dependency_links = [
 
 setup(
     name='django-cms-smartsnippets',
-    version='1.3.2',
+    version='1.3.1',
     description='Parametrizable Django CMS snippets.',
     long_description=open(README_PATH, 'r').read(),
     author='Sever Banesiu',

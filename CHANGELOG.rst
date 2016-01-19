@@ -1,18 +1,6 @@
 CHANGELOG
 =========
 
-Revision fb950ce (14.01.2016, 13:22 UTC)
-----------------------------------------
-
-* LUN-2549
-
-  * changed name for smartsnippets to components
-
-* Misc commits
-
-  * Limit django-sekizai version to last one working.
-  * Add merge migration.
-
 Revision 0f57a0d (04.11.2015, 15:03 UTC)
 ----------------------------------------
 
