@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision b091703 (03.02.2016, 07:32 UTC)
+----------------------------------------
+
+* LUN-2549
+
+  * Revert "LUN-2549: changed name for smartsnippets to components"
+
+No other commits.
+
 Revision fb950ce (14.01.2016, 13:22 UTC)
 ----------------------------------------
 
