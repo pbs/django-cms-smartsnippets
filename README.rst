@@ -18,6 +18,30 @@ Smart snippet ships a set of basic variable Field types with the app:
 This module also provides a registration manager for field types
   so that third party apps can hook in with custom editing fields and user admin behavior.
 
+Demo
+=======
+The demo is created using resouces from the `django-cms demo`_.
+To try out the demo application:
+
+1. Checkout code:
+
+.. code::
+   git clone git@github.com:pbs/django-cms-smartsnippets.git
+   git checkout master_contrib
+
+2. Setup:
+
+.. code::
+   mkvirtualenv ss_demo; source ss_demo/bin/activate
+   pip install -e ./django-cms-smartsnippets
+
+3. Start server:
+
+.. code::
+   cd django-cms-smartnippets/demo
+   ./manage.py runserver
+
+
 Example
 =======
 
@@ -133,3 +157,6 @@ There are three configuration variables available:
 
 .. _snippet:
     http://readthedocs.org/docs/django-cms/en/latest/getting_started/plugin_reference.html#snippet
+
+.. _django-cms demo:
+    https://github.com/divio/django-cms-demo
