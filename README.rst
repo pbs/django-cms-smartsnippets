@@ -26,18 +26,21 @@ To try out the demo application:
 1. Checkout code:
 
 .. code::
+
    git clone git@github.com:pbs/django-cms-smartsnippets.git
    git checkout master_contrib
 
 2. Setup:
 
 .. code::
+
    mkvirtualenv ss_demo; source ss_demo/bin/activate
    pip install -e ./django-cms-smartsnippets
 
 3. Start server:
 
 .. code::
+
    cd django-cms-smartnippets/demo
    ./manage.py runserver
 
