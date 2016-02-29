@@ -42,6 +42,8 @@ To try out the demo application:
 .. code::
 
    cd django-cms-smartnippets/demo
+   ./manage.py migrate
+   ./manage.py createsuperuser # optional
    ./manage.py runserver
 
 
