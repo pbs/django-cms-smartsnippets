@@ -43,7 +43,7 @@ class SmartSnippetPlugin(CMSPluginBase):
     change_form_template = 'smartsnippets/snippet_change_form.html'
 
     model = SmartSnippetPointer
-    name = 'Smart Snippet'
+    name = 'Custom Component'
     render_template = 'smartsnippets/plugin.html'
     text_enabled = True
 

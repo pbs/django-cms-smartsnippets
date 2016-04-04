@@ -44,8 +44,8 @@ class SmartSnippet(models.Model):
 
     class Meta:
         ordering = ['name']
-        verbose_name = 'Smart Snippet'
-        verbose_name_plural = 'Smart Snippets'
+        verbose_name = _('Custom Component')
+        verbose_name_plural = _('Custom Components')
 
     def __init__(self, *args, **kwargs):
         #hack due to
@@ -131,7 +131,7 @@ class SmartSnippetVariable(models.Model):
 
 
 class SmartSnippetPointer(CMSPlugin):
-    snippet = models.ForeignKey(SmartSnippet)
+    snippet = models.ForeignKey(SmartSnippet, verbose_name='Custom Component')
     cache_key_format = 'smartsnippet-pointer-{primary_key}'
 
     class Meta:
