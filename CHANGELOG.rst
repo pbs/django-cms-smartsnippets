@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+Revision 2cbe661 (08.04.2016, 07:13 UTC)
+----------------------------------------
+
+* LUN-2549
+
+  * Add migration for field new verbose name.
+
+* Misc commits
+
+  * Update setup.py version to 1.4.0.
+  * Lun-2549: Rename smartsnippet to custom component.
+
 Revision b091703 (03.02.2016, 07:32 UTC)
 ----------------------------------------
 
