@@ -29,17 +29,17 @@ class SmartSnippet(models.Model):
         _("Template path"),
         max_length=100, blank=True,
         help_text=_(
-            'Enter a template (i.e. "snippets/plugin_xy.html")'
+            'Enter a template (i.e. "custom_components/plugin_xy.html")'
             ' which will be rendered.'))
     sites = models.ManyToManyField(
         Site, null=False, blank=True,
-        help_text=_('Select on which sites the snippet will be available.'),
+        help_text=_('Select on which sites the custom component will be available.'),
         verbose_name='sites')
     description = models.TextField(_("Description"), blank=True)
     documentation_link = models.CharField(
         _("Documentation link"),
         max_length=100, blank=True,
-        help_text=_('Enter URL (i.e. "http://snippets/docs/plugin_xy.html")'
+        help_text=_('Enter URL (i.e. "http://custom_components/docs/plugin_xy.html")'
                     ' to the extended documentation.'))
 
     class Meta:
@@ -79,12 +79,12 @@ class SmartSnippet(models.Model):
 class SmartSnippetVariable(models.Model):
     name = models.CharField(
         max_length=50,
-        help_text=_('Enter the name of the variable defined in the smart snippet '
+        help_text=_('Enter the name of the variable defined in the custom component '
                     'template. Unallowed characters will be removed when the form is saved.'))
     widget = models.CharField(
         max_length=50,
         help_text=_('Select the type of the variable defined '
-                    'in the smart snippet template.'))
+                    'in the custom component template.'))
     snippet = models.ForeignKey(SmartSnippet, related_name="variables")
 
     resources = models.TextField(_('Admin resources'), null=True, blank=True)
@@ -242,7 +242,7 @@ class DropDownVariable(SmartSnippetVariable):
         help_text=_(
             'Enter a comma separated list of choices that will be '
             'available in the dropdown variable when adding and '
-            'configuring the smart snippet on a page.'))
+            'configuring the custom component on a page.'))
 
     @property
     def choices_list(self):
