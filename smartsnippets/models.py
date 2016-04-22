@@ -1,13 +1,16 @@
 import re
+import logging
 
 from django.core.cache import cache
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.template import Template, TemplateSyntaxError, \
-    TemplateDoesNotExist, loader
+    TemplateDoesNotExist, loader, VariableDoesNotExist
+from django.template.loader import render_to_string
 from django.db.models import signals
 from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
 
 from cms.models import CMSPlugin
 
@@ -20,6 +23,9 @@ from .resources_processor import get_resources
 from .settings import (
     snippet_caching_time, caching_enabled, allow_inheritance,
     inherit_variable_pattern)
+
+
+logger = logging.getLogger(__name__)
 
 
 class SmartSnippet(models.Model):
@@ -167,7 +173,7 @@ class SmartSnippetPointer(CMSPlugin):
             cache.set(key, value, snippet_caching_time)
         return content
 
-    def render_pointer(self, context):
+    def render_pointer(self, context, handle_errors=True):
         vars_qs = self.variables.select_related('snippet_variable').all()
 
         def var_for_context(var):
@@ -182,13 +188,21 @@ class SmartSnippetPointer(CMSPlugin):
         variables = dict(var_for_context(var) for var in vars_qs)
         context.update(variables)
         sekizai_differ = sekizai_context_watcher(context)
-        content = self.snippet.render(context)
+        try:
+            content = self.snippet.render(context)
+        except VariableDoesNotExist as exc:
+            logger.exception("Cannot render plugin %s!", self)
+            if handle_errors:
+                content = render_to_string("smartsnippets/unrenderable_smartsnippet.html",
+                                           {'plugin_name': str(self)})
+            else:
+                raise UnrenderableSmarSnippet(exc)
         sekizai_diff = sekizai_differ.get_changes()
         user = context.get('request').user
         return self.set_and_get_cache(user, sekizai_diff, content)
 
-    def render(self, context):
-        return self.fetch_cached(context) or self.render_pointer(context)
+    def render(self, context, handle_errors=True):
+        return self.fetch_cached(context) or self.render_pointer(context, handle_errors)
 
     def copy_relations(self, old_instance):
         for variable in old_instance.variables.all():
@@ -281,3 +295,14 @@ def clean_variable_name(variable_name):
 
 signals.post_save.connect(remove_cached_pointers, sender=SmartSnippet)
 signals.post_save.connect(remove_cached_variables, sender=Variable)
+
+
+@python_2_unicode_compatible
+class UnrenderableSmarSnippet(Exception):
+
+    def __init__(self, original_exception):
+        self.original_exception = original_exception
+        self.message = str(original_exception)
+
+    def __str__(self):
+        return self.message

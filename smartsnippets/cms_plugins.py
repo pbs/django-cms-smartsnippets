@@ -4,11 +4,12 @@ from django.forms.widgets import Media as WidgetsMedia
 from django.contrib.sites.models import Site
 from django.contrib.admin.templatetags.admin_static import static
 from django.core.urlresolvers import reverse
+from django.template import RequestContext
 
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 
-from .models import SmartSnippetPointer, SmartSnippet, Variable
+from .models import SmartSnippetPointer, SmartSnippet, Variable, UnrenderableSmarSnippet
 from .settings import (
     shared_sites, include_orphan, restrict_user, USE_BOOTSTRAP_ACE)
 from django.conf import settings
@@ -166,7 +167,7 @@ class SmartSnippetPlugin(CMSPluginBase):
 
         plugin = SmartSnippetPointer.objects.get(pk=object_id)
         snippet_changed = (selected_snippet and
-            selected_snippet.id != plugin.snippet.id)
+                           selected_snippet.id != plugin.snippet.id)
 
         if snippet_changed:
             variables = self._make_vars_for_rendering(
@@ -179,6 +180,15 @@ class SmartSnippetPlugin(CMSPluginBase):
 
         extra_context.update({'variables': variables})
         kwargs['extra_context'] = extra_context
+
+        try:
+            context = RequestContext(request)
+            context.update(extra_context)
+            context['request'] = request
+            plugin.render(context, handle_errors=False)
+        except UnrenderableSmarSnippet as exc:
+            extra_context['smartsnippet_rendering_error'] = str(exc)
+
         response = super(SmartSnippetPlugin, self).change_view(
             request, object_id, *args, **kwargs)
 
