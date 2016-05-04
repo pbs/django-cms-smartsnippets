@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.sites.models import Site
 from django.template import RequestContext, Context, Template
+from django.template.loader import render_to_string
 from django.core.cache import cache
 from django import http
 from django.test import TestCase
@@ -12,6 +13,7 @@ from smartsnippets.models import (
     SmartSnippetVariable,
     SmartSnippetPointer,
     Variable,
+    UnrenderableSmarSnippet,
 )
 class FakeSiteAdmin(admin.ModelAdmin):
     """ smartsnippets.admin module requires a model admin to be registed for Site, so fake it. """
@@ -268,3 +270,22 @@ class TestTemplateTags(TestCase):
             "{{ objs|exclude_empty:'key,color'|map_by:'key,color'|join:'' }}",
             {'objs': objs})
         self.assertEqual(out, self.colors.replace(' ', ''))
+
+
+class TestRendering(TestCase):
+
+    def setUp(self):
+        self.broken_snippet = do_make_smartsnippet('{{ var|add:other_var }}')
+        self.pointer_to_broken_snippet = do_make_pointer(self.broken_snippet)
+
+    def test_render_broken_pointer(self):
+        context = make_context()
+        actual = self.pointer_to_broken_snippet.render_pointer(context)
+        expected = render_to_string("smartsnippets/unrenderable_smartsnippet.html",
+                                    {'plugin_name': str(self.pointer_to_broken_snippet)})
+        self.assertEqual(actual, expected)
+
+    def test_not_render_broken_pointer(self):
+        context = make_context()
+        with self.assertRaises(UnrenderableSmarSnippet):
+            self.pointer_to_broken_snippet.render_pointer(context, handle_errors=False)
