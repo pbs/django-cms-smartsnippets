@@ -40,7 +40,15 @@
 <fieldset class="module">
     {% if original.snippet %}
     <div class="page-header no-border">
-        <h2 class="smartsnippet-title">{{original.snippet|default:"Smart Snippet Variables"}}</h2>
+      <h2 class="smartsnippet-title">{{original.snippet|default:"Smart Snippet Variables"}}</h2>
+      {% if smartsnippet_rendering_error %}
+        <div class="smartsnippet-warnings alert alert-danger">
+          This component cannot be rendered on your page.<br>
+          Rendering error message:<br>
+          <q>{{ smartsnippet_rendering_error }}</q><br>
+          If you did not create this component please inform the owner.
+        </div>
+      {% endif %}
         <div class="smartsnippet-description">
             {% if original.snippet.documentation_link %}
                 <div class="form-group">
