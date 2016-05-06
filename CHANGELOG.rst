@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+Revision 4996793 (06.05.2016, 15:19 UTC)
+----------------------------------------
+
+* LUN-2549
+
+  * Update plugininherit_change_form.html
+  * Update tooltips.
+
+* LUN-2594
+
+  * Update change_form.html
+
+* LUN-2791
+
+  * Fix typo.
+  * Add tests for handling snippet rendering errors.
+  * Show warnings when snippets cannot be rendered.
+
+No other commits.
+
 Revision 2cbe661 (08.04.2016, 07:13 UTC)
 ----------------------------------------
 
