@@ -1,8 +1,19 @@
-import json
-from django import template
 from collections import OrderedDict
-from smartsnippets.widgets_pool import widget_pool
 from datetime import datetime
+import json
+
+from classytags.core import Options, Tag
+from classytags.arguments import Argument
+from django import template
+from sekizai.helpers import (
+    Watcher as sekizai_context_watcher,
+    get_varname as sekizai_cache_key,
+)
+
+from cms.plugin_rendering import PluginContext
+
+from smartsnippets.models import SmartSnippet, SmartSnippetPointer
+from smartsnippets.widgets_pool import widget_pool
 
 
 register = template.Library()
@@ -147,3 +158,26 @@ def exclude_empty(items, operator_args=None):
     if operator_args:
         result_items = filter(_select_operator(operator_args), result_items)
     return result_items
+
+
+class JSONSmartSnippet(Tag):
+    name = "jsonsmartsnippet"
+    options = Options(
+        Argument('config_key', resolve=False),
+    )
+
+    def render_tag(self, context, config_key):
+        config = context[config_key]
+        metadata = config['metadata']
+        snippet_id = metadata['snippet_id']
+
+        snippet = SmartSnippet.objects.get(id=snippet_id)
+        fake_pointer = SmartSnippetPointer(snippet=snippet)
+        fake_pointer.placeholder_id = 0
+        fake_pointer.id = 0
+        fake_pointer.pk = 0
+        plugin_context = PluginContext(context, fake_pointer, None)
+        plugin_context.update(config['variables'])
+
+        return snippet.render(plugin_context)
+register.tag(JSONSmartSnippet)
