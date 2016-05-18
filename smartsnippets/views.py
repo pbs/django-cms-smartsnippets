@@ -4,7 +4,7 @@ from django.contrib.admin.templatetags.admin_static import static
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.forms.widgets import Media as WidgetsMedia
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 
 from cms.models import Page
@@ -31,11 +31,10 @@ def get_snippet_edit_code(request, snippet_id, config=None):
     }
     """
     snippet = get_object_or_404(SmartSnippet, id=snippet_id)
-    snippet_vars = snippet.variables.all()
+    snippet_vars = snippet.variables.all().order_by('_order', 'name')
     fake_pointer = SmartSnippetPointer(snippet=snippet)
     current_site = Site.objects.get_current()
     page = Page(site=current_site)
-    var_order = lambda var: (var._order, var.name)
     variables_data = config.get('variables', {}) if config else {}
 
     def make_var(snippet_var):
@@ -44,14 +43,10 @@ def get_snippet_edit_code(request, snippet_id, config=None):
             var.value = json.dumps(variables_data[snippet_var.name])
         return var
 
-    variables = [
-        make_var(snippet_var) for snippet_var in sorted(snippet_vars, key=var_order)
-    ]
-
+    variables = [make_var(snippet_var) for snippet_var in snippet_vars]
     media = _make_media_for_variables(variables)
     request.current_page = page
-    context = RequestContext(request)
-    context.update({
+    context = {
         'is_popup': True,
         'is_popup_var': '_popup',
         'documentation_link': snippet.documentation_link,
@@ -64,8 +59,8 @@ def get_snippet_edit_code(request, snippet_id, config=None):
         'current_site': current_site.id,
         'form_url': '',
         'has_file_field': True,
-    })
-    return render_to_response('smartsnippets/json_snippet_render.html', context)
+    }
+    return render(request, 'smartsnippets/json_snippet_render.html', context)
 
 
 def _make_media_for_variables(variables=None):

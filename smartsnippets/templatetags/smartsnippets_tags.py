@@ -5,10 +5,6 @@ import json
 from classytags.core import Options, Tag
 from classytags.arguments import Argument
 from django import template
-from sekizai.helpers import (
-    Watcher as sekizai_context_watcher,
-    get_varname as sekizai_cache_key,
-)
 
 from cms.plugin_rendering import PluginContext
 
