@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_modify %}
+{% block stylesheet %}{% endblock %}
+
+{% block extrahead %}
+  <script type="text/javascript">
+   var current_site = {{ current_site }},
+       plugin_id = "{{ plugin.pk|default:"" }}",
+       form_id = "#{{ opts.model_name }}_form";
+  </script>
+  {{ block.super }}
+  {{ media }}
+  <script type="text/javascript"
+          src="{{ STATIC_URL}}js/smartsnippets/json_snippet_render.js"></script>
+{% endblock %}
+
+{% block extrastyle %}{% endblock %}
+
+{% block coltype %}
+  {% if ordered_objects %}colMS page-content{% else %}colM page-content no-padding-bottom{% endif %}
+{% endblock %}
+
+{% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
+
+{% block content_title %}
+  {% if documentation_link %}
+    <a class="plugin-help-tooltip" href='{{ documentation_link }}' target='_blank'
+       title='{% if description %}{{ description }}<br/><br/>{% endif %}Follow link to see documentation'>
+      <img src="{{STATIC_URL}}images/help.png"></a>
+  {% elif description %}
+      <span class="plugin-help-tooltip" title='{{ description }}'>
+        <img src="{{STATIC_URL}}images/help.png">
+      </span>
+  {% endif %}
+  <h2>{{ name }}</h2>
+{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}
+                                 action="{{ form_url }}" method="post"
+                                 id="{{ opts.model_name }}_form">
+      {% csrf_token %}
+      {% block form_top %}{% endblock %}
+      <div>
+        <input type="hidden" name="_popup" value="1" />
+        {% if current_site %}<input type="hidden" name="_current_site"
+                                    value="{{current_site}}" />{% endif %}
+        {% if save_on_top %}{% submit_row %}{% endif %}
+        {% if errors %}
+          <p class="errornote">
+            {% blocktrans count errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+          </p>
+          <ul class="errorlist">{% for error in adminform.form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        {% block fieldsets %}
+          {% for fieldset in adminform %}
+            {% include "admin/includes/fieldset.html" %}
+          {% endfor %}
+        {% endblock %}
+
+        {% block after_field_sets %}{% endblock %}
+
+        {% for inline_admin_formset in inline_admin_formsets %}
+          {% include inline_admin_formset.opts.template %}
+        {% endfor %}
+
+        <fieldset class="module">
+          {% if original.snippet %}
+            <div class="page-header no-border">
+              <h2 class="smartsnippet-title">{{original.snippet|default:"Smart Snippet Variables"}}</h2>
+              <div class="smartsnippet-description">
+                {% if original.snippet.documentation_link %}
+                  <div class="form-group">
+                    <p>{{ original.snippet.description|safe }}</p>
+                    <p><a href="{{ original.snippet.documentation_link }}" target='_blank'><i class="ace-icon glyphicon glyphicon-link"></i> Follow link to see documentation</a></p>
+                  </div>
+                {% elif original.snippet.description %}
+                  <div class="form-group"><p>{{ original.snippet.description|safe }}</p></div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          {% if variables %}
+            <table class="form-horizontal">
+              <thead class="hide">
+                <tr>
+                  <th>Name</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% include 'smartsnippets/variables_widgets.html'%}
+              </tbody>
+            </table>
+          {% endif %}
+        </fieldset>
+
+
+        {% if add %}
+          <script type="text/javascript">
+           (function($) {
+             $(document).ready(function() {
+               $('form#{{ opts.model_name }}_form :input:visible:enabled:first').focus()
+             });
+           })(django.jQuery);
+          </script>
+        {% endif %}
+
+        {# JavaScript for prepopulated fields #}
+        {% prepopulated_fields_js %}
+
+      </div>
+      <span class="plugin-submit-row clearfix form-actions no-margin-bottom no-padding-right"{% if is_popup %} style="overflow: auto;"{% endif %}>
+        <input type="submit" name="_save" class="btn btn-info pull-right" value="{% trans "Save" %}" {{ onclick_attrib }}/>
+        <input type="submit" style="margin-left: 8px;" value="{% trans "Cancel" %}" 
+               name="_cancel" class="cancel-btn btn pull-right">
+      </span>
+    </form>
+
+  </div>
+{% endblock %}
