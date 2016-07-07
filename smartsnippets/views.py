@@ -13,15 +13,16 @@ from smartsnippets.cms_plugins import variables_media
 from smartsnippets.models import SmartSnippet, SmartSnippetPointer, Variable
 
 
-def get_snippet_edit_code(request, snippet_id, config=None):
+def get_snippet_edit_code(request, snippet_id):
     """
     Returns a HTTPResponse that renders the admin of a smartsnippet.
 
     :param request: Request needed to create the rendering context
     :param snippet_id: id of the smartsnippet model
-    :param config: dictionary containing existing configuration of the smartsnippet instance,
-                   None if new
-    Schema: {
+
+    :param request.POST.config: dictionary containing existing configuration
+    of the smartsnippet instance, None if new
+    Schema for config: {
       'metadata': {
         'snippet_id': snippet_id,
       },
@@ -30,6 +31,7 @@ def get_snippet_edit_code(request, snippet_id, config=None):
       },
     }
     """
+    config = json.loads(request.POST.get('config', "{}")) or None
     snippet = get_object_or_404(SmartSnippet, id=snippet_id)
     snippet_vars = snippet.variables.all().order_by('_order', 'name')
     fake_pointer = SmartSnippetPointer(snippet=snippet)
@@ -40,7 +42,13 @@ def get_snippet_edit_code(request, snippet_id, config=None):
     def make_var(snippet_var):
         var = Variable(snippet=fake_pointer, snippet_variable=snippet_var)
         if snippet_var.name in variables_data:
-            var.value = json.dumps(variables_data[snippet_var.name])
+            data = variables_data[snippet_var.name]
+            if isinstance(data, dict):
+                # JSON style variables
+                var.value = json.dumps(data)
+            else:
+                # Plain value variables
+                var.value = data
         return var
 
     variables = [make_var(snippet_var) for snippet_var in snippet_vars]

@@ -41,8 +41,6 @@
 	    }
         });
 
-        var submitBtnName;
-
         function is_json_field(element) {
             var json_field_classes = ["merlinfield_hidden"],
                 classes = element.attr('class').split(/\s+/),
@@ -66,8 +64,7 @@
             var data={};
             $('input, textarea, select').each(function(){
                 var id=$(this).attr('id'),
-                    value=this.value,
-                    classes=[];
+                    value=this.value;
                 if (id && value && id.startsWith('var_')) {
                     if (is_json_field($(this))) {
                         value = JSON.parse(value);
@@ -75,7 +72,11 @@
                     data[id.substring(4)] = value;
                 }
             });
-            console.log("This JSON must be saved somewhere:", JSON.stringify(data));
+            if(submitBtnName === '_save') {
+                window.parent.saveSmartSnippetHandler(data);
+            } else {
+                window.parent.cancelSmartSnippetHandler(data);
+            }
             return false;
         });
 
