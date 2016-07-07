@@ -1,5 +1,10 @@
+/*
+   This is copied and adapted the old smart snippet rendering js.
+*/
+
 //<![CDATA[
 (function($) {
+    // Left runOnLoad for backwards compatibility. Use $(window).load instead.
     function runOnLoad(f) {
         if (runOnLoad.loaded){
 	    f();
@@ -28,9 +33,6 @@
     }else{
         window.onload = runOnLoad.run;
     }
-    runOnLoad(function(){
-        parent.setiframeheight($('body').height()+20, plugin_id);
-    });
 
     $(document).ready(function(){
         $("a.add-another,a.related-lookup").each(function(i, sign){
