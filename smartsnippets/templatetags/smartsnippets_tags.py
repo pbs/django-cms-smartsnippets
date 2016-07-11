@@ -5,6 +5,7 @@ import json
 from classytags.core import Options, Tag
 from classytags.arguments import Argument
 from django import template
+from django.conf import settings
 
 from cms.plugin_rendering import PluginContext
 
@@ -156,24 +157,53 @@ def exclude_empty(items, operator_args=None):
     return result_items
 
 
+def render_rendering_error(message, debug_info):
+    if settings.DEBUG:
+        full_message = '{}. {}'.format(message, debug_info)
+    else:
+        full_message = message
+    return ('<script type="text/javascript">console.warn("{}")</script>'.format(
+        full_message))
+
+
 class JSONSmartSnippet(Tag):
     name = "jsonsmartsnippet"
     options = Options(
         Argument('config_key', resolve=False),
+        Argument('id_key', resolve=False),
     )
 
-    def render_tag(self, context, config_key):
-        config = context[config_key]
-        metadata = config['metadata']
-        snippet_id = metadata['snippet_id']
+    def render_tag(self, context, config_key, id_key):
+        config = context.get(config_key) or {}
+        component_id = context.get(id_key) or None
+        metadata = config.get('metadata') or {}
+        snippet_id = metadata.get('snippet_id', None)
 
-        snippet = SmartSnippet.objects.get(id=snippet_id)
+        if not metadata or not snippet_id:
+            return render_rendering_error(
+                "Could not render smart snippet with UUID:{}".format(component_id),
+                "Full config: {}".format(config))
+
+        try:
+            snippet = SmartSnippet.objects.get(id=snippet_id)
+        except (SmartSnippet.DoesNotExist, ValueError):
+            return render_rendering_error(
+                "Could not render smart snippet with id:{}".format(snippet_id),
+                "Full config: {}".format(config))
+
         fake_pointer = SmartSnippetPointer(snippet=snippet)
         fake_pointer.placeholder_id = 0
         fake_pointer.id = 0
         fake_pointer.pk = 0
         plugin_context = PluginContext(context, fake_pointer, None)
-        plugin_context.update(config['variables'])
+        plugin_context.update(config.get('variables', {}))
 
-        return snippet.render(plugin_context)
+        try:
+            return snippet.render(plugin_context)
+        except Exception as exc:
+            # Rendering errors have very varied types
+            return render_rendering_error(
+                "Could not render smart snippet with id:{}. Rendering error.".format(snippet_id),
+                "Full config: {}, error message:{}".format(config, exc.message))
+
 register.tag(JSONSmartSnippet)
