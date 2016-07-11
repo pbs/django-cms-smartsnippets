@@ -15,6 +15,10 @@ from smartsnippets.models import (
     Variable,
     UnrenderableSmarSnippet,
 )
+from smartsnippets.templatetags.smartsnippets_tags import render_rendering_error
+
+
+
 class FakeSiteAdmin(admin.ModelAdmin):
     """ smartsnippets.admin module requires a model admin to be registed for Site, so fake it. """
     pass
@@ -270,6 +274,40 @@ class TestTemplateTags(TestCase):
             "{{ objs|exclude_empty:'key,color'|map_by:'key,color'|join:'' }}",
             {'objs': objs})
         self.assertEqual(out, self.colors.replace(' ', ''))
+
+    def test_json_rendering_no_config(self):
+        incomplete_configs = [
+            {},
+            {'data': {}},
+            {'data': {'metadata': None}},
+            {'data': {'metadata': {'snippet_id': None}}},
+        ]
+        expected = render_rendering_error('Could not render smart snippet with UUID:None', '')
+        for incomplete_config in incomplete_configs:
+            out = self._render(
+                "{% jsonsmartsnippet data id %}",
+                incomplete_config)
+            self.assertEqual(out, expected)
+
+
+    def test_json_rendering_incorrect_snippet_id(self):
+        for ss_id in ['incorrect', 12]:
+            expected = render_rendering_error(
+                'Could not render smart snippet with id:{}'.format(ss_id), '')
+            out = self._render(
+                "{% jsonsmartsnippet data id %}",
+                {'data': {'metadata': {'snippet_id': ss_id}}})
+            self.assertEqual(out, expected)
+
+    def test_json_rendering_incorrect_snippet(self):
+        ss_invalid = SmartSnippet.objects.create(template_code="{{ a|add:b }}")
+        expected = render_rendering_error(
+            'Could not render smart snippet with id:{}. Rendering error.'.format(
+                ss_invalid.id), '')
+        out = self._render(
+            "{% jsonsmartsnippet data id %}",
+            {'data': {'metadata': {'snippet_id': ss_invalid.id}}, 'id': 'uu-123'})
+        self.assertEqual(out, expected)
 
 
 class TestRendering(TestCase):
