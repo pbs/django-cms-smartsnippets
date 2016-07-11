@@ -60,6 +60,10 @@
             submitBtnName  = $(this).attr('name');
         });
         $(form_id).submit(function(){
+            if (submitBtnName !== '_save') {
+                window.parent.cancelSmartSnippetHandler();
+                return false;
+            }
             if (!SnippetWidgetRegistry.allValid()) {
                 return false;
             }
@@ -74,11 +78,7 @@
                     data[id.substring(4)] = value;
                 }
             });
-            if(submitBtnName === '_save') {
-                window.parent.saveSmartSnippetHandler(data);
-            } else {
-                window.parent.cancelSmartSnippetHandler(data);
-            }
+            window.parent.saveSmartSnippetHandler(data);
             return false;
         });
 
