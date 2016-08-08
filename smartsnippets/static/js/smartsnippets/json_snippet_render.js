@@ -44,6 +44,9 @@
         });
 
         function is_json_field(element) {
+            if (!element.attr('class')) {
+                return false;
+            }
             var json_field_classes = ["merlinfield_hidden"],
                 classes = element.attr('class').split(/\s+/),
                 index;
