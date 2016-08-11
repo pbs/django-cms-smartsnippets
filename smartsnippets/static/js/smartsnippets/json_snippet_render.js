@@ -47,7 +47,7 @@
             if (!element.attr('class')) {
                 return false;
             }
-            var json_field_classes = ["merlinfield_hidden"],
+            var json_field_classes = ["merlinfield_hidden", "herofield_hidden"],
                 classes = element.attr('class').split(/\s+/),
                 index;
             for (index=0; index<json_field_classes.length; index++) {
