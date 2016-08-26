@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+Revision 0ed55d3 (26.08.2016, 07:27 UTC)
+----------------------------------------
+
+* LUN-3023
+
+  * Handle input fields that do not have classes.
+  * Allow closing the window without validating fields.
+  * Improve handling for incorrect rendering.
+  * Review improvements.
+  * Fix saving issues and add url for edit.
+  * Review refactoring and fixes.
+  * Add tag that renders a smartsnippet based on a JSON configuration.
+  * Add alternative admin rendering based on JSON configuration serializing/deserializing.
+
+* LUN-3167
+
+  * Apply Json handling to the hero fields also.
+
+No other commits.
+
 Revision 4996793 (06.05.2016, 15:19 UTC)
 ----------------------------------------
 
