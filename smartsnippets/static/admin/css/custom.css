@@ -15,9 +15,9 @@ body {
 .smartsnippet-description p {
     white-space: pre-wrap;
 }
-input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], 
-input[type=email], input[type=month], input[type=number], input[type=password], 
-input[type=search], input[type=tel], input[type=text], input[type=time], 
+input[type=color], input[type=date], input[type=datetime-local], input[type=datetime],
+input[type=email], input[type=month], input[type=number], input[type=password],
+input[type=search], input[type=tel], input[type=text], input[type=time],
 input[type=url], input[type=week], textarea, select {
   color: #393939;
   width: 55%;
@@ -60,7 +60,7 @@ input[type=url], input[type=week], textarea, select {
   border: 1px solid #CCC !important;
   border-top: none !important;
 }
-.deletelink { 
+.deletelink {
   color: white !important;
   margin-right: 20px;
   padding: 8px 18px;
@@ -109,8 +109,13 @@ td.filer-input-wrapper  .help-button {
   margin: 3px 0 0 10px;
 }
 .form-actions {
-	background: white;
+    background: white;
 }
+
+.form-actions input[type='submit'] {
+    margin-left: 8px;
+}
+
 .widget-header {
   background: #fff;
   padding: 0;
@@ -168,3 +173,5 @@ td.filer-input-wrapper  .help-button {
 .ui-dialog .ui-dialog-buttonpane button, .ui-jqdialog .ui-dialog-buttonpane button, .ui-dialog .ui-jqdialog-buttonpane button, .ui-jqdialog .ui-jqdialog-buttonpane button {
   margin: 0 5px;
 }
+
+
