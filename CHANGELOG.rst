@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 62c8387 (14.02.2017, 12:14 UTC)
+----------------------------------------
+
+* LUN-3440
+
+  * add spacing for submit buttons admin form
+
+No other commits.
+
 Revision 0ed55d3 (26.08.2016, 07:27 UTC)
 ----------------------------------------
 
