@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 195f80b (05.02.2018, 15:47 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * Added migration to update custom components name and description
+
 Revision 62c8387 (14.02.2017, 12:14 UTC)
 ----------------------------------------
 
