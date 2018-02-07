@@ -2,34 +2,23 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import re
 
 
-def update_smartsnippets_description(apps, schema_editor):
+def update_smartsnippets(apps, schema_editor):
     SmartSnippet = apps.get_model('smartsnippets', 'SmartSnippet')
-    SmartSnippet.objects.all().update(description=models.Func(models.F('description'),
-                                                   models.Value('Merlin'),
-                                                   models.Value('Media Manager'),
-                                                   function='replace'))
-    SmartSnippet.objects.all().update(description=models.Func(models.F('description'),
-                                                   models.Value('COVE'),
-                                                   models.Value('Media Manager'),
-                                                   function='replace'))
+    smartsnippets = SmartSnippet.objects.filter(models.Q(description__iregex=r'(^|[^A-Za-z])(COVE|Merlin)([^A-Za-z]|$)')|
+                                                models.Q(name__iregex=r'(^|[^A-Za-z])(COVE|Merlin)([^A-Za-z]|$)'))
+    regex = re.compile("(^|[^A-Za-z])(COVE|Merlin)([^A-Za-z]|$)", re.IGNORECASE)
+    for ss in smartsnippets:
+        ss.name = regex.sub(" Media Manager ", ss.name)
+        ss.description = re.sub(regex, " Media Manager ", ss.description)
+        ss.save()
 
 
-def update_smartsnippets_name(apps, schema_editor):
-    SmartSnippet = apps.get_model('smartsnippets', 'SmartSnippet')
-    SmartSnippet.objects.all().update(description=models.Func(models.F('name'),
-                                                   models.Value('Merlin'),
-                                                   models.Value('Media Manager'),
-                                                   function='replace'))
-    SmartSnippet.objects.all().update(description=models.Func(models.F('name'),
-                                                   models.Value('COVE'),
-                                                   models.Value('Media Manager'),
-                                                   function='replace'))
-
-
-def revert(apps, schema_ditor):
+def revert(apps, schema_editor):
     pass
+
 
 class Migration(migrations.Migration):
 
@@ -38,6 +27,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_smartsnippets_description),
-        migrations.RunPython(update_smartsnippets_name)
+        migrations.RunPython(update_smartsnippets, revert),
     ]
