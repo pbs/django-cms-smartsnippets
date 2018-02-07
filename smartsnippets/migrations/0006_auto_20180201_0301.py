@@ -7,10 +7,11 @@ import re
 
 def update_smartsnippets(apps, schema_editor):
     SmartSnippet = apps.get_model('smartsnippets', 'SmartSnippet')
-    smartsnippets = SmartSnippet.objects.all()
+    smartsnippets = SmartSnippet.objects.filter(models.Q(description__iregex=r'(^|[^A-Za-z])(COVE|Merlin)([^A-Za-z]|$)')|
+                                                models.Q(name__iregex=r'(^|[^A-Za-z])(COVE|Merlin)([^A-Za-z]|$)'))
     regex = re.compile("(^|[^A-Za-z])(COVE|Merlin)([^A-Za-z]|$)", re.IGNORECASE)
     for ss in smartsnippets:
-        ss.name = re.sub(regex, " Media Manager", ss.name)
+        ss.name = regex.sub(" Media Manager ", ss.name)
         ss.description = re.sub(regex, " Media Manager ", ss.description)
         ss.save()
 
@@ -26,5 +27,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(update_smartsnippets, revert)
+        migrations.RunPython(update_smartsnippets, revert),
     ]
