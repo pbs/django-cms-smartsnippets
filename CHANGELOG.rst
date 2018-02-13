@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+Revision e961257 (13.02.2018, 12:56 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * Fixed migration
+  * Fixed migration
+
 Revision 195f80b (05.02.2018, 15:47 UTC)
 ----------------------------------------
 
