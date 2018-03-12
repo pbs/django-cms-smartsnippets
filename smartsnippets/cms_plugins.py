@@ -217,7 +217,7 @@ class SmartSnippetPlugin(CMSPluginBase):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "snippet":
-            f = Q(sites=Site.objects.get_current())
+            f = Q(sites=Site.objects.get_current(request=request))
             if self.shared_sites:
                 f |= Q(sites__name__in=self.shared_sites)
             kwargs["queryset"] = SmartSnippet.objects.filter(f).distinct()
