@@ -38,7 +38,7 @@ class SmartSnippet(models.Model):
             'Enter a template (i.e. "custom_components/plugin_xy.html")'
             ' which will be rendered.'))
     sites = models.ManyToManyField(
-        Site, null=False, blank=True,
+        Site,
         help_text=_('Select on which sites the custom component will be available.'),
         verbose_name='sites')
     description = models.TextField(_("Description"), blank=True)
@@ -56,7 +56,11 @@ class SmartSnippet(models.Model):
     def __init__(self, *args, **kwargs):
         #hack due to
         #     https://code.djangoproject.com/ticket/16433#no1
-        for rel_obj in self._meta.get_all_related_objects():
+        for rel_obj in [
+            f for f in self._meta.get_fields()
+            if (f.one_to_many or f.one_to_one)
+            and f.auto_created and not f.concrete
+        ]:
             rel_obj.help_text = ""
         super(SmartSnippet, self).__init__(*args, **kwargs)
 
